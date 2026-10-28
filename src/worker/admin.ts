@@ -1,6 +1,5 @@
 import type { Hono } from 'hono';
 import { roundCreateSchema } from '../shared/schema';
-import type { RoundRow } from '../shared/schema';
 import { snapshotHash } from '../matching/engine';
 import { verifyAdmin, adminMutationAllowed } from './auth';
 import { audit, currentRound, eligibleRows, roundById } from './db';
@@ -97,13 +96,16 @@ export function registerAdmin(app: App) {
     const id = c.req.param('id');
     const r = await roundById(c.env.DB,id);
     if (!r || r.status!=='OPEN') return c.json({error:'只有 OPEN 期次可鎖定'},409);
+    // First close the round atomically; subsequent submissions are then impossible.
+    const updated = await c.env.DB.prepare(
+      "UPDATE rounds SET status='LOCKED' WHERE id=? AND status='OPEN' RETURNING id"
+    ).bind(id).first<{id:string}>();
+    if (!updated) return c.json({error:'期次已變更，請重新整理'},409);
     const rows = await eligibleRows(c.env.DB,id);
     const hash = await snapshotHash(rows);
-    const updated = await c.env.DB.prepare(
-      "UPDATE rounds SET status='LOCKED',snapshot_hash=? WHERE id=? AND status='OPEN' RETURNING id"
-    ).bind(hash,id).first<{id:string}>();
-    if (!updated) return c.json({error:'期次已變更，請重新整理'},409);
-    // Eligibility cannot change once LOCKED; verify hash again during preview and commit.
+    await c.env.DB.prepare(
+      "UPDATE rounds SET snapshot_hash=? WHERE id=? AND status='LOCKED' AND snapshot_hash IS NULL"
+    ).bind(hash,id).run();
     await audit(c.env,c.get('adminEmail'),'round.lock',id,{eligible:rows.length,snapshotHash:hash});
     return c.json({ok:true,eligibleCount:rows.length});
   });
