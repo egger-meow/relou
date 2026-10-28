@@ -26,6 +26,21 @@ async function preparePlan(env: Env, id: string) {
 function mailReady(env: Env) {
   return env.EMAIL_DRY_RUN==='false' && env.EMAIL_ENABLED==='true' && !!env.EMAIL_FROM && !!env.EMAIL;
 }
+// Keep each SQLite statement under D1's 100-bound-parameter limit and reduce
+// queries per Worker invocation (especially important on Workers Free).
+function bulkInsert(db: D1Database, table: string, columns: string[], rows: (string|number|null)[][]): D1PreparedStatement[] {
+  if (!rows.length) return [];
+  const size=Math.floor(96/columns.length);
+  const out:D1PreparedStatement[]=[];
+  for (let i=0;i<rows.length;i+=size) {
+    const chunk=rows.slice(i,i+size);
+    const placeholders='('+columns.map(()=>'?').join(',')+')';
+    const sql='INSERT INTO '+table+'('+columns.join(',')+') VALUES '+chunk.map(()=>placeholders).join(',');
+    out.push(db.prepare(sql).bind(...chunk.flat()));
+  }
+  return out;
+}
+
 export function registerOperations(app: App) {
   app.get('/api/admin/matching/preview', async c => {
     const id = c.req.query('round');
@@ -63,26 +78,27 @@ export function registerOperations(app: App) {
     ];
     const byId = new Map<string,EntryRow>(rows.map(r=>[r.id,r]));
     const partners = new Map<string,string>();
+    const matchRows:(string|number|null)[][]=[];
+    const memberRows:(string|number|null)[][]=[];
+    const outboxRows:(string|number|null)[][]=[];
     for (const pair of plan.pairs) {
       if (!byId.has(pair.a) || !byId.has(pair.b) || partners.has(pair.a) || partners.has(pair.b))
         return c.json({error:'配對資料不符合唯一性'},409);
       partners.set(pair.a,pair.b); partners.set(pair.b,pair.a);
       const matchId = crypto.randomUUID();
-      statements.push(c.env.DB.prepare(
-        'INSERT INTO matches(id,round_id,run_id,a_id,b_id,score) VALUES(?,?,?,?,?,?)'
-      ).bind(matchId,round.id,runId,pair.a,pair.b,pair.score));
-      for (const id of [pair.a,pair.b]) statements.push(c.env.DB.prepare(
-        'INSERT INTO match_members(round_id,entry_id,match_id) VALUES(?,?,?)'
-      ).bind(round.id,id,matchId));
+      matchRows.push([matchId,round.id,runId,pair.a,pair.b,pair.score]);
+      for (const id of [pair.a,pair.b]) memberRows.push([round.id,id,matchId]);
     }
     for (const row of rows) {
       const other = partners.get(row.id);
       const message = resultEmail(row,other?byId.get(other)!:null,c.env.SUPPORT_EMAIL||'');
-      statements.push(c.env.DB.prepare(
-        'INSERT INTO email_outbox(id,round_id,run_id,entry_id,dedupe_key,recipient_email,subject,text_body) VALUES(?,?,?,?,?,?,?,?)'
-      ).bind(crypto.randomUUID(),round.id,runId,row.id,round.id+':'+row.id+':v1',row.normalized_email,
-        message.subject,message.text));
+      outboxRows.push([crypto.randomUUID(),round.id,runId,row.id,round.id+':'+row.id+':v1',
+        row.normalized_email,message.subject,message.text]);
     }
+    statements.push(...bulkInsert(c.env.DB,'matches',['id','round_id','run_id','a_id','b_id','score'],matchRows));
+    statements.push(...bulkInsert(c.env.DB,'match_members',['round_id','entry_id','match_id'],memberRows));
+    statements.push(...bulkInsert(c.env.DB,'email_outbox',
+      ['id','round_id','run_id','entry_id','dedupe_key','recipient_email','subject','text_body'],outboxRows));
     statements.push(c.env.DB.prepare(
       'INSERT INTO admin_audit_events(id,actor,action,round_id,meta_json) SELECT ?,?,?,?,? FROM match_runs WHERE id=?'
     ).bind(crypto.randomUUID(),c.get('adminEmail'),'matching.commit',round.id,
