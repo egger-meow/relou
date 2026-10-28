@@ -1,6 +1,6 @@
 import type { Hono } from 'hono';
 import { ALGORITHM_VERSION, computePlan, fromRow, planDigest, snapshotHash } from '../matching/engine';
-import type { EntryRow, RoundRow } from '../shared/schema';
+import type { EntryRow } from '../shared/schema';
 import { audit, eligibleRows, roundById } from './db';
 import { resultEmail, maskedPreview } from './mail';
 import type { Env } from './types';
