@@ -1,0 +1,38 @@
+{
+  "name": "relou",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev:worker": "wrangler dev",
+    "db:local": "wrangler d1 migrations apply relou --local",
+    "db:remote": "wrangler d1 migrations apply relou --remote",
+    "deploy": "npm run build && wrangler deploy",
+    "configure": "node scripts/configure.mjs"
+  },
+  "dependencies": {
+    "edmonds-blossom": "^1.0.0",
+    "hono": "^4.10.0",
+    "jose": "^6.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20261001.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.0",
+    "wrangler": "^4.45.0"
+  }
+}
