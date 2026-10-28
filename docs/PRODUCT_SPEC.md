@@ -58,8 +58,8 @@
 - 身分與資料：Supabase Auth school-email OTP / magic link + Supabase Postgres；使用 publishable key 在前端，service role 只放伺服器端／CI secrets。
 - 後端：Next.js server actions / route handlers 驗證會話、input schema (Zod)、server-side domain eligibility、提交／修改與撤回。
 - 配對：**Python + NetworkX CLI**（或充分測試過的同等最大權重 matching 函式庫），以保證能解一般無向圖非二分圖；Python 只用於離線批次任務，不需常駐 FastAPI 服務。
-- 發信：SMTP transport（Nodemailer 或 Python smtplib）連 outbox，限制速率與重試；寄信工作用一次性管理命令／GitHub Actions workflow_dispatch 執行即可。
-- 部署：Vercel + Supabase；`.env.example` 列所有必要變數，但不存秘密。GitHub Actions 密鑰請用 repo secrets；所有生產副作用需在使用者配置完成後才啟用。
+- 發信：SMTP transport（Nodemailer 或 Python smtplib）連 outbox，限制速率與重試；**SMTP 批次寄送應在獨立 CLI / GitHub Actions 執行，不在 Cloudflare HTTP Worker 裡嘗試長批次 SMTP**；寄信工作用一次性管理命令／GitHub Actions workflow_dispatch 執行即可。
+- 部署：**Cloudflare Workers + Cloudflare Custom Domain `relou.jjmowlab.com` + 獨立 Supabase 專案**。`jjmowlab.com` DNS 由 Cloudflare 管理，將正式 Worker 綁定 `https://relou.jjmowlab.com`（由 Cloudflare 建立對應 DNS 與 HTTPS），而不是 Vercel；Next.js 在 Workers 上依 Cloudflare 官方當前建議以 vinext 建置，若遇到相容性問題先做驗證再定 adapter。Supabase Auth Site URL 設 `https://relou.jjmowlab.com`，redirect allowlist 加入已實作的精確 callback URL；`NEXT_PUBLIC_SITE_URL` 正式環境亦為該網址；詳見 `docs/DEPLOYMENT.md`。**Cloudflare 不代管 Supabase DB，兩者是獨立服務**。`.env.example` 列所有必要變數，但不存秘密。GitHub Actions 密鑰請用 repo secrets；所有生產副作用需在使用者配置完成後才啟用。
 - 未提供 Supabase project、SMTP 帳密與 Vercel 時仍需能 build、lint、跑測試及示範 fake data；不能假裝真實寄信成功。
 - 實作時先檢查當前官方 Supabase changelog、Auth／RLS 文件並鎖定套件版本，別依賴過時 API。
 
