@@ -55,7 +55,7 @@ export function registerAdmin(app: App) {
 
   app.get('/api/admin/rounds', async c => {
     const rows = await c.env.DB.prepare(
-      'SELECT id,slug,title,status,opens_at,closes_at,notification_target_at,min_pair_score,send_paused,created_at FROM rounds ORDER BY created_at DESC LIMIT 40'
+      'SELECT id,slug,title,status,opens_at,closes_at,notification_target_at,min_pair_score,send_paused,archived_at,purged_at,created_at FROM rounds ORDER BY created_at DESC LIMIT 40'
     ).all();
     return c.json({ rounds:rows.results||[] });
   });
