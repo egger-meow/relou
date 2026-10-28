@@ -40,7 +40,7 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 - [Cloudflare-only 部署](docs/CLOUDFLARE_DEPLOY.md)
 - [Agent 工作指令](AGENTS.md)
 
-**狀態（2026-10-29）：** MVP 程式碼、D1 migration、前後端、配對演算法、管理後台、測試與 CI 已提交。**尚未部署、尚未開放報名、尚未配置 Cloudflare Access／D1／Turnstile／Email Service，也沒有寄出真信。** 正式上線前須完成資料保存／刪除、誤收信處理與隱私告知。詳見 [實作與部署手冊](docs/IMPLEMENTATION.md)。
+**狀態（2026-10-29）：** MVP 程式碼、D1 migration、前後端、配對演算法、管理後台、測試與 CI 已提交。**尚未部署、尚未開放報名、尚未配置 Cloudflare Access／D1／Turnstile／Email Service，也沒有寄出真信。** 正式上線前仍須確認人工資料清除排程、誤收信處理與完整隱私告知。詳見 [實作與部署手冊](docs/IMPLEMENTATION.md)。
 
 本 repo 禁止提交真實參與者資料與 API secrets。
 
