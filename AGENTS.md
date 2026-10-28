@@ -5,7 +5,7 @@ You are implementing the actual code for **Relou**, not merely rewriting documen
 2. `docs/FORM_SPEC.md`
 3. `docs/MATCHING_SPEC.md`
 
-Target: **one professional mobile-friendly form, school-email verification, round-based private 1:1 matching, SMTP results**. Do not overbuild social features. Work in small conventional commits and complete as much production-grade MVP as the execution environment allows. If another agent has already progressed, inspect repo/history before changing files; preserve existing implementation.
+Target: **one professional mobile-friendly form, school-email verification, round-based private 1:1 matching, SMTP results**. **Production domain is https://relou.jjmowlab.com. Host the web app on Cloudflare Workers, with a separate managed Supabase database/auth project. Do not use Vercel for production.** Do not overbuild social features. Work in small conventional commits and complete as much production-grade MVP as the execution environment allows. If another agent has already progressed, inspect repo/history before changing files; preserve existing implementation.
 
 ## Non-negotiables
 
@@ -21,19 +21,19 @@ Target: **one professional mobile-friendly form, school-email verification, roun
 
 ## Execution order
 
-1. Inspect repo, initialize Next.js TypeScript Tailwind project and a small polished mobile-first design with Traditional Chinese copy and responsive / accessible form.
+1. Inspect repo, initialize Next.js TypeScript Tailwind project and a small polished mobile-first design with Traditional Chinese copy and responsive / accessible form. Target Cloudflare Workers deploy compatibility from the start; use Cloudflare's current recommended Next.js runtime/build adapter (vinext for new apps as of 2026-10), pin versions and run local compatibility/build tests.
 2. Add Zod form validation, Supabase Auth magic link flow, verified school domain allowlist, per-round DB schema and RLS migrations. Provide local fake data mode **clearly marked demo** when external credentials unavailable; never pretend production is live.
 3. Implement one-time round enrollment, edit/withdraw, lock state and status pages. Keep the UI friction low.
 4. Implement pure matching function + explicit hard compatibility filters + weighted score and deterministic solver. Prefer Python/NetworkX offline CLI with stable seed and fixtures. Verify with unit tests, including a graph where naive greedy is suboptimal.
-5. Add safe dry-run, commit, email outbox and SMTP sender, templates, retry/idempotency tests; wire operator-run GitHub Actions `workflow_dispatch` only where safe.
-6. Add landing and privacy/safety pages, email templates, `.env.example` and complete operational README with first launch checklist. If time, implement P1 only after all P0 tests pass.
+5. Add safe dry-run, commit, email outbox and SMTP sender, templates, retry/idempotency tests; wire operator-run GitHub Actions `workflow_dispatch` only where safe. SMTP sending must execute as a separate CLI/GitHub Actions batch task, not long-lived in Cloudflare HTTP Workers.
+6. Add landing and privacy/safety pages, email templates, `.env.example` and complete operational README with first launch checklist. Follow `docs/DEPLOYMENT.md`; configure Cloudflare Workers custom domain `relou.jjmowlab.com` and Supabase Auth Site/redirect URLs if the necessary account access is actually available; never claim completed domain or database provisioning without verification. If time, implement P1 only after all P0 tests pass.
 
 ## Validation
 
 - Run (or try to run) package install, typecheck, lint, tests, build, plus Python tests. Never claim a test passed unless it actually executed.
 - If no local runner exists in the available automation/tools, still commit source + tests and report that runtime validation is pending.
 - If connecting to real Supabase is unavailable, commit migrations and a runbook; do not invent deployed database state.
-- If Vercel deployment needs external auth or configuration, leave a ready-to-deploy codebase; do not state that the site is live.
+- If Cloudflare Workers deployment or Supabase configuration needs external auth, domain permissions, or billing confirmation, leave a ready-to-deploy codebase and precise setup steps; do not state that the site is live.
 - When blocked by missing secrets, leave precise env var names and safe setup steps. Do not ask nonessential questions.
 
 ## Suggested implementation parameters
