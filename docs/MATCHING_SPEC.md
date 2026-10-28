@@ -1,4 +1,4 @@
-# Relou | Matching Engine 規格 v0.2（Cloudflare D1）
+# Relou | Matching Engine 規格 v0.3（一次送出 / 無信箱驗證）
 
 > 結果寄送使用 Cloudflare Email Service `send_email` Workers binding，配對資料與發信 outbox 在 Cloudflare D1 SQLite。正式網址目標 `https://relou.jjmowlab.com`。
 
@@ -6,16 +6,16 @@
 
 ## 1. 先定義「有效配對」
 
-設 A、B 來自同一個 LOCKED round，均已通過 school-email 驗證、聲明 18+、未撤回、雙方都同意分享聯絡資訊、未被管理員停權。
+設 A、B 來自同一個 LOCKED round，均**自述為 NYCU 或 NTHU 成年參與者**、已填可供期末寄信的 Email、聲明 18+、未撤回、雙方同意分享聯絡資訊且未被管理員排除。**MVP 不驗證 Email 持有權或學生身份，也不要求登入或 OTP。**
 
 **全部必須成立：**
 
-1. `A.id != B.id`；兩者當期 `entry.status == eligible`，且此前沒有 committed match。
+1. `A.id != B.id`；兩者當期 `entry.status == eligible`，且此前沒有 committed match。Email 僅作通知收件地址和每期報名防重字串，**不代表真實身份**。
 2. **雙向性別意願**：`accepts(A.desiredGenders, B.gender) && accepts(B.desiredGenders, A.gender)`。
 3. `intentSet(A) ∩ intentSet(B) != ∅`，其中 friends={friends}，dating={dating}，either={friends,dating}。注意交集只代表兩者可能從交朋友或約會開始，通知不強加「你們正在交往」。
 4. 若 A 或 B 任一選 `same_school`，學校必須相同。
 5. 未存在檢舉／封鎖關係（若後續期次帶入阻擋，必須以私有且最小化的資料支撐）。
-6. 有有效聯絡方式與明確獨立 consent；若 contactKind=verified_email，僅使用後端讀取之已驗證 email。
+6. 有有效聯絡方式與明確獨立 consent；若 contactKind=submitted_email，僅使用此報名提交的 Email 並清楚承認此信箱**未驗證所有權**。
 
 不允許 AI、管理員手動調分或相似度分數突破上述硬條件。**只要一方不願意，分數再高也不能配。**
 
@@ -88,7 +88,7 @@
 - A 男想配女，B 女不想配男 -> 不可互容。
 - 朋友-only vs 約會-only -> 不可互容；either vs 朋友-only -> 可互容。
 - 任一同校限定 + 不同校 -> 不可互容。
-- 未成年自述／未 school verified／未同意公開聯絡方式／撤回／已配 -> 不可互容。
+- 未滿 18 歲自述／未填 Email 或學校自述／未同意分享聯絡方式／撤回／已配／被管理員判定可疑 -> 不可互容。**不得因尚未 email verified 而拒絕，因本產品根本沒有驗證步驟。**
 - gender=undisclosed，對方不是 all -> 不可互容。
 - 任何 LLM 提供高分都不可推翻 hard filter。
 
