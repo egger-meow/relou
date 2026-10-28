@@ -38,19 +38,19 @@ export function registerPublic(app: App) {
       round: null, activeSubmissionCount: 0, lifetimeSubmissionCount: null,
       previousRoundPairCount: null, asOf: new Date().toISOString()
     }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
-    const count = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND status='eligible'")
+    const count = round.purged_at ? { n: round.final_submission_count ?? 0 } : await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND status='eligible'")
       .bind(round.id).first<{ n: number }>();
     const totalRounds = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM rounds').first<{ n: number }>();
     let lifetimeSubmissionCount: number | null = null;
     let previousRoundPairCount: number | null = null;
     if ((totalRounds?.n || 0) > 1) {
-      const lifetime = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE status='eligible'").first<{ n: number }>();
+      const lifetime = await c.env.DB.prepare("SELECT COALESCE(SUM(CASE WHEN r.purged_at IS NOT NULL THEN r.final_submission_count ELSE (SELECT COUNT(*) FROM entries e WHERE e.round_id=r.id AND e.status='eligible') END),0) AS n FROM rounds r").first<{ n: number }>();
       lifetimeSubmissionCount = lifetime?.n ?? 0;
       const previous = await c.env.DB.prepare(
-        "SELECT id FROM rounds WHERE id <> ? AND status IN ('NOTIFIED','ARCHIVED') ORDER BY created_at DESC LIMIT 1"
-      ).bind(round.id).first<{ id: string }>();
+        "SELECT id,purged_at,final_pair_count FROM rounds WHERE id <> ? AND status IN ('NOTIFIED','ARCHIVED') ORDER BY created_at DESC LIMIT 1"
+      ).bind(round.id).first<{ id: string;purged_at:string|null;final_pair_count:number|null }>();
       if (previous) {
-        const pairs = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM matches WHERE round_id=?')
+        const pairs = previous.purged_at ? { n: previous.final_pair_count ?? 0 } : await c.env.DB.prepare('SELECT COUNT(*) AS n FROM matches WHERE round_id=?')
           .bind(previous.id).first<{ n: number }>();
         previousRoundPairCount = pairs?.n ?? 0;
       }
