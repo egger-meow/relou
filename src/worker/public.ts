@@ -66,9 +66,11 @@ export function registerPublic(app: App) {
   });
 
   app.post('/api/entry', async c => {
-    if (!correctOrigin(c.req.raw, c.env.PUBLIC_HOST)) return c.json({ error: '來源不正確' }, 403, headers);
+    const requestHost = new URL(c.req.url).hostname;
+    const allowedOriginHost = c.env.ENVIRONMENT === 'local' && ['localhost','127.0.0.1'].includes(requestHost) ? requestHost : c.env.PUBLIC_HOST;
+    if (!correctOrigin(c.req.raw, allowedOriginHost)) return c.json({ error: '來源不正確' }, 403, headers);
     if (!c.req.header('content-type')?.toLowerCase().includes('application/json')) return c.json({ error: '請使用 JSON' }, 415, headers);
-    if (!c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER)
+    if (!c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER || !c.env.SUPPORT_EMAIL)
       return c.json({ error: '報名防護尚未設定，暫停收件' }, 503, headers);
     const round = await currentRound(c.env.DB);
     const now = new Date().toISOString();
