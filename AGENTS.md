@@ -4,7 +4,7 @@
 
 **THE USER FILLS THE ONE-PAGE FORM, CLICKS SUBMIT ONCE, AND IS DONE.** NO account registration, NO login, NO verification link, NO OTP, NO magic link, NO confirmation email click, NO follow-up verification before or after submission. Do not add any extra step even if it seems more secure. Success means a validated entry has been committed to D1 and a confirmation screen appears immediately.
 
-The email field is a **result-delivery destination only**. An optional, configured NYCU/NTHU domain allowlist may check the *literal string*, but **never claim student identity or email ownership has been verified**. Inform participant that typos may mean missed notification. Do not send verification/OTP/confirmation messages as part of enrollment.
+The email field is a **result-delivery destination only**. Allow any well-formed recipient Email (including Gmail); school is explicitly self-reported NYCU/NTHU, and **never claim student identity or email ownership has been verified**. Inform participant that typos may mean missed notification. Do not send verification/OTP/confirmation messages as part of enrollment.
 
 **Domain:** `https://relou.jjmowlab.com` (target only, NOT verified live).
 
@@ -20,7 +20,7 @@ Read authoritative docs in this order:
 ## P0 deliverables
 
 1. Polished Traditional Chinese mobile-first React/TypeScript/Vite/Tailwind one-page questionnaire (no major, school year, photos or mandatory MBTI). Email is part of same page.
-2. POST /api/entries: validate schema, current round=OPEN, 18+ attestation, reciprocal-match-relevant preferences, unchecked explicit contact-share/privacy consent; verify Turnstile token server-side, IP-based/email-based throttling, hidden honeypot. Save D1 entry once and return confirmation. **No authentication gate**.
+2. POST /api/entry: validate schema, current round=OPEN, 18+ attestation, reciprocal-match-relevant preferences, unchecked explicit contact-share/privacy consent; verify Turnstile token server-side, IP-based/email-based throttling, hidden honeypot. Save D1 entry once and return confirmation. **No authentication gate**.
 3. D1 SQLite migrations: rounds, entries (normalized email + unique(round_id, normalized_email)), match runs, match members with unique(round_id, entry_id), email outbox with unique dedupe_key, operator-only audit, optional report/suppression. Email and answers are private. Use immutable round snapshot; no public read/list API for participants. No user / auth / session / OTP tables unless other necessary purposes are explicitly approved.
 4. Duplicate email in same round must **not overwrite** a prior entry without proof of ownership; use safe idempotent behavior and non-enumerating public response. This is a risk limitation, not email verification. Expose operator-assisted correction or withdrawal contact information; don't create insecure unauthenticated edit/delete endpoints.
 5. Round-based deterministic max-cardinality then max-score matching with strict mutual hard conditions and one counterpart max per entry. Quality threshold configurable; no LLM can override hard exclusions. Optional semantic layer OFF by default.
