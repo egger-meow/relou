@@ -1,0 +1,126 @@
+import type { Hono } from 'hono';
+import { entrySchema, normalizeEmail, contactForMatch, publicRound } from '../shared/schema';
+import { sha256 } from '../matching/engine';
+import { currentRound } from './db';
+import { correctOrigin } from './auth';
+import type { Env } from './types';
+
+type App = Hono<{ Bindings: Env; Variables: { adminEmail: string } }>;
+const headers = { 'Cache-Control': 'no-store' };
+
+async function verifyTurnstile(token: string, ip: string, env: Env): Promise<boolean> {
+  if (!env.TURNSTILE_SECRET_KEY) return false;
+  try {
+    const form = new URLSearchParams({ secret: env.TURNSTILE_SECRET_KEY, response: token, remoteip: ip });
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST', body: form, signal: AbortSignal.timeout(8000)
+    });
+    if (!response.ok) return false;
+    const data = await response.json() as { success?: boolean; hostname?: string };
+    if (!data.success) return false;
+    if (data.hostname && data.hostname !== env.PUBLIC_HOST &&
+      !(env.ENVIRONMENT === 'local' && ['localhost','127.0.0.1'].includes(data.hostname))) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function registerPublic(app: App) {
+  app.get('/api/public/config', c => c.json({
+    turnstileSiteKey: c.env.TURNSTILE_SITE_KEY || null,
+    supportEmail: c.env.SUPPORT_EMAIL || null
+  }, 200, { 'Cache-Control': 'public, max-age=60' }));
+
+  app.get('/api/public/stats', async c => {
+    const round = await currentRound(c.env.DB);
+    if (!round) return c.json({
+      round: null, activeSubmissionCount: 0, lifetimeSubmissionCount: null,
+      previousRoundPairCount: null, asOf: new Date().toISOString()
+    }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
+    const count = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND status='eligible'")
+      .bind(round.id).first<{ n: number }>();
+    const totalRounds = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM rounds').first<{ n: number }>();
+    let lifetimeSubmissionCount: number | null = null;
+    let previousRoundPairCount: number | null = null;
+    if ((totalRounds?.n || 0) > 1) {
+      const lifetime = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE status='eligible'").first<{ n: number }>();
+      lifetimeSubmissionCount = lifetime?.n ?? 0;
+      const previous = await c.env.DB.prepare(
+        "SELECT id FROM rounds WHERE id <> ? AND status IN ('NOTIFIED','ARCHIVED') ORDER BY created_at DESC LIMIT 1"
+      ).bind(round.id).first<{ id: string }>();
+      if (previous) {
+        const pairs = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM matches WHERE round_id=?')
+          .bind(previous.id).first<{ n: number }>();
+        previousRoundPairCount = pairs?.n ?? 0;
+      }
+    }
+    // Deliberately allowlist public keys; NEVER serialize entries, gender or demographic breakdowns.
+    return c.json({
+      round: publicRound(round),
+      activeSubmissionCount: count?.n ?? 0,
+      lifetimeSubmissionCount,
+      previousRoundPairCount,
+      asOf: new Date().toISOString()
+    }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
+  });
+
+  app.post('/api/entry', async c => {
+    if (!correctOrigin(c.req.raw, c.env.PUBLIC_HOST)) return c.json({ error: '來源不正確' }, 403, headers);
+    if (!c.req.header('content-type')?.toLowerCase().includes('application/json')) return c.json({ error: '請使用 JSON' }, 415, headers);
+    if (!c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER)
+      return c.json({ error: '報名防護尚未設定，暫停收件' }, 503, headers);
+    const round = await currentRound(c.env.DB);
+    const now = new Date().toISOString();
+    if (!round || round.status !== 'OPEN' || now < round.opens_at || now >= round.closes_at)
+      return c.json({ error: '本期目前沒有開放報名' }, 409, headers);
+    const body = await c.req.text();
+    if (body.length > 10000) return c.json({ error: '資料太長' }, 413, headers);
+    let parsed: unknown;
+    try { parsed = JSON.parse(body); } catch { return c.json({ error: '資料格式錯誤' }, 400, headers); }
+    const result = entrySchema.safeParse(parsed);
+    if (!result.success) return c.json({ error: '請檢查必填欄位', fields: result.error.issues.map(i => i.path.join('.')) }, 400, headers);
+    const v = result.data;
+    // Honeypot never creates an entry; return neutral response to avoid training bots.
+    if (v.website) return c.json({ ok: true, roundTitle: round.title }, 200, headers);
+    const ip = c.req.header('CF-Connecting-IP') || 'unknown';
+    const ipKey = await sha256(c.env.RATE_HASH_PEPPER + '|ip|' + ip);
+    const email = normalizeEmail(v.notificationEmail);
+    const emailKey = await sha256(c.env.RATE_HASH_PEPPER + '|email|' + email);
+    const [ipLimit, emailLimit] = await Promise.all([
+      c.env.SUBMIT_LIMITER.limit({ key: ipKey }),
+      c.env.EMAIL_LIMITER.limit({ key: emailKey })
+    ]);
+    if (!ipLimit.success || !emailLimit.success) return c.json({ error: '送出太頻繁，請稍後再試' }, 429, headers);
+    if (!await verifyTurnstile(v.turnstileToken, ip, c.env))
+      return c.json({ error: '安全檢查未通過，請重新整理再試' }, 400, headers);
+
+    const answers = {
+      schoolClaimed: v.schoolClaimed, gender: v.gender, desiredGenders: v.desiredGenders,
+      intent: v.intent, campusPreference: v.campusPreference, interests: v.interests,
+      dayOffStyle: v.dayOffStyle, conflictStyle: v.conflictStyle, chatStyle: v.chatStyle,
+      firstMeet: v.firstMeet, topValue: v.topValue,
+      openAnswer: v.openAnswer || '', mbti: v.mbti || null
+    };
+    const contact = contactForMatch(v);
+    const id = crypto.randomUUID();
+    try {
+      // SELECT + ON CONFLICT keeps the round gate and per-round uniqueness in the database.
+      const write = await c.env.DB.prepare(
+        "INSERT INTO entries(id,round_id,normalized_email,nickname,school_claimed,gender,contact_kind,contact_value,answers_json,adult_attested,share_contact_consent,privacy_version) " +
+        "SELECT ?,?,?,?,?,?,?,?,?,1,1,? FROM rounds WHERE id=? AND status='OPEN' AND opens_at<=? AND closes_at>? " +
+        "ON CONFLICT(round_id,normalized_email) DO NOTHING"
+      ).bind(id,round.id,email,v.nickname,v.schoolClaimed,v.gender,v.contactKind,contact,JSON.stringify(answers),
+        v.privacyConsentVersion,round.id,now,now).run();
+      if ((write.meta.changes || 0) === 0) {
+        const check = await c.env.DB.prepare('SELECT status FROM rounds WHERE id=?').bind(round.id).first<{ status: string }>();
+        if (check?.status !== 'OPEN') return c.json({ error: '本期已截止' }, 409, headers);
+      }
+      // A duplicate gets the same neutral response. No ownership lookup or overwrite.
+      // Never send a registration/verification/confirmation email.
+      return c.json({ ok: true, roundTitle: round.title }, 200, headers);
+    } catch {
+      return c.json({ error: '目前無法儲存報名，請稍後再試' }, 503, headers);
+    }
+  });
+}
