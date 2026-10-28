@@ -16,6 +16,19 @@ jobs:
           cache: npm
           cache-dependency-path: package.json
       - run: npm install --no-audit --no-fund
+      - name: SQLite migration smoke test
+        run: |
+          python3 - <<'PY'
+          import sqlite3, pathlib
+          db = sqlite3.connect(':memory:')
+          for file in sorted(pathlib.Path('migrations').glob('*.sql')):
+              db.executescript(file.read_text())
+          tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+          assert {'rounds','entries','matches','match_members','email_outbox','admin_audit_events'} <= tables
+          columns = {row[1] for row in db.execute("PRAGMA table_info(rounds)")}
+          assert {'final_submission_count','final_pair_count','purged_at'} <= columns
+          print('D1 SQLite migrations parsed successfully')
+          PY
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
