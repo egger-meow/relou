@@ -1,4 +1,6 @@
-# Relou | Matching Engine 規格 v0.1
+# Relou | Matching Engine 規格 v0.2（Cloudflare D1）
+
+> 結果寄送使用 Cloudflare Email Service `send_email` Workers binding，配對資料與發信 outbox 在 Cloudflare D1 SQLite。正式網址目標 `https://relou.jjmowlab.com`。
 
 > 首期 MVP：**明確硬條件 > 可解釋的配對分 > 一人最多配一次 > 可恢復的寄信。** 不是聊天機器人亂抽籤，也不以 MBTI 當戀愛科學。
 
@@ -48,8 +50,8 @@
 3. 使用 **一般無向圖 maximum-weight matching，並設定 `maxcardinality=True`**（NetworkX `max_weight_matching`），意義是「**在不降低品質門檻下，先配到最多組，才最大化配對品質總分**」。
 4. seed 固定且 node/edge 排序穩定，平分 tie 使用 deterministic hash tie breaker（不改變核心品質分大量級），重跑同一個 snapshot 得到完全相同結果。
 5. 任何沒有邊的參與者落單；奇數筆必有至少一人落單。所有結果還要再通過 invariants 檢查。
-6. 最後一筆 commit 必須在資料庫 transaction 中保證每個 entry 僅寫到一個 match；`match_members` unique(round_id, entry_id) 讓 DB 成為最終防線。
-7. 任務要有 round scoped advisory lock / transaction lock / CAS 狀態切換，兩個 worker 同時按下 commit 不得生成兩套結果。
+6. 最後一筆 commit 必須透過 D1 batch 原子 SQL 與唯一約束保證每個 entry 僅寫到一個 match；`match_members` unique(round_id, entry_id) 讓 DB 成為最終防線。
+7. 使用 D1 SQLite 支援的原子條件更新（CAS）、唯一索引與 `batch()` 原子寫入控制單一期次 commit；**不得使用 PostgreSQL advisory lock 或 `SELECT FOR UPDATE`**；兩個 worker 同時按下 commit 不得生成兩套結果。
 
 ### 量級
 - 首期預計小量：直接建所有互容 edge，正確性優先。
@@ -73,10 +75,10 @@
 
 - `lock` 時取得 immutable snapshot 的 entries，儲存 hash；中途撤回／修改不得影響本次已鎖結果（但若依法收到刪除請求則由管理流程人工處理）。
 - `dry-run` 印出 aggregate report：eligible_count、valid_edges、matched_pairs、matched_users、unmatched_count、score_p10/p50/p90、intent 集合互容率、按學校的 aggregate counts（人太少不公布）。**不得洩漏個人資料到 Actions 的公開 log**。
-- `commit --run-id` 必須驗證目前的 snapshot_hash 和 dry-run 所用版本一致，再原子寫入 match / members / outbox。
+- `commit --run-id` 必須驗證目前的 snapshot_hash 和 dry-run 所用版本一致，使用 D1 SQLite 可支援的原子化批次與唯一限制寫入 match / members / outbox；不能假設長時間多 HTTP request 跨事件交易。
 - 每一位 eligible 參與者 exactly 1 個 terminal outcome：matched 或 unmatched；對應 1 筆 `email_outbox` 通知（成功則含對方經同意的暱稱與聯絡管道；未成功不寄候選名單）。
 - outbox `dedupe_key = round_id + recipient_user_id + notification_version`（或等價唯一鍵）。
-- `send` 只處理 queued/failed 且未超過 max attempts 的郵件。僅使用 SMTP TLS，batch concurrency 可配置，遇 429 / transient errors 退避重試；模板測試不寄真信，**預設 EMAIL_DRY_RUN=true**。
+- `send` 只處理 queued/failed 且未超過 max attempts 的郵件。使用 Cloudflare Email Service `env.EMAIL.send` 原生 binding，寄件網域完成 onboarding 才可實際寄送；batch concurrency 可配置，遇 429 / transient errors 退避重試並記錄 provider `messageId`；模板測試不寄真信，**預設 EMAIL_DRY_RUN=true**。
 - 必須有「人工預覽 1 封已遮罩信」與可停止的 emergency switch。記錄是否送成功、失敗原因和重試次數。
 - 發送一半斷線後重跑 **不可重 match**；email 僅補寄必要紀錄。
 
@@ -96,7 +98,7 @@
 - 4 人 contrived graph，greedy 只能 1 組但 global solver 可以 2 組時，必須找到 2 組。
 - 5 人測試最多 2 組；每期 member 只可能出現 0 或 1 次。
 - `dry-run` 沒 DB side effect；雙連 commit 不重複；模擬途中例外 DB rollback。
-- 模擬 SMTP timeout／重試／重跑，不引入第二位對象或兩次結算。
+- 模擬 Cloudflare Email Service provider timeout／重試／重跑，不引入第二位對象或兩次結算。
 
 ## 7. 第一波建議
 
