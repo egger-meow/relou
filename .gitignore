@@ -17,3 +17,11 @@ __pycache__/
 *.tsbuildinfo
 .local-data/
 private/
+
+# Relou Cloudflare account-specific config and credentials
+wrangler.jsonc
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env.local
+coverage/
