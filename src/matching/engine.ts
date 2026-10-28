@@ -109,7 +109,7 @@ export function solveEdges(n: number, edges: [number,number,number][]): [number,
 
 export function computePlan(candidates: Candidate[], minScore = 55): MatchPlan {
   const eligible = candidates.filter(c => c.status === 'eligible' && c.adultAttested && c.shareContactConsent && c.contactValue).sort((a,b) => a.id.localeCompare(b.id));
-  if (eligible.length > 500) throw new Error('Round exceeds safe synchronous matching limit (500); use offline reviewed batch');
+  if (eligible.length > 300) throw new Error('Round exceeds safe synchronous matching limit (300); use offline reviewed batch');
   const edges: [number,number,number][] = [];
   const scores = new Map<string,number>();
   for (let i=0;i<eligible.length;i++) for (let j=i+1;j<eligible.length;j++) {
