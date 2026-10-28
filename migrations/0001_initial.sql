@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS rounds (
   CHECK(opens_at < closes_at)
 );
 CREATE INDEX IF NOT EXISTS idx_rounds_created ON rounds(created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_single_open_round ON rounds((1)) WHERE status='OPEN';
 
 CREATE TABLE IF NOT EXISTS entries (
   id TEXT PRIMARY KEY,
