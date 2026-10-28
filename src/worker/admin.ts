@@ -112,6 +112,23 @@ export function registerAdmin(app: App) {
     return c.json({ok:true,eligibleCount:rows.length});
   });
 
+  app.post('/api/admin/rounds/:id/repair-snapshot', async c => {
+    const b=await jsonBody(c) as Confirmation;
+    if (b.confirm!=='REPAIR') return c.json({error:'需要 REPAIR 確認'},400);
+    const id=c.req.param('id');
+    const r=await roundById(c.env.DB,id);
+    if (!r || r.status!=='LOCKED' || r.snapshot_hash)
+      return c.json({error:'只有已鎖定且快照缺失的期次可修復'},409);
+    const rows=await eligibleRows(c.env.DB,id);
+    const hash=await snapshotHash(rows);
+    const updated=await c.env.DB.prepare(
+      "UPDATE rounds SET snapshot_hash=? WHERE id=? AND status='LOCKED' AND snapshot_hash IS NULL RETURNING id"
+    ).bind(hash,id).first<{id:string}>();
+    if (!updated) return c.json({error:'快照已由其他管理員建立'},409);
+    await audit(c.env,c.get('adminEmail'),'round.repair_snapshot',id,{eligible:rows.length,snapshotHash:hash});
+    return c.json({ok:true});
+  });
+
   app.post('/api/admin/rounds/:id/archive', async c => {
     const b = await jsonBody(c) as Confirmation;
     if (b.confirm!=='ARCHIVE') return c.json({error:'需要 ARCHIVE 確認'},400);
