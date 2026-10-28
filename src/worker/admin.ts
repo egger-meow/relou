@@ -79,6 +79,8 @@ export function registerAdmin(app: App) {
   app.post('/api/admin/rounds/:id/open', async c => {
     const b = await jsonBody(c) as Confirmation;
     if (b.confirm!=='OPEN') return c.json({error:'需要 OPEN 確認'},400);
+    if (!c.env.SUPPORT_EMAIL || !c.env.TURNSTILE_SITE_KEY || !c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER || !c.env.EMAIL_FROM || !c.env.EMAIL)
+      return c.json({error:'開池前必須設定主辦者聯絡窗口、Turnstile、限速與 Email Service sender'},503);
     const now = new Date().toISOString();
     try {
       const r = await c.env.DB.prepare(
