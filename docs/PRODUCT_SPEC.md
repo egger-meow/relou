@@ -96,6 +96,18 @@
 - 無 Cloudflare secrets 仍可在本地運行 demo、測試及 build；正式域名及發信要經實際檢查。
 - 完整行動版、繁體中文、沒有科系欄、沒有 email 登入／驗證。
 
+## 6A. 公開統計與管理後台（P0 新增需求）
+
+**完整設計見 [ANALYTICS_ADMIN_SPEC.md](ANALYTICS_ADMIN_SPEC.md)，實作優先級為 P0。**
+
+- 公開首頁在表單附近顯示**真實**「本期已收到 N 份報名」、第幾期、狀態、截止倒數、預計結果通知日；過往配對組數/累計人次只在有真實歷史資料時顯示。因未驗證人身分，數量定義為「有效報名份數」，不是「經驗證學生人數」。
+- 公開**不顯示、也不透過公開 API 輸出**男女數量/比例、各性別偏好、校別比例、相處或約會意圖構成、MBTI 族群數量及個人答案。這可能誘發因性別比率而自我篩選報名、造成錯誤的競爭感，亦有小群體隱私風險。
+- 管理後台為單獨 `https://admin.relou.jjmowlab.com`，**同一 Cloudflare Worker/D1** 但全域由 Cloudflare Zero Trust Access 保護，僅精確指定的管理者 Email 可透過 Access 登入。一般 `relou.jjmowlab.com` 仍不登入。
+- Worker 必須驗證 Admin Access JWT 簽章、issuer、audience、expiry、允許 Email；公開/preview/workers.dev host 上任何 admin 路由都拒絕。
+- 後台功能：本期有效報名/每日新增/可疑筆數及每日趨勢、round 開關、配對 dry-run 聚合與確認 commit、email outbox 等待/成功/失敗/重試及安全寄送、期次設定與操作稽核；禁止在後台偷偷開未認證公眾資料讀取端點。
+- 若缺 Cloudflare Access 帳戶設定，仍要實作受保護 UI/API 並附有 Cloudflare 手動設定清單；不得假設已開通、不得擅自用使用者登入方案替代。
+- 公開統計數字源於 Cloudflare D1 active entry SQL，短暫快取，不能假造數據；性別統計首期後台也**不是必要 P0 dashboard 圖**。
+
 ## 7. P0 / P1 / 不做
 
 P0：單頁報名（Email 在同頁）＋單次送出成功、D1、Turnstile、18+、同意、round management、batch matcher、Email Service 期末通知與 dry-run、測試及部署手冊。
