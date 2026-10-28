@@ -24,6 +24,14 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 - Cloudflare Turnstile + Worker rate limits：機器人防護
 - 不用 Supabase、Vercel、登入系統或外部資料庫
 
+## 📊 本期公開統計 + 管理後台
+
+公開網站除了短表單，還會展示**真實、聚合的本期報名份數**、期次、截止倒數與通知時程；有歷史活動時可顯示歷期累計與上一期完成配對組數。**不公開男女數量或比例、性別偏好、校別／意向分布、個人資料或配對分數**。
+
+管理網站預計在 **https://admin.relou.jjmowlab.com**，和公開站共用 **一個 Cloudflare Worker + D1**，但整個後台主機由 **Cloudflare Zero Trust Access** 保護，只允許指定管理員的 Email 登入。管理員才需要 Cloudflare Access Email PIN／IdP；**參與者仍完全不登入、不驗證 Email**。後台含報名趨勢、有效/可疑數量、配對 dry-run/commit、寄信 outbox 與期次管理。
+
+詳見 [公開統計與後台規格](docs/ANALYTICS_ADMIN_SPEC.md)。**上述網址與 Access/D1 皆待實際部署驗證，不能視為已經上線。**
+
 ## 開發規格
 
 - [單頁問卷](docs/FORM_SPEC.md)
