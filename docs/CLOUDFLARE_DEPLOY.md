@@ -1,109 +1,88 @@
-# Relou | Cloudflare-only architecture & release runbook
+# Relou | Cloudflare-only deployment & single-submit architecture
 
-**Public URL (target, not yet deployed):** `https://relou.jjmowlab.com`
+> **Canonical target domain:** `https://relou.jjmowlab.com`. **User flow MUST be single page -> click submit -> immediate success. NO login / email verification / OTP / magic link / email confirmation.** This supersedes every older draft. Not yet deployed or confirmed live.
 
-> Authoritative deployment decision made 2026-10-29: **Do not use Supabase or Vercel. Deploy website, backend, persistent data and transactional email through Cloudflare-native services.** This document supersedes older implementation suggestions if a conflict remains.
+## 1. End-to-end plan
 
-## 1. Components
-
-| Concern | Cloudflare-first choice | Notes |
-| --- | --- | --- |
-| Site / API hosting | **Cloudflare Workers + Static Assets** | Single Worker serving UI and private API; `relou.jjmowlab.com` via Workers Custom Domain |
-| UI | **React + TypeScript + Vite + Tailwind** | One mobile-first form, no mandatory Next.js/SSR. Can use Hono for routing |
-| Backend/API | **Cloudflare Workers (Hono)** | Request validation (Zod), owner authorization, school email OTP, form submission and consent |
-| Database | **Cloudflare D1 (SQLite)** | Schema migrations through Wrangler; SQL constraints, transactions / D1 batch where applicable, auditable match commit |
-| Email verification | **D1-backed OTP / one-time magic link**, sent via Cloudflare Email Service binding | Must implement secure, expiring, single-use token (hash in DB), generic anti-enumeration responses, email/domain validation and session management; never accept an unverified email |
-| Result emails | **Cloudflare Email Service send_email Workers binding**, via durable D1 outbox | Prefer native binding over sending SMTP from a Worker; Cloudflare Email Service supports SMTP for external clients but binding is more direct inside Workers |
-| Antibot | **Cloudflare Turnstile + rate limits** | Verify challenge server-side; throttle OTP, submit, session, reports |
-| Batch matching | **Cloudflare Worker authorized operator path or offline local CLI** | For P0 allow a local matching job to read/write D1 using authenticated Wrangler/admin tooling; build carefully to avoid exposed mass-email endpoints |
-| Background job | **Workers Cron Triggers, optionally Workflows/Queues** | For outbox retry/batch only, optional until proven necessary. Round lock & match commit remain explicit admin steps |
-| Secrets / config | **Wrangler secrets, Cloudflare Dashboard** | Never use GitHub public secrets or client-visible vars |
-| Domain/TLS | **Cloudflare Workers Custom Domain** | When Cloudflare manages the `jjmowlab.com` zone, use Workers custom domain; this provisions DNS & certificate automatically |
-
-## 2. Why NOT Supabase, SMTP Node, or Vercel
-
-- No `@supabase/*`, Supabase Auth, PostgreSQL, service-role key, RLS SQL, or Vercel project.
-- D1 SQLite requires SQL authorization enforced **in every Worker handler**; no row-level security magically applies. Never trust just a user id from request JSON, and never expose a D1 binding or internal APIs to the browser.
-- For a tiny campaign, Cloudflare Workers static assets and Hono fit better than adding a Next.js compatibility adapter. If code later requires Next.js, Cloudflare currently documents `vinext` as its preferred Next.js Workers path; choose it only with tests.
-- Previous idea `SMTP Nodemailer` is **replaced** by Cloudflare Email Service native `send_email` binding. This provides transactional email from Cloudflare with no custom SMTP client in a Worker, subject to sender-domain onboarding, quota/plan availability, and real delivery validation.
-- The Cloudflare Email Service sending feature is beta as of 2026-10-29; inspect account availability and sending limits before launch. If unavailable, keep a `MailSender` interface and implement an explicitly configured HTTPS transactional provider, keeping Worker & D1 hosting Cloudflare-native. Never silently switch vendors or claim email is ready.
-- No raw SMTP over Worker port 25 (blocked); Workers support outbound TCP `connect()` for some other ports, but SMTP compatibility/operability is not the default architecture.
-
-## 3. Suggested project structure
-
-```txt
-src/
-  ui/                  # React responsive Chinese form, success/status screen
-  worker/index.ts      # Cloudflare Worker fetch/scheduled handlers
-  worker/routes/       # auth, entries, round, admin/report
-  worker/lib/          # D1 queries, signed sessions, mail adapter, config
-  shared/              # Zod schema + answer enums and match invariants
-  matching/            # matching engine, graph solver, tests
-migrations/
-  0001_init.sql        # D1 SQLite schema, indexes, constraints
-  0002_....sql
-tests/
-wrangler.jsonc
-.env.example           # non-secret local names only
-.dev.vars.example      # local Worker secrets example (never real values)
+```text
+Browser at relou.jjmowlab.com
+  -> React/Vite/Tailwind one-page form (school self-report + result email + interests/preferences/consents)
+  -> POST /api/entry (Hono Worker, Zod + Turnstile server verification + rate limiting)
+  -> D1 SQLite INSERT (unique(round_id, normalized_email), round must be OPEN)
+  -> JSON receipt + immediate on-screen confirmation
+  [NO PRE-SUBMISSION OR POST-SUBMISSION EMAIL, NO LOGIN]
+  ... end of round ...
+  -> Admin-only lock / review / dry-run / commit matching
+  -> D1 email outbox
+  -> Cloudflare Email Service -> one result email per entry
 ```
 
-For matching, an offline Python NetworkX solver is acceptable if the worker operator CLI can **safely export only locked eligible entries to a protected local process** and import a validated match plan in a single audited commit. Prefer pure TypeScript matching if a tested general-graph solver is available; never substitute greedy matching without explicitly agreeing to a lower guarantee.
+## 2. Stack
 
-## 4. Identity & session security
+| Component | Platform | Notes |
+| --- | --- | --- |
+| UI + backend | Cloudflare Workers + Static Assets | React + TypeScript + Vite + Tailwind; Hono + Zod |
+| Persistence | Cloudflare **D1 SQLite** | Entries, round, matches, score metadata, outbox; no Postgres |
+| Email | Cloudflare **Email Service `send_email` binding** | **Result notifications ONLY** and exceptional operator-approved notices; not validation/auth/signup confirmation |
+| Abuse protection | Cloudflare **Turnstile**, Worker rate limits, honeypot | Invisible/managed challenges where possible; guard anonymous submit |
+| Round engine | Admin CLI + matching library | Can run offline Python NetworkX with secure D1 export/commit; never public trigger |
+| Secrets | Cloudflare Workers secrets, Wrangler | No secrets in Git and no client key for D1 |
+| Domain/TLS | Workers Custom Domain | `relou.jjmowlab.com`; requires access to `jjmowlab.com` Cloudflare zone |
+| Identity | **None in MVP** | No accounts, sessions, OTP, school student verification or authenticated user profile |
 
-1. Verify that submitted email belongs to a configured *approved student domain* for NYCU/NTHU. Domain validation must be precise and consider known school subdomains; do not trust arbitrary free-mail aliases.
-2. OTP: use a cryptographically secure random code/token, store only keyed hash in D1, 10-minute expiry, 1-use semantics, abuse throttling, and neutral email sending responses to avoid account enumeration. A 6-digit OTP requires aggressive attempt counters and IP/email throttling; prefer at least 128-bit magic-link token.
-3. Session: secure random session ID, hashed in D1, `HttpOnly`, `Secure`, `SameSite=Lax` cookie, expiry + revocation. CSRF protection for state changes (Origin validation + CSRF token as needed), and no tokens in logs. Mark verified school only by server-backed state.
-4. Local dev can run **clearly labeled demo auth bypass for synthetic fixture data only**, guarded by `ENVIRONMENT=local` and NEVER allowed in preview/production.
-5. All data writes validate session owner and round state. D1 queries scoped with `WHERE user_id = session.user_id`. Admin endpoints disabled by default and authenticated with constant-time token or Cloudflare Access; never reuse normal user sessions for admin.
-6. Do not expose app state, raw candidate answers, school email, IG/contact, or pairing graph to public endpoints. Sanitize all email and HTML outputs.
+**Supabase, Vercel, Postgres/RLS, Nodemailer SMTP and custom OTP/magic-link auth must not be added.**
 
-## 5. D1-specific correctness
+## 3. Input and single-POST behavior
 
-- SQLite foreign keys, uniqueness `UNIQUE(round_id, user_id)`, `UNIQUE(round_id, entry_id)` on match members; index `email_outbox(dedupe_key)`, `sessions(token_hash)`, `otp_tokens(token_hash)`.
-- Since D1 is a distributed cloud database API, avoid reliance on `SELECT FOR UPDATE`, PostgreSQL advisory locks and multi-request transactions. Use **single-statement compare-and-swap status update** plus D1 `batch()` for atomic writes as documented and SQLite constraints as final authority. Ensure `match_run_id` unique commit guard.
-- Any matching graph export needs an immutable snapshot ID & hash. A commit must re-check round locked state, exact frozen entries, and every result invariant. Reject a stale plan.
-- `dry-run` never writes matches; it may produce ephemeral aggregate statistics or operator-only plan artifacts.
-- Do not assume writes to one table imply idempotent email delivery; outbox enqueue must be atomic with match commit, and dispatch retries bounded.
-- Clean up expired OTP/session data and old unneeded entries according to documented retention, with deletion requests.
+- User chooses school NYCU/NTHU (self-declared, NOT verified), types **any valid deliverable-looking email string** (including Gmail), and selects matching preferences on same page. Requires adult 18+ self-attestation, contact-share opt-in and privacy consent as in `docs/FORM_SPEC.md`.
+- On submit: server validates same answer schema, current round is OPEN and current timestamp within configured range, checks Turnstile server-side, applies rate limits and honeypot; perform atomic insert and return generic receipt. **No email is sent at submission.**
+- Avoid email format false positives by bounded field length and standard parsing, but format/domain syntax **cannot prove ownership or guarantee delivery**. Never claim NYCU/NTHU student identity verified.
+- Unique per round normalized email, but this is **not** equal to unique real person. For duplicate submissions never leak former entry or allow malicious overwrites; return neutral result to avoid email enumeration. Consider temporary anonymous submission key for accidental network retry (stored client-side with no user identity), but do not add a forced follow-up step.
+- No public `GET /api/entry/me`, user lookup by email, or `DELETE/PATCH` requiring only an email. For corrections/withdrawals give a human contact and request enough evidence before making private changes.
+- Because email is unverified, someone may submit another person's inbox; **protect against unsolicited/incorrect matches and erroneous contact disclosure** with rate limits, anomaly review, per-round cap and one counterpart only, a verified operator sender, support/suppression instructions, minimum content disclosure. Acknowledge that these measures reduce but cannot eliminate spoofing.
 
-## 6. Email sender, sender-domain and quotas
+## 4. D1 and admin
 
-- Configure Cloudflare Email Service sending for the `jjmowlab.com` zone and verified sender such as `no-reply@jjmowlab.com`; the sender is a **proposed address** and must be provisioned, not assumed to exist.
-- Cloudflare Email Service may initially limit quota. **Before a large round**, check actual account daily limit, send rate, bounce handling and suppression. One notification per participant, no batch BCC lists.
-- Verify SPF, DKIM and DMARC, preview templates, and run an actual end-to-end test only with operator-approved test addresses.
-- Prefer a reusable `MailSender.send` abstraction backed by `env.EMAIL.send({ to, from, subject, text, html })`; tests use fake sender. All production sending gated by explicit `EMAIL_DRY_RUN=false` and send authorization.
-- Retain email outbox with unique `dedupe_key`, attempt counts, last error and provider `messageId`. A connection timeout can have uncertain delivery; require trace/confirmation before repeated sends.
-- Cloudflare native sender is not the same thing as SMTP from Nodemailer; feature intent (reliable email notifications) is preserved.
+Suggested schema:
+- `rounds`: id, slug, status, opens_at, closes_at, settings_json.
+- `entries`: id, round_id, normalized_email, school_claimed, answers_json, nickname, contact_value, consent flags, status, created_at, `UNIQUE(round_id, normalized_email)`.
+- `match_runs`: run_id, round_id, snapshot_hash, algorithm_version, seed, status, metrics_json.
+- `matches`, `match_members` (round-scoped unique entry), `email_outbox` (unique round+entry+template dedupe key), `admin_audit_events`, optional suppression/abuse reports.
 
-## 7. Domain, deploy, and checklist
+**Do not create auth users, user sessions or OTP storage.** D1 bindings run on server only. No public participant data read APIs. Admin operations are protected via Cloudflare Access or a strong server-side admin secret and may run via operator CLI. Keep logs redacted. Use D1 SQLite atomic `batch()`, conditional updates (CAS), unique constraints; no PostgreSQL advisory locks or `SELECT FOR UPDATE`. Frozen snapshot hash must match committed plan. One entry has at most one match per round. Dry-run never alters committed matches or outbox.
 
-- Cloudflare must manage DNS for `jjmowlab.com` zone, or the operator must choose another externally routed domain arrangement. **Do not modify DNS until account ownership and existing records are checked.**
-- Add Worker custom domain `relou.jjmowlab.com` through Wrangler `routes: [{ pattern: "relou.jjmowlab.com", custom_domain: true }]` or Cloudflare Dashboard.
-- Configure `PUBLIC_SITE_URL=https://relou.jjmowlab.com` for redirects, links, canonical metadata and email verification callback. Keep previews on separate hostname to avoid opening real registrations.
-- Create D1 database (e.g. `relou-db`), bind `DB` in `wrangler.jsonc`, apply migrations to local and remote. **Never invent a database ID** in repo. Commit an example config until actual ID is known.
-- Before deploying enable static hosting/API, secret storage, Turnstile and optionally Email Service. Verify available Cloudflare account permissions or request operator connection. There is no direct Cloudflare connector in this chat; **no Cloudflare infrastructure has been created by this spec**.
-- After deployment verify TLS, actual custom hostname, one test OTP/login, one synthetic form submit, zero public PII leakage, operator lock/dry-run, dummy match and one operator-approved mail test. Set enrollment OPEN only after manual go/no-go.
-- Set production privacy/contact page with real operator contact method, retention policy and contact-sharing consent. Never launch an unsafe demo into the public intake.
+## 5. Result mail only
 
-## 8. Runtime URLs for implementers
+- The user gets **NO email immediately after signup**. The only normal outbound email is the final matched/unmatched result at the end of the round.
+- Cloudflare Email Service native binding needs sender onboarding, SPF/DKIM/DMARC and quota checks; **may be beta/plan dependent**. Check actual availability before relying on it. If unavailable, keep `MailSender` abstraction and clearly document a deliberately configured HTTPS email provider fallback without altering Cloudflare data/hosting; never silently use unapproved external service.
+- Default `EMAIL_DRY_RUN=true`, fake sender in local tests. Admin must explicitly approve `send` once match plan is committed. One recipient per email, no bulk BCC, no leaking the entire roster, no full open-answer transcript, no public compatibility score.
+- Ensure no PII in CI logs or URL query params. Idempotent outbox prevents new matches or mass resends; transport uncertainty after timeout may still require manual audit.
+- Include wrong-recipient / not-participated contact and suppress future mail path. Do not claim unverified emails were consented to by actual recipients.
 
-- Worker Custom Domain docs: https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
-- Cloudflare D1 docs: https://developers.cloudflare.com/d1/
-- D1 migrations: https://developers.cloudflare.com/d1/reference/migrations/
-- Workers Email Sending: https://developers.cloudflare.com/email-service/get-started/send-emails/
-- Email Workers binding: https://developers.cloudflare.com/email-service/api/send-emails/workers-api/
-- Email Service sending limits: https://developers.cloudflare.com/email-service/platform/limits/
-- Turnstile: https://developers.cloudflare.com/turnstile/
-- Workers Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/
+## 6. Build/config/deploy
 
-## Acceptance criteria for Cloudflare version
+- Prefer `src/ui`, `src/worker`, `src/shared`, `src/matching`, `migrations`, `tests`.
+- Add `wrangler.jsonc` with Workers Static Assets, D1 DB binding `DB`, proposed `routes: [{ pattern: "relou.jjmowlab.com", custom_domain: true }]`; DO NOT invent a production D1 database ID.
+- Cloudflare zone `jjmowlab.com` must be authorized and verified, existing DNS for `relou` checked before attaching new Worker; Worker Custom Domain can provision DNS and HTTPS.
+- Set `PUBLIC_SITE_URL=https://relou.jjmowlab.com` for canonical links and outgoing result email links (not email login callbacks).
+- Create a dedicated D1 database and apply Wrangler migrations local and remote; use encrypted Workers secrets for Admin/Turnstile; configure native email binding only after sender is approved. `.dev.vars` and real credentials never enter Git.
+- Deploy preview to a non-public hostname with only **synthetic data**; test one-page submit and no unexpected network calls/verification email, D1 persist, matching and dry-run sender, duplicate handling and private reads.
+- Before opening round: real domain HTTPS tested, Cloudflare Email Service sending quota checked, actual personal-data privacy notice and operator contact published, anti-abuse and deletion workflow tested, admin explicitly enables OPEN.
 
-1. No dependency/configuration that calls Supabase or Vercel.
-2. Local Worker + D1 migrations + UI + fake email sender and dummy fixtures run with documented commands.
-3. Correct school email verification, per-round unique entry, private sessions, no cross-user access and safe withdrawal.
-4. Matching engine tests cover reciprocal hard filters and global maximum-cardinality objective.
-5. Outbox processing is resumable and **never sends production email by default**.
-6. Wrangler deployment config targets `relou.jjmowlab.com` without fake database IDs or hardcoded secret values.
-7. Actual hostname only called *live* after TLS and DNS have been verified.
+## 7. Acceptance checks
+
+1. Phone visitor can complete form and see success with exactly **one form POST**. Zero OTP/magic link and zero registration-triggered email. No account or login modal.
+2. Domain/email syntax can be checked but there is **no verification of campus status or email ownership**.
+3. Email spoof submissions cannot overwrite existing entries or query their data.
+4. Synthetic fixtures prove reciprocal hard compatibility and one match per entry with maximum-cardinality optimization.
+5. D1 data stays server-side; only admin can lock/commit/send, and mail dispatch defaults to dry-run.
+6. Custom domain `relou.jjmowlab.com` target is documented; never label it live absent actual deploy & TLS verification.
+
+Official docs:
+- https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
+- https://developers.cloudflare.com/d1/
+- https://developers.cloudflare.com/d1/reference/migrations/
+- https://developers.cloudflare.com/turnstile/
+- https://developers.cloudflare.com/email-service/get-started/send-emails/
+- https://developers.cloudflare.com/email-service/api/send-emails/workers-api/
+- https://developers.cloudflare.com/email-service/platform/limits/
