@@ -74,6 +74,10 @@ export interface RoundRow {
   snapshot_hash: string | null;
   send_paused: number;
   created_at: string;
+  archived_at?: string | null;
+  final_submission_count?: number | null;
+  final_pair_count?: number | null;
+  purged_at?: string | null;
 }
 
 export const roundCreateSchema = z.object({
