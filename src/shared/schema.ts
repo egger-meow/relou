@@ -5,7 +5,7 @@ export const INTERESTS = ['運動健身','籃球','羽球','音樂','電影影�
 
 export const entrySchema = z.object({
   schoolClaimed: z.enum(['NYCU', 'NTHU']),
-  nickname: z.string().trim().min(2).max(16).regex(/^[^\r\n<>]+$/),
+  nickname: z.string().trim().min(2).max(16).regex(/^[^\x00-\x1f\x7f<>]+$/),
   gender: z.enum(['man', 'woman', 'nonbinary', 'other', 'undisclosed']),
   desiredGenders: z.array(z.enum(['man', 'woman', 'nonbinary_or_other', 'all'])).min(1).max(4),
   intent: z.enum(['friends', 'dating', 'either']),
@@ -27,7 +27,7 @@ export const entrySchema = z.object({
   turnstileToken: z.string().min(1).max(2048),
   website: z.string().max(200).optional()
 }).strict().superRefine((v, ctx) => {
-  if (v.contactKind === 'instagram' && !/^@?[a-zA-Z0-9._]{1,30}$/.test(v.contactValue || '')) {
+  if (v.contactKind === 'instagram' && !/^@?(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/.test(v.contactValue || '')) {
     ctx.addIssue({ code: 'custom', path: ['contactValue'], message: '請輸入有效的 IG 帳號' });
   }
   if (v.contactKind === 'submitted_email' && v.contactValue) {
