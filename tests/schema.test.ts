@@ -23,6 +23,7 @@ describe('single submit contract',()=>{
     expect(entrySchema.safeParse({...valid,shareContactConsent:false}).success).toBe(false);
     expect(entrySchema.safeParse({...valid,privacyConsentVersion:''}).success).toBe(false);
     expect(entrySchema.safeParse({...valid,contactValue:'https://evil.example'}).success).toBe(false);
+    expect(entrySchema.safeParse({...valid,contactValue:'@bad..handle'}).success).toBe(false);
     expect(entrySchema.safeParse({...valid,desiredGenders:['all','man']}).success).toBe(false);
   });
 });
