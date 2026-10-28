@@ -76,6 +76,23 @@ export function registerAdmin(app: App) {
     } catch { return c.json({error:'期次無法建立，可能 slug 重複'},409); }
   });
 
+  app.post('/api/admin/rounds/:id/settings', async c => {
+    const b=await jsonBody(c);
+    const p=roundCreateSchema.safeParse(b);
+    if (!p.success) return c.json({error:'期次設定無效',fields:p.error.issues.map(x=>x.path.join('.'))},400);
+    const v=p.data,id=c.req.param('id');
+    try {
+      const updated=await c.env.DB.prepare(
+        "UPDATE rounds SET title=?,slug=?,opens_at=?,closes_at=?,notification_target_at=?,min_pair_score=? " +
+        "WHERE id=? AND status='DRAFT' RETURNING id"
+      ).bind(v.title,v.slug,new Date(v.opensAt).toISOString(),new Date(v.closesAt).toISOString(),
+        v.notificationTargetAt?new Date(v.notificationTargetAt).toISOString():null,v.minPairScore,id).first<{id:string}>();
+      if (!updated) return c.json({error:'僅可修改草稿期次'},409);
+      await audit(c.env,c.get('adminEmail'),'round.settings',id,{slug:v.slug});
+      return c.json({ok:true});
+    } catch { return c.json({error:'無法儲存期次，可能 slug 重複'},409); }
+  });
+
   app.post('/api/admin/rounds/:id/open', async c => {
     const b = await jsonBody(c) as Confirmation;
     if (b.confirm!=='OPEN') return c.json({error:'需要 OPEN 確認'},400);
