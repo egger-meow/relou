@@ -69,6 +69,24 @@ Suggested schema:
 - Deploy preview to a non-public hostname with only **synthetic data**; test one-page submit and no unexpected network calls/verification email, D1 persist, matching and dry-run sender, duplicate handling and private reads.
 - Before opening round: real domain HTTPS tested, Cloudflare Email Service sending quota checked, actual personal-data privacy notice and operator contact published, anti-abuse and deletion workflow tested, admin explicitly enables OPEN.
 
+## 6A. 公開統計與 Cloudflare Access 管理後台（必做）
+
+見 [ANALYTICS_ADMIN_SPEC.md](ANALYTICS_ADMIN_SPEC.md)。實作前後端、Cloudflare 網域及操作驗收都以該規格為準。
+
+**單 Worker 兩個 hostname**：
+- `https://relou.jjmowlab.com` 公開 landing + 表單 + 匿名 aggregate stats；從 API 只回本期實際有效報名份數、期次/截止與必要公開資訊，**不公開性別或其他人群分布**。
+- `https://admin.relou.jjmowlab.com` 只有 Cloudflare Zero Trust Access self-hosted app 精確 email allowlist 可進。Dashboard 讀 D1 統計：每日報名、有效/可疑、期次、配對結果及寄信隊列；提供受保護操作與審計。一般報名者**仍完全不登入、不驗證 Email**。
+
+Wrangler custom domain config 應包含兩個 hostname，注意 `jjmowlab.com` active zone 與可能 DNS 衝突。這並不需要第二個 Worker/D1。只有管理 hostname 套用 Access policy，**不可用 Worker-wide Access 將公開報名端也鎖住**。在 API 端仍核驗 `Cf-Access-Jwt-Assertion` 的有效 JWKS 簽章、`iss`、`aud`、`exp` 和管理員 email allowlist，並拒絕公共/preview/worker.dev hostname 的所有 admin 路徑。Access Team domain、Audience Tag 與管理員完整 email 清單放 server-only 配置，不能公開在 JS。
+
+Cloudflare Dashboard > Zero Trust > Access > Applications 建立 self-hosted application 保護整個 `admin.relou.jjmowlab.com`，配置 Cloudflare IdP 或專屬 Access One-time PIN，只放指定的**完整**管理員 Email，不要讓 `@nycu.edu.tw` 任意學生登入。這個登入只給管理員，不是一般學生的 Email 驗證。
+
+官方文件：
+- https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+- https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/
+- https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/
+- https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/one-time-pin/
+
 ## 7. Acceptance checks
 
 1. Phone visitor can complete form and see success with exactly **one form POST**. Zero OTP/magic link and zero registration-triggered email. No account or login modal.
