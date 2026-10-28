@@ -84,7 +84,7 @@ function Turnstile({siteKey,onToken}: {siteKey:string;onToken:(token:string)=>vo
     } else {
       const t=setInterval(render,200);return ()=>{active=false;clearInterval(t);if(widget.current){window.turnstile?.remove(widget.current);widget.current=null;}};
     }
-    return ()=>{active=false;if(widget.current)window.turnstile?.remove(widget.current);};
+    return ()=>{active=false;if(widget.current){window.turnstile?.remove(widget.current);widget.current=null;}};
   },[siteKey,onToken]);
   return <div className="turnstile-box" ref={holder} aria-label="防機器人安全檢查"/>;
 }
