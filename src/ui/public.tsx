@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { FormEvent } from 'react';
 import { entrySchema, INTERESTS, PRIVACY_VERSION } from '../shared/schema';
 import type { EntryInput } from '../shared/schema';
 
@@ -105,7 +106,7 @@ export function PublicApp(){
   const open=round?.status==='OPEN' && Date.now()>=Date.parse(round.opensAt) && Date.now()<Date.parse(round.closesAt);
   const ready=!!config?.turnstileSiteKey && !!config?.supportEmail;
   const canSubmit=!!open && ready && !sending;
-  async function submit(e:React.FormEvent){
+  async function submit(e:FormEvent){
     e.preventDefault();setError('');
     if(!canSubmit)return;
     const p=entrySchema.safeParse({...draft,turnstileToken:token});
