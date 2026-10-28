@@ -1,51 +1,46 @@
-# AGENTS.md | Relou MVP implementation contract
+# Relou | Coding agent contract
 
-You are implementing the actual code for **Relou**, not merely rewriting documentation. Read in this order:
-1. `docs/PRODUCT_SPEC.md`
-2. `docs/FORM_SPEC.md`
-3. `docs/MATCHING_SPEC.md`
+## User-approved direction (latest wins)
 
-Target: **one professional mobile-friendly form, school-email verification, round-based private 1:1 matching, SMTP results**. **Production domain is https://relou.jjmowlab.com. Host the web app on Cloudflare Workers, with a separate managed Supabase database/auth project. Do not use Vercel for production.** Do not overbuild social features. Work in small conventional commits and complete as much production-grade MVP as the execution environment allows. If another agent has already progressed, inspect repo/history before changing files; preserve existing implementation.
+**Site:** https://relou.jjmowlab.com (deployment target; NOT yet live).
 
-## Non-negotiables
+**100% Cloudflare-first:** Cloudflare Workers + Static Assets for site/API; Cloudflare D1 (SQLite) as durable database; Cloudflare Email Service `send_email` Workers binding for school-email login links and match notices; Cloudflare Turnstile / rate limits. **No Supabase, no Vercel, no Postgres or RLS, no hosted external identity platform.** Authorization must be implemented and tested in Worker handlers because D1 has no Supabase-style RLS.
 
-- NO department/major question. NO required MBTI, photo, long personal statement, birthday, phone or precise location.
-- Verified adult NYCU/NTHU participant only, mutually acceptable gender/intention/campus filters; per-round maximum one partner.
-- Explicit UNCHECKED consent before contact information is shared. Verified school email is **private by default**.
-- User answers / email / IG and matching results cannot be listed by public endpoints, client-side secrets, browser console or logs.
-- SQL migration(s) and RLS; authorization should compare `auth.uid()` to owner, not only `TO authenticated`. Never grant anon access to private participant tables. Never authorize from user-controlled `user_metadata`.
-- No public server endpoint that can match or mass-email without admin auth. Use CLI / protected GitHub Actions instead.
-- Avoid accidentally sending real mail. `EMAIL_DRY_RUN=true` default; outgoing email only after explicitly configured secrets and an operator send action.
-- Test no-match and partial SMTP failure cases. Include runbook.
-- Never commit secrets, real contact info, school email addresses or user data.
+Read these docs in order:
+1. `docs/CLOUDFLARE_DEPLOY.md` (authoritative deployment & auth plan)
+2. `docs/PRODUCT_SPEC.md`
+3. `docs/FORM_SPEC.md`
+4. `docs/MATCHING_SPEC.md`
+5. `docs/DEPLOYMENT.md` (short pointer to Cloudflare-only runbook)
 
-## Execution order
+## Mission
 
-1. Inspect repo, initialize Next.js TypeScript Tailwind project and a small polished mobile-first design with Traditional Chinese copy and responsive / accessible form. Target Cloudflare Workers deploy compatibility from the start; use Cloudflare's current recommended Next.js runtime/build adapter (vinext for new apps as of 2026-10), pin versions and run local compatibility/build tests.
-2. Add Zod form validation, Supabase Auth magic link flow, verified school domain allowlist, per-round DB schema and RLS migrations. Provide local fake data mode **clearly marked demo** when external credentials unavailable; never pretend production is live.
-3. Implement one-time round enrollment, edit/withdraw, lock state and status pages. Keep the UI friction low.
-4. Implement pure matching function + explicit hard compatibility filters + weighted score and deterministic solver. Prefer Python/NetworkX offline CLI with stable seed and fixtures. Verify with unit tests, including a graph where naive greedy is suboptimal.
-5. Add safe dry-run, commit, email outbox and SMTP sender, templates, retry/idempotency tests; wire operator-run GitHub Actions `workflow_dispatch` only where safe. SMTP sending must execute as a separate CLI/GitHub Actions batch task, not long-lived in Cloudflare HTTP Workers.
-6. Add landing and privacy/safety pages, email templates, `.env.example` and complete operational README with first launch checklist. Follow `docs/DEPLOYMENT.md`; configure Cloudflare Workers custom domain `relou.jjmowlab.com` and Supabase Auth Site/redirect URLs if the necessary account access is actually available; never claim completed domain or database provisioning without verification. If time, implement P1 only after all P0 tests pass.
+Ship a clean, polished 90-second, mobile-first, Traditional Chinese student matching app: enrollment, adult declaration, verified NYCU/NTHU student email, opt-in contact sharing, round batch matching, private 1:1 email notifications. No department, major, school year, photo, required MBTI, lengthy self-description, public browsing, in-app chat or payment.
 
-## Validation
+## Implementation targets
 
-- Run (or try to run) package install, typecheck, lint, tests, build, plus Python tests. Never claim a test passed unless it actually executed.
-- If no local runner exists in the available automation/tools, still commit source + tests and report that runtime validation is pending.
-- If connecting to real Supabase is unavailable, commit migrations and a runbook; do not invent deployed database state.
-- If Cloudflare Workers deployment or Supabase configuration needs external auth, domain permissions, or billing confirmation, leave a ready-to-deploy codebase and precise setup steps; do not state that the site is live.
-- When blocked by missing secrets, leave precise env var names and safe setup steps. Do not ask nonessential questions.
+- UI: React + TypeScript + Vite + Tailwind; backend: Cloudflare Workers, optionally Hono routing + Zod schemas. Prefer Workers Static Assets and one deployed Worker to minimize complexity. Do **not** scaffold Next.js by default.
+- Persistence: Cloudflare D1 SQLite with Wrangler migrations, unique constraints, protected per-user queries and admin-only operations. No `@supabase/*` dependencies, `service_role` keys or Vercel.
+- Auth: school domain allowlist configured with verified real domains, strong single-use email magic-link tokens or strict OTP, D1 token hashing/expiry, request throttles/Turnstile, signed/opaque secure HttpOnly cookie sessions; never depend on client-supplied user id or email verification flags.
+- D1 writes: SQLite constraints, batch atomic writes where supported, compare-and-swap for run commit (do not use Postgres advisory locks or `SELECT FOR UPDATE`). Immutable round snapshot/hash + idempotent outcome/outbox.
+- Matching: bilateral hard preferences, symmetric explainable score, maximum-cardinality then maximum-weight matching for general graphs, deterministic tie breaks, one match per participant per round. Algorithm can use Python NetworkX offline CLI with carefully secured, validated D1 imports; prefer testable TypeScript if robust general graph solver available. Never silently replace optimal solver with greedy.
+- Email: `MailSender` interface, production native Cloudflare Email Service binding (`env.EMAIL.send`), fake dev sender. Default `EMAIL_DRY_RUN=true`; explicit operator approval to send, durable D1 outbox, delivery `messageId`, bounded retry and deduplication. Cloudflare Email Service requires sending-domain onboarding/quota review; **do not assume email sending is already enabled**. This replaces original Nodemailer/SMTP plan; SMTP on port 25 is blocked from Workers. If native service unavailable, document and optionally permit explicit HTTPS provider adapter without abandoning Cloudflare hosting.
+- Security: no secrets in Git, no student answers or contacts in public logs/API, no broad user-readable tables, validate origin/CSRF for session writes and enforce strict admin auth. Contact sharing requires affirmative unchecked consent, only one chosen contact per match, verified email private unless deliberately chosen.
+- Production domain: configure worker custom domain `relou.jjmowlab.com` only after confirming ownership and conflicting DNS; use `PUBLIC_SITE_URL=https://relou.jjmowlab.com` for magic-link URLs and canonical metadata.
 
-## Suggested implementation parameters
+## Work order
 
-- `MIN_PAIR_SCORE=55` initial; `EMBEDDINGS_ENABLED=false`; `EMAIL_DRY_RUN=true`.
-- Round starts configured by DB records or env, not hardcoded to a specific 2026 date.
-- For students, school email domain allowlist must be **verified against real supported domains** before a public launch; use environment config. Avoid assumptions about alumni or departmental subdomains.
-- Optional open answer <= 100 chars; never require it or use its content to override hard filters.
-- Branch workflow: commit directly if no review policy exists; otherwise use a PR. Use Conventional Commits.
+1. Check current repo state and recent commits, then create working project with locked dependencies, Wrangler config (avoid fabricated D1 IDs), local Worker simulator + UI dev mode.
+2. Implement authenticated school-email login (or safely stub behind clearly labeled demo flag while documenting production blockers), D1 migrations and all private APIs, 18+ consent, entries + withdraw.
+3. Implement and test matching with dry-run/commit invariants, admin authorization and D1 outbox.
+4. Implement Cloudflare native mail adapter with fake/dry-run, template preview, per-user results and retry.
+5. Implement privacy/safety pages and robust mobile UI, complete dev/deploy/Cloudflare onboarding instructions.
+6. Try local typecheck, lint, unit/integration tests, build and realistic demo with synthetic fixtures. State actual results, not invented success.
 
-## Deliverables
+## Release gates
 
-- Working source code, tests, migrations, runbook, generated sample email previews, example data and commands.
-- Summarize actual commits, real tests executed, missing secrets/configuration, and whether deployed / production-ready.
-- Prefer a useful partial build over a stalled design debate.
+- No real signups until identity, abuse prevention, legal/privacy notices and operator contact have been verified.
+- No live email without explicit send action, verified sender domain, quotas and operator-approved tests.
+- Never claim domain reachable, D1 provisioned, Cloudflare bindings active or site deployed unless checked.
+- Missing account credentials are not permission to use another provider. Leave deployable code and exact setup steps.
+- Conventional commits; preserve existing changes; report actual SHA(s) and what is still blocked.
