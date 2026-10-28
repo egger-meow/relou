@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 
-type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean};
+type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;archived_at?:string|null;purged_at?:string|null};
 type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withdrawn:number;today:number}|null;
   trend:{day:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;asOf:string};
 type Preview = {roundId:string;snapshotHash:string;previewDigest:string;metrics:{
   eligibleCount:number;validEdges:number;unmatchedCount:number;matchRate:number;meanScore:number|null;medianScore:number|null}};
 type Mail = {roundId:string;roundStatus:string;paused:boolean;dryRun:boolean;mailConfigured:boolean;states:Record<string,number>;sample:{subject:string;text:string}|null};
 type Entry = {id:string;maskedEmail:string;status:string;submittedAt:string};
+type MailItem = {id:string;maskedEmail:string;state:string;attempts:number;errorCode:string|null;createdAt:string};
 type Audit = {actor:string;action:string;roundId:string;createdAt:string;meta:Record<string,unknown>};
 type Tab = 'overview'|'entries'|'matching'|'mail'|'rounds'|'audit';
 
@@ -31,7 +32,7 @@ export function AdminApp(){
   const [tab,setTab]=useState<Tab>('overview'),[dash,setDash]=useState<Dashboard|null>(null);
   const [rounds,setRounds]=useState<Round[]>([]),[entries,setEntries]=useState<Entry[]>([]);
   const [audit,setAudit]=useState<Audit[]>([]),[preview,setPreview]=useState<Preview|null>(null);
-  const [mail,setMail]=useState<Mail|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+  const [mail,setMail]=useState<Mail|null>(null),[mailItems,setMailItems]=useState<MailItem[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
   const [form,setForm]=useState({title:'Relou 第 1 期',slug:'round-1',
     opensAt:localInput(new Date(Date.now()+600000)),closesAt:localInput(new Date(Date.now()+7*86400000)),
     notificationTargetAt:'',minPairScore:55});
@@ -45,9 +46,9 @@ export function AdminApp(){
       ]);
       setDash(d);setRounds(r.rounds);setEntries(e.entries);setAudit(a.events);
       if(d.round) {
-        const m=await api<Mail>('/api/admin/mail/status?round='+encodeURIComponent(d.round.id));
-        setMail(m);
-      }else setMail(null);
+        const [m,items]=await Promise.all([api<Mail>('/api/admin/mail/status?round='+encodeURIComponent(d.round.id)),api<{items:MailItem[]}>('/api/admin/mail/items?round='+encodeURIComponent(d.round.id))]);
+        setMail(m);setMailItems(items.items);
+      }else {setMail(null);setMailItems([]);}
     }catch(e){setError(e instanceof Error?e.message:'後台載入失敗');}
   },[]);
   useEffect(()=>{void load();},[load]);
@@ -99,7 +100,10 @@ export function AdminApp(){
         <div className="admin-table-wrap"><table><thead><tr><th>匿名 ID</th><th>通知信箱（遮罩）</th><th>狀態</th><th>時間</th><th>管理</th></tr></thead><tbody>{entries.map(e=><tr key={e.id}><td>{e.id.slice(0,8)}</td><td>{e.maskedEmail}</td><td>{e.status}</td><td>{time(e.submittedAt)}</td><td><button disabled={busy||round?.status!=='OPEN'||e.status!=='eligible'} onClick={()=>{
           const reason=window.prompt('排除原因（至少 3 字，將記錄在稽核）');
           if(reason)void action('/api/admin/entries/'+e.id+'/exclude',{confirm:'EXCLUDE',reason},'排除這份報名','已排除並留下稽核紀錄');
-        }}>排除</button></td></tr>)}</tbody></table></div>{entries.length===0&&<p className="muted">尚無報名。</p>}</div>}
+        }}>排除</button> <button disabled={busy||round?.status!=='OPEN'||e.status!=='eligible'} onClick={()=>{
+          const reason=window.prompt('人工核對後撤回的原因（至少 3 字）');
+          if(reason)void action('/api/admin/entries/'+e.id+'/withdraw',{confirm:'WITHDRAW',reason},'撤回這份報名','已撤回並記錄原因');
+        }}>撤回</button></td></tr>)}</tbody></table></div>{entries.length===0&&<p className="muted">尚無報名。</p>}</div>}
       {tab==='matching'&&<div className="admin-panel"><h3>配對結算中心</h3><p className="muted">先鎖池，再模擬配對。模擬不寫入資料庫；正式提交需要同一快照的預覽摘要。</p>
         <div className="admin-action-row"><button className="small-btn" disabled={busy||round?.status!=='OPEN'} onClick={()=>round&&void action('/api/admin/rounds/'+round.id+'/lock',{confirm:'LOCK'},'鎖定本期報名','已鎖定候選資料')}>① 鎖定本期</button>
           <button className="small-btn" disabled={busy||round?.status!=='LOCKED'} onClick={()=>void runPreview()}>② 模擬配對</button>
@@ -116,6 +120,10 @@ export function AdminApp(){
           <button className="danger-btn" disabled={busy||round?.status!=='MATCHED'||!mail?.mailConfigured||mail.paused} onClick={()=>round&&void action('/api/admin/mail/send',{roundId:round.id,confirm:'SEND'},'正式寄出最多 10 封信','寄送批次已執行，請查看最新狀態')}>正式寄送（最多 10 封）</button>
           <button className="small-btn" disabled={busy||round?.status!=='MATCHED'} onClick={()=>round&&void action('/api/admin/mail/retry',{roundId:round.id,confirm:'RETRY'},'重新排入確定失敗的信件','已將可重試失敗信件重新排隊')}>重試失敗</button></div>
         <p className="muted">uncertain/sending 狀態可能已被寄送，不能盲目重寄；請先核對 Cloudflare Email Service 紀錄。</p>
+        <h3 className="space-top">收件清單（遮罩）</h3><div className="admin-table-wrap"><table><thead><tr><th>收件者</th><th>狀態</th><th>次數</th><th>錯誤</th><th>管理</th></tr></thead><tbody>{mailItems.map(item=><tr key={item.id}><td>{item.maskedEmail}</td><td>{item.state}</td><td>{item.attempts}</td><td>{item.errorCode||'—'}</td><td><button disabled={busy||!['queued','failed'].includes(item.state)} onClick={()=>{
+          const reason=window.prompt('停止寄送這封信的原因（至少 3 字）');
+          if(reason&&round)void action('/api/admin/mail/suppress',{roundId:round.id,outboxId:item.id,confirm:'SUPPRESS',reason},'抑制此封結果信','已停止此封尚未寄出的信件');
+        }}>抑制寄送</button></td></tr>)}</tbody></table></div>
       </div>}
       {tab==='rounds'&&<div className="admin-panel"><h3>建立下一期</h3><form className="round-form" onSubmit={createRound}>
         <label>活動名稱<input required value={form.title} onChange={e=>setForm(v=>({...v,title:e.target.value}))}/></label>
@@ -127,7 +135,9 @@ export function AdminApp(){
         <button className="small-btn" disabled={busy} type="submit">建立草稿期次</button></form>
         <h3 className="space-top">現有期次</h3><div className="admin-table-wrap"><table><thead><tr><th>期次</th><th>狀態</th><th>開始</th><th>截止</th><th>操作</th></tr></thead><tbody>{rounds.map(r=><tr key={r.id}><td>{r.title}</td><td>{r.status}</td><td>{time((r as unknown as {opens_at?:string}).opens_at||r.opensAt)}</td><td>{time((r as unknown as {closes_at?:string}).closes_at||r.closesAt)}</td><td>
           {r.status==='DRAFT'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/open',{confirm:'OPEN'},'開放本期','已開放報名')}>開放</button>}
-          {r.status==='NOTIFIED'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/archive',{confirm:'ARCHIVE'},'封存期次','已封存')}>封存</button>}</td></tr>)}</tbody></table></div>
+          {r.status==='NOTIFIED'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/archive',{confirm:'ARCHIVE'},'封存期次','已封存')}>封存</button>}
+          {r.status==='ARCHIVED'&&!r.purged_at&&r.archived_at&&Date.now()-Date.parse(r.archived_at)>=30*86400000&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/purge',{confirm:'PURGE'},'永久清除 30 天前的個人資料（不可復原）','已清除個資並保留匿名歷史總數')}>清除個資</button>}
+          {r.purged_at&&<span className="muted">已清除</span>}</td></tr>)}</tbody></table></div>
         <p className="muted">開始時間必須已到且尚未截止才能開放；請先完成 Cloudflare Access、Turnstile、寄件及隱私聯絡窗口。</p>
       </div>}
       {tab==='audit'&&<div className="admin-panel"><h3>管理操作稽核</h3><div className="admin-table-wrap"><table><thead><tr><th>時間</th><th>管理員</th><th>動作</th><th>期次</th></tr></thead><tbody>{audit.map((e,i)=><tr key={i}><td>{time(e.createdAt)}</td><td>{e.actor}</td><td>{e.action}</td><td>{e.roundId?.slice(0,8)||'—'}</td></tr>)}</tbody></table></div>{audit.length===0&&<p className="muted">尚無操作紀錄。</p>}</div>}
