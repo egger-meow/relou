@@ -117,6 +117,34 @@ export function registerOperations(app: App) {
     });
   });
 
+  app.get('/api/admin/mail/items', async c => {
+    const id=c.req.query('round');
+    if (!id) return c.json({error:'缺少期次'},400);
+    const rows=await c.env.DB.prepare(
+      'SELECT id,recipient_email,state,attempts,error_code,created_at FROM email_outbox WHERE round_id=? ORDER BY created_at DESC LIMIT 100'
+    ).bind(id).all<{id:string;recipient_email:string;state:string;attempts:number;error_code:string|null;created_at:string}>();
+    return c.json({items:(rows.results||[]).map(r=>{
+      const [local,domain]=r.recipient_email.split('@');
+      return {id:r.id,maskedEmail:local.slice(0,2)+'***@'+domain,state:r.state,
+        attempts:r.attempts,errorCode:r.error_code,createdAt:r.created_at};
+    })});
+  });
+
+  app.post('/api/admin/mail/suppress', async c => {
+    const v=await body(c);
+    if (v.confirm!=='SUPPRESS' || typeof v.roundId!=='string' || typeof v.outboxId!=='string' ||
+        typeof v.reason!=='string' || v.reason.trim().length<3 || v.reason.length>100)
+      return c.json({error:'需確認 SUPPRESS 並提供原因'},400);
+    // A message already sent or in-flight cannot be unsent; investigate uncertain cases manually.
+    const row=await c.env.DB.prepare(
+      "UPDATE email_outbox SET state='suppressed',error_code='OPERATOR_SUPPRESSED' " +
+      "WHERE id=? AND round_id=? AND state IN ('queued','failed') RETURNING id"
+    ).bind(v.outboxId,v.roundId).first<{id:string}>();
+    if (!row) return c.json({error:'只可抑制尚未寄出的 queued/failed 信件'},409);
+    await audit(c.env,c.get('adminEmail'),'mail.suppress',v.roundId,{outboxId:v.outboxId,reason:v.reason.trim()});
+    return c.json({ok:true});
+  });
+
   app.post('/api/admin/mail/pause', async c => {
     const v = await body(c);
     if (v.confirm!=='PAUSE' || typeof v.roundId!=='string') return c.json({error:'需確認 PAUSE'},400);
