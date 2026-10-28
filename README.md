@@ -9,7 +9,7 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 **開啟 https://relou.jjmowlab.com → 填寫單頁表單（包含收件 Email）→ 按「送出」→ 畫面顯示報名成功。** 
 
 - **沒有註冊、登入、OTP、magic link、Email 驗證、收信確認或第二次點擊確認。**
-- Email 只用來在本期配對結算後收到結果，**不驗證收件者是否持有它**；學校校域僅可做字面格式篩選，不能宣稱身份已驗證。
+- Email 只用來在本期配對結算後收到結果，**不驗證收件者是否持有它**；學校由參與者自行聲明，不強制校園信箱，不能宣稱身份已驗證。配對對象只會收到本人另行選擇分享的 IG 或 Email。
 - 請填可收信的信箱，填錯可能收不到結果。送出後不要求使用者開信，亦不強迫寄立即確認信。
 - 後端 D1 記錄成功入池並回應 receipt。防濫用用 Turnstile、限速、honeypot、每期 Email 唯一鍵、管理端黑名單；不以驗證信取代這些措施。
 - 一期最多配一個，期末批次寄信；不提供公開候選者資料。
@@ -40,4 +40,21 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 - [Cloudflare-only 部署](docs/CLOUDFLARE_DEPLOY.md)
 - [Agent 工作指令](AGENTS.md)
 
-**狀態：** 規格已建立，目前尚未確認網站實際部署或開始正式收件。本 repo 禁止提交真實參與者資料與 API secrets。
+**狀態（2026-10-29）：** MVP 程式碼、D1 migration、前後端、配對演算法、管理後台、測試與 CI 已提交。**尚未部署、尚未開放報名、尚未配置 Cloudflare Access／D1／Turnstile／Email Service，也沒有寄出真信。** 正式上線前須完成資料保存／刪除、誤收信處理與隱私告知。詳見 [實作與部署手冊](docs/IMPLEMENTATION.md)。
+
+本 repo 禁止提交真實參與者資料與 API secrets。
+
+## 開發指令
+
+```bash
+npm install
+npm run typecheck
+npm test
+npm run build
+# Cloudflare D1 建立後：
+npm run configure -- <REAL_D1_UUID>
+npm run db:local
+npm run dev:worker
+```
+
+`wrangler.example.jsonc` 是可複製模板，沒有虛構 D1 ID。`wrangler.jsonc` 與 `.dev.vars` 不會提交至 Git。**公開網站不會因為 Cloudflare Access 管理員登入而要求參與者驗證 Email。**
