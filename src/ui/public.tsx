@@ -206,7 +206,7 @@ export function PublicApp(){
       <section id="privacy" className="privacy wrap"><div className="section-kicker">THE SMALL PRINT</div><h2>認識人可以勇敢，資料要小心。</h2>
         <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
           <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你明確同意的資訊，並不保證一定配到對象。</p>
-          <p>資料用於本期配對及通知，主辦者應在結束後依公告保存期清理；需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
+          <p>資料用於本期配對及通知；期次封存滿 30 天後，主辦者可從後台清除個人資料（目前為人工執行）。需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
         <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></section>
     </main>
     <footer><div className="wrap footer-inner"><span className="brand">relou<span className="brand-dot">.</span></span><span>Made for the almost-strangers between NYCU & NTHU. ♥</span><a href="#top">回到頂端 ↑</a></div></footer>
