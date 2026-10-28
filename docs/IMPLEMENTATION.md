@@ -37,7 +37,7 @@
 - COMMIT rechecks the same immutable snapshot and digest, then uses D1 atomic batch and uniqueness constraints to create exactly one match run, max one counterpart per entry and one result outbox row per eligible entry.
 - Results mail is initially paused. RESUME and SEND in batches of at most 10 only after sender onboarding. PAUSE stops further batches.
 - A timeout can mean an Email was accepted but the response was lost. The outbox marks these as uncertain; **never blindly retry** uncertain or sending rows. Investigate provider logs. Retry is restricted to definitively failed rows.
-- When all result notices are resolved, the round advances to NOTIFIED; then ARCHIVE.
+- When all result notices are resolved, the round advances to NOTIFIED; then ARCHIVE. After 30 days archived, use the admin PURGE control to delete participant entries, matches and email outbox while retaining only aggregate round totals. This is currently manual, not a background cron.
 
 ## Public data and privacy
 
@@ -45,7 +45,7 @@ GET /api/public/stats returns only round metadata, current active submission cou
 
 Every user supplies a private notification Email and explicitly chooses one contact to share with their match (IG recommended or their submitted Email). There is no identity, campus or Email ownership verification. Abuse controls reduce spoofing but do not prove consent. The operator must provide a working wrong-recipient/withdrawal contact and manually verify requests.
 
-**Known pre-launch gaps:** automatic retention cleanup, complete suppression/complaint workflow and legally reviewed privacy notice with an explicit retention deadline are not implemented. Do not open real registrations until resolved. The synchronous blossom solver intentionally refuses rounds above 500 eligible entries; scale with a reviewed offline process if needed.
+**Known pre-launch gaps:** automatic retention cleanup and a complete complaint workflow are not implemented. Operator-controlled withdrawal (while OPEN), unsent-mail suppression and an audited personal-data purge after 30 days of ARCHIVED status are implemented, preserving historical aggregate counts. A legally reviewed privacy notice with explicit retention terms is still required. Do not open real registrations until resolved. The synchronous blossom solver intentionally refuses rounds above 500 eligible entries; scale with a reviewed offline process if needed.
 
 ## Local development
 
