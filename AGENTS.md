@@ -15,7 +15,20 @@ Read authoritative docs in this order:
 2. `docs/FORM_SPEC.md`
 3. `docs/MATCHING_SPEC.md`
 4. `docs/CLOUDFLARE_DEPLOY.md`
-5. `docs/DEPLOYMENT.md`
+5. `docs/ANALYTICS_ADMIN_SPEC.md` (P0 public metrics + private Cloudflare Access dashboard)
+6. `docs/DEPLOYMENT.md`
+
+## Additional owner-approved P0 requirements: public stats + private admin (2026-10-29)
+
+READ `docs/ANALYTICS_ADMIN_SPEC.md` as an authoritative P0 specification (not a future nice-to-have).
+
+- Add an attractive **public read-only stats area to the same landing page**: *actual current-round valid submission count*, round number/status, enrollment deadline countdown, expected outcome notice date; historical submissions/previous-round pair count only when actual past data exists. Do not fake metrics or label unverified entries as authenticated people.
+- **Never publicly display or return gender counts or ratios, desired gender, male/female competition, school/intent/MBTI demographic splits, individual answers, contact information or ranking; no hidden demographics in public JSON.** Public gender ratios can distort participation and users' perception of opportunity.
+- Add **admin dashboard** with D1-derived overview KPIs, 7/14-day daily signup trend, flagged/spam counts, matching dry-run statistics, match commit and round state, email outbox send/failed/retry state, admin settings, audit log and safe confirm dialogs. P0 essentials first; omit fancy marketing funnels without real tracking.
+- **Admin login only, NOT participant login**: serve `https://admin.relou.jjmowlab.com` as a SECOND custom domain of the SAME Cloudflare Worker and D1, protect entire admin hostname with **Cloudflare Zero Trust Access self-hosted app** allowlisting exact operator email(s), using Cloudflare IdP or Access One-time PIN. Public `https://relou.jjmowlab.com` must remain fully open without OTP/login.
+- Admin Worker routes MUST validate Access JWT `Cf-Access-Jwt-Assertion` (JWKS signature, `iss`, `aud`, expiry, exact email allowlist). Do not trust mere presence of header/cookie. Deny ALL admin assets/APIs on public hostname and workers.dev/preview hostnames. No client-side admin secrets. Admin mutation is stateful/audited with double confirmation for commit/send.
+- Missing Cloudflare Access org/team/AUD configuration is a deploy blocker, not a reason to create homegrown admin passwords or falsely claim Cloudflare login is already configured.
+- Keep normal signup single page/one POST with NO verification email, and send only end-of-round result email via Cloudflare Email Service.
 
 ## P0 deliverables
 
