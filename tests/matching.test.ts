@@ -27,7 +27,7 @@ describe('reciprocal matching',()=>{
     expect(compatible(a,person('d',{school:'NTHU',answers:{...a.answers,campusPreference:'same_school'}}))).toBe(false);
     expect(compatible(a,person('e',{adultAttested:false}))).toBe(false);
     expect(compatible(a,person('f',{shareContactConsent:false}))).toBe(false);
-    expect(compatible(a,person('g',{gender:'undisclosed',answers:{...a.answers,desiredGenders:['man']}}))).toBe(false);
+    expect(compatible(person('h',{answers:{...a.answers,desiredGenders:['man']}}),person('g',{gender:'undisclosed',answers:{...a.answers,desiredGenders:['man']}}))).toBe(false);
   });
   it('is symmetric and bounded',()=>{
     const a=person('a');
