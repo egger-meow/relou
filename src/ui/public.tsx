@@ -95,8 +95,8 @@ export function PublicApp(){
   const [sending,setSending]=useState(false),[done,setDone]=useState(false),[error,setError]=useState('');
   const [nowTick,setNowTick]=useState(0);
   useEffect(()=>{
-    const load=()=>fetch('/api/public/stats').then(r=>r.ok?r.json():Promise.reject()).then(setStats).catch(()=>setStats(null));
-    load();fetch('/api/public/config').then(r=>r.json()).then(setConfig).catch(()=>setConfig(null));
+    const load=()=>fetch('/api/public/stats').then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
+    load();fetch('/api/public/config').then(r=>r.json() as Promise<Config>).then(setConfig).catch(()=>setConfig(null));
     const t=setInterval(load,90000),clock=setInterval(()=>setNowTick(n=>n+1),30000);
     return ()=>{clearInterval(t);clearInterval(clock);};
   },[]);
