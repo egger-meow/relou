@@ -82,7 +82,7 @@ function Turnstile({siteKey,onToken}: {siteKey:string;onToken:(token:string)=>vo
       s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';s.async=true;
       s.onload=render;document.head.appendChild(s);
     } else {
-      const t=setInterval(render,200);return ()=>{active=false;clearInterval(t);if(widget.current)window.turnstile?.remove(widget.current);};
+      const t=setInterval(render,200);return ()=>{active=false;clearInterval(t);if(widget.current){window.turnstile?.remove(widget.current);widget.current=null;}};
     }
     return ()=>{active=false;if(widget.current)window.turnstile?.remove(widget.current);};
   },[siteKey,onToken]);
