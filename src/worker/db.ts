@@ -2,7 +2,7 @@ import type { Env } from './types';
 import type { EntryRow, RoundRow } from '../shared/schema';
 
 export async function currentRound(db: D1Database): Promise<RoundRow | null> {
-  return db.prepare("SELECT * FROM rounds ORDER BY CASE status WHEN 'OPEN' THEN 0 WHEN 'DRAFT' THEN 1 ELSE 2 END, created_at DESC LIMIT 1").first<RoundRow>();
+  return db.prepare("SELECT * FROM rounds ORDER BY CASE status WHEN 'OPEN' THEN 0 WHEN 'LOCKED' THEN 1 WHEN 'MATCHED' THEN 2 WHEN 'NOTIFIED' THEN 3 WHEN 'DRAFT' THEN 4 ELSE 5 END, created_at DESC LIMIT 1").first<RoundRow>();
 }
 export async function roundById(db: D1Database, id: string): Promise<RoundRow | null> {
   return db.prepare('SELECT * FROM rounds WHERE id = ?').bind(id).first<RoundRow>();
