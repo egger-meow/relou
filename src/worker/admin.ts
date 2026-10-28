@@ -117,10 +117,56 @@ export function registerAdmin(app: App) {
     if (b.confirm!=='ARCHIVE') return c.json({error:'需要 ARCHIVE 確認'},400);
     const id = c.req.param('id');
     const row = await c.env.DB.prepare(
-      "UPDATE rounds SET status='ARCHIVED' WHERE id=? AND status='NOTIFIED' RETURNING id"
-    ).bind(id).first<{id:string}>();
+      "UPDATE rounds SET status='ARCHIVED',archived_at=?," +
+      "final_submission_count=(SELECT COUNT(*) FROM entries WHERE round_id=rounds.id AND status='eligible')," +
+      "final_pair_count=(SELECT COUNT(*) FROM matches WHERE round_id=rounds.id) " +
+      "WHERE id=? AND status='NOTIFIED' RETURNING id"
+    ).bind(new Date().toISOString(),id).first<{id:string}>();
     if (!row) return c.json({error:'只有完成通知的期次可以封存'},409);
     await audit(c.env,c.get('adminEmail'),'round.archive',id);
+    return c.json({ok:true});
+  });
+
+  app.post('/api/admin/rounds/:id/purge', async c => {
+    const b = await jsonBody(c) as Confirmation;
+    if (b.confirm!=='PURGE') return c.json({error:'需確認 PURGE'},400);
+    const id = c.req.param('id');
+    const round = await roundById(c.env.DB,id);
+    if (!round || round.status!=='ARCHIVED') return c.json({error:'僅可清除已封存期次'},409);
+    const retention = await c.env.DB.prepare(
+      'SELECT archived_at,purged_at FROM rounds WHERE id=?'
+    ).bind(id).first<{archived_at:string|null;purged_at:string|null}>();
+    if (!retention?.archived_at || retention.purged_at) return c.json({error:'期次未封存或已清除'},409);
+    if (Date.now()-Date.parse(retention.archived_at)<30*86400000)
+      return c.json({error:'封存後未滿 30 天，不可清除'},409);
+    const db=c.env.DB;
+    try {
+      const result=await db.batch([
+        db.prepare('DELETE FROM email_outbox WHERE round_id=?').bind(id),
+        db.prepare('DELETE FROM match_members WHERE round_id=?').bind(id),
+        db.prepare('DELETE FROM matches WHERE round_id=?').bind(id),
+        db.prepare('DELETE FROM match_runs WHERE round_id=?').bind(id),
+        db.prepare('DELETE FROM entries WHERE round_id=?').bind(id),
+        db.prepare("UPDATE rounds SET purged_at=? WHERE id=? AND status='ARCHIVED' AND purged_at IS NULL").bind(new Date().toISOString(),id),
+        db.prepare('INSERT INTO admin_audit_events(id,actor,action,round_id,meta_json) VALUES(?,?,?,?,?)')
+          .bind(crypto.randomUUID(),c.get('adminEmail'),'round.purge',id,'{}')
+      ]);
+      if ((result[5].meta.changes||0)!==1) return c.json({error:'清除狀態衝突'},409);
+      return c.json({ok:true,deletedEntries:result[4].meta.changes||0});
+    } catch { return c.json({error:'清除失敗，交易已回滾'},409); }
+  });
+
+  app.post('/api/admin/entries/:id/withdraw', async c => {
+    const b = await jsonBody(c);
+    if (b.confirm!=='WITHDRAW' || typeof b.reason!=='string' || b.reason.trim().length<3 || b.reason.length>100)
+      return c.json({error:'需確認 WITHDRAW 並提供核對原因'},400);
+    const id=c.req.param('id');
+    const row=await c.env.DB.prepare(
+      "UPDATE entries SET status='withdrawn' WHERE id=? AND status='eligible' AND EXISTS " +
+      "(SELECT 1 FROM rounds WHERE id=entries.round_id AND status='OPEN') RETURNING round_id"
+    ).bind(id).first<{round_id:string}>();
+    if (!row) return c.json({error:'僅能撤回 OPEN 期次中的有效報名'},409);
+    await audit(c.env,c.get('adminEmail'),'entry.withdraw',row.round_id,{entryId:id,reason:b.reason.trim()});
     return c.json({ok:true});
   });
 
