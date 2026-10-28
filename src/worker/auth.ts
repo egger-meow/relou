@@ -37,7 +37,7 @@ export function correctOrigin(request: Request, host: string): boolean {
   const origin = request.headers.get('Origin');
   // Browser POSTs must carry a same-origin Origin header.
   return origin === 'https://' + host ||
-    (host === 'localhost' && origin === 'http://localhost:8787');
+    (['localhost','127.0.0.1'].includes(host) && origin === 'http://' + host + ':8787');
 }
 
 export function adminMutationAllowed(request: Request, env: Env): boolean {
