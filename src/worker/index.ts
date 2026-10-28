@@ -31,9 +31,12 @@ export default {
     if (url.pathname.startsWith('/api/')) return app.fetch(request,env,ctx);
     if (!['GET','HEAD'].includes(request.method)) return new Response('Method not allowed',{status:405});
     const response = await env.ASSETS.fetch(request);
-    if (!isAdmin) return response;
     const headers = new Headers(response.headers);
-    headers.set('Cache-Control','no-store');
+    headers.set('X-Content-Type-Options','nosniff');
+    headers.set('Referrer-Policy','strict-origin-when-cross-origin');
+    headers.set('X-Frame-Options','DENY');
+    headers.set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+    if (isAdmin) headers.set('Cache-Control','no-store');
     return new Response(response.body,{status:response.status,headers});
   }
 };
