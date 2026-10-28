@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 
 type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean};
 type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withdrawn:number;today:number}|null;
@@ -64,7 +65,7 @@ export function AdminApp(){
     catch(e){setError(e instanceof Error?e.message:'無法預覽');}
     finally{setBusy(false);}
   }
-  async function createRound(e:React.FormEvent){
+  async function createRound(e:FormEvent){
     e.preventDefault();
     try{
       const payload={title:form.title,slug:form.slug,opensAt:isoFromLocal(form.opensAt),
