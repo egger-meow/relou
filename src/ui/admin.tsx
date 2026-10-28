@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 
-type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;archived_at?:string|null;purged_at?:string|null};
+type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;archived_at?:string|null;purged_at?:string|null;opens_at?:string;closes_at?:string;notification_target_at?:string|null;min_pair_score?:number};
 type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withdrawn:number;today:number}|null;
   trend:{day:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;asOf:string};
 type Preview = {roundId:string;snapshotHash:string;previewDigest:string;metrics:{
@@ -33,6 +33,7 @@ export function AdminApp(){
   const [rounds,setRounds]=useState<Round[]>([]),[entries,setEntries]=useState<Entry[]>([]);
   const [audit,setAudit]=useState<Audit[]>([]),[preview,setPreview]=useState<Preview|null>(null);
   const [mail,setMail]=useState<Mail|null>(null),[mailItems,setMailItems]=useState<MailItem[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+  const [editingRoundId,setEditingRoundId]=useState<string|null>(null);
   const [form,setForm]=useState({title:'Relou 第 1 期',slug:'round-1',
     opensAt:localInput(new Date(Date.now()+600000)),closesAt:localInput(new Date(Date.now()+7*86400000)),
     notificationTargetAt:'',minPairScore:55});
@@ -72,7 +73,9 @@ export function AdminApp(){
       const payload={title:form.title,slug:form.slug,opensAt:isoFromLocal(form.opensAt),
         closesAt:isoFromLocal(form.closesAt),notificationTargetAt:form.notificationTargetAt?isoFromLocal(form.notificationTargetAt):null,
         minPairScore:Number(form.minPairScore)};
-      await action('/api/admin/rounds',payload,'建立新期次','已建立草稿期次');
+      await action(editingRoundId?'/api/admin/rounds/'+editingRoundId+'/settings':'/api/admin/rounds',payload,
+        editingRoundId?'修改草稿期次':'建立新期次',editingRoundId?'已更新草稿':'已建立草稿期次');
+      setEditingRoundId(null);
     }catch{setError('請檢查日期格式');}
   }
   const counts=dash?.counts;
@@ -133,9 +136,17 @@ export function AdminApp(){
         <label>截止<input type="datetime-local" required value={form.closesAt} onChange={e=>setForm(v=>({...v,closesAt:e.target.value}))}/></label>
         <label>預計通知日（可留空）<input type="datetime-local" value={form.notificationTargetAt} onChange={e=>setForm(v=>({...v,notificationTargetAt:e.target.value}))}/></label>
         <label>最低配對分<input type="number" min="0" max="100" value={form.minPairScore} onChange={e=>setForm(v=>({...v,minPairScore:Number(e.target.value)}))}/></label>
-        <button className="small-btn" disabled={busy} type="submit">建立草稿期次</button></form>
+        <button className="small-btn" disabled={busy} type="submit">{editingRoundId?'儲存草稿變更':'建立草稿期次'}</button>
+        {editingRoundId&&<button className="small-btn" type="button" onClick={()=>setEditingRoundId(null)}>取消編輯</button>}</form>
         <h3 className="space-top">現有期次</h3><div className="admin-table-wrap"><table><thead><tr><th>期次</th><th>狀態</th><th>開始</th><th>截止</th><th>操作</th></tr></thead><tbody>{rounds.map(r=><tr key={r.id}><td>{r.title}</td><td>{r.status}</td><td>{time((r as unknown as {opens_at?:string}).opens_at||r.opensAt)}</td><td>{time((r as unknown as {closes_at?:string}).closes_at||r.closesAt)}</td><td>
-          {r.status==='DRAFT'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/open',{confirm:'OPEN'},'開放本期','已開放報名')}>開放</button>}
+          {r.status==='DRAFT'&&<button disabled={busy} onClick={()=>{
+          setEditingRoundId(r.id);
+          setForm({title:r.title,slug:r.slug,
+            opensAt:localInput(new Date(r.opens_at||r.opensAt)),
+            closesAt:localInput(new Date(r.closes_at||r.closesAt)),
+            notificationTargetAt:r.notification_target_at?localInput(new Date(r.notification_target_at)):'',
+            minPairScore:r.min_pair_score??r.minPairScore??55});
+        }}>編輯</button>} {r.status==='DRAFT'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/open',{confirm:'OPEN'},'開放本期','已開放報名')}>開放</button>}
           {r.status==='NOTIFIED'&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/archive',{confirm:'ARCHIVE'},'封存期次','已封存')}>封存</button>}
           {r.status==='ARCHIVED'&&!r.purged_at&&r.archived_at&&Date.now()-Date.parse(r.archived_at)>=30*86400000&&<button disabled={busy} onClick={()=>void action('/api/admin/rounds/'+r.id+'/purge',{confirm:'PURGE'},'永久清除 30 天前的個人資料（不可復原）','已清除個資並保留匿名歷史總數')}>清除個資</button>}
           {r.purged_at&&<span className="muted">已清除</span>}</td></tr>)}</tbody></table></div>
