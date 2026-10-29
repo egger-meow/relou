@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { monthlyRound } from '../shared/calendar';
 import { entrySchema, INTERESTS, PRIVACY_VERSION } from '../shared/schema';
 import type { EntryInput } from '../shared/schema';
 
@@ -93,9 +94,9 @@ export function PublicApp(){
   const [stats,setStats]=useState<Stats|null>(null),[config,setConfig]=useState<Config|null>(null);
   const [draft,setDraft]=useState<Draft>(initial),[token,setToken]=useState('');
   const [sending,setSending]=useState(false),[done,setDone]=useState(false),[error,setError]=useState('');
-  const [page,setPage]=useState<'form'|'stats'>(()=>window.location.hash==='#stats'?'stats':'form');
+  const [page,setPage]=useState<'form'|'stats'|'about'>(()=>window.location.hash==='#about'?'about':window.location.hash==='#stats'?'stats':'form');
   const [nowTick,setNowTick]=useState(0);
-  useEffect(()=>{const change=()=>setPage(window.location.hash==='#stats'?'stats':'form');window.addEventListener('hashchange',change);window.addEventListener('popstate',change);return()=>{window.removeEventListener('hashchange',change);window.removeEventListener('popstate',change);};},[]);
+  useEffect(()=>{const change=()=>setPage(window.location.hash==='#about'?'about':window.location.hash==='#stats'?'stats':'form');window.addEventListener('hashchange',change);window.addEventListener('popstate',change);return()=>{window.removeEventListener('hashchange',change);window.removeEventListener('popstate',change);};},[]);
   useEffect(()=>{
     const load=()=>fetch('/api/public/stats').then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
     load();fetch('/api/public/config').then(r=>r.json() as Promise<Config>).then(setConfig).catch(()=>setConfig(null));
@@ -105,6 +106,9 @@ export function PublicApp(){
   void nowTick;
   function set<K extends keyof Draft>(key:K,value:Draft[K]) {setDraft(v=>({...v,[key]:value}));}
   const round=stats?.round;
+  const calendar=monthlyRound(round?Date.parse(round.opensAt):Date.now());
+  const periodTitle=round?.title||calendar.title;
+  const deliveryWindow=`${calendar.month}/21～${calendar.month}/${calendar.daysInMonth}`;
   const open=round?.status==='OPEN' && Date.now()>=Date.parse(round.opensAt) && Date.now()<Date.parse(round.closesAt);
   const ready=!!config?.turnstileSiteKey && !!config?.supportEmail;
   const canSubmit=!!open && ready && !sending;
@@ -125,15 +129,15 @@ export function PublicApp(){
     }finally{setSending(false);}
   }
   return <div className="site">
-    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面"><a href="#form" onClick={e=>{e.preventDefault();history.pushState(null,'','#form');setPage('form');window.scrollTo(0,0);}} aria-current={page==='form'?'page':undefined}>填寫表單</a><a href="#stats" onClick={e=>{e.preventDefault();history.pushState(null,'','#stats');setPage('stats');window.scrollTo(0,0);}} aria-current={page==='stats'?'page':undefined}>統計</a></nav></header>
+    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
     <main id="top">
       <section hidden={page!=='stats'} className="stats-band"><div className="wrap">
         <h1>報名統計</h1>
         <div className="stats-grid">
           <div className="stat"><span>本期已收到</span><strong>{stats?stats.activeSubmissionCount.toLocaleString():'…'} <small>份報名</small></strong><em>只統計有效報名，不代表已驗證身分</em></div>
-          <div className="stat"><span>目前活動</span><strong className="stat-title">{round?.title||'尚未開放'}</strong><em>{round?.status==='OPEN'?'● 報名進行中':round?.status==='LOCKED'?'配對處理中':round?'敬請期待下一期':'等待主辦者開放'}</em></div>
-          <div className="stat"><span>距離報名截止</span><strong className="stat-title">{round?remaining(round.closesAt):'待公告'}</strong><em>{round?'截止：'+localDate(round.closesAt):'時間將在開放後公布'}</em></div>
-          <div className="stat"><span>配對結果通知</span><strong className="stat-title">{localDate(round?.notificationTargetAt||null)}</strong><em>統一寄到報名時填寫的 Email</em></div>
+          <div className="stat"><span>目前活動</span><strong className="stat-title">{periodTitle}</strong><em>{open?'報名進行中':Date.now()<Date.parse(round?.opensAt||calendar.opensAt)?'尚未開始':round?.status==='DRAFT'?'準備中':'報名已截止'}</em></div>
+          <div className="stat"><span>距離報名截止</span><strong className="stat-title">{remaining(round?.closesAt||calendar.closesAt)}</strong><em>{'截止：'+localDate(round?.closesAt||calendar.closesAt)+'（台灣時間）'}</em></div>
+          <div className="stat"><span>配對結果通知</span><strong className="stat-title">{deliveryWindow}</strong><em>配對與通知期間，結果寄到填寫的 Email</em></div>
         </div>
         {stats && (stats.lifetimeSubmissionCount!==null||stats.previousRoundPairCount!==null)&&<div className="history-strip">
           {stats.lifetimeSubmissionCount!==null&&<span>歷期累計 <b>{stats.lifetimeSubmissionCount}</b> 份報名</span>}
@@ -142,11 +146,11 @@ export function PublicApp(){
       </div></section>
       <section hidden={page!=='form'} id="form" className="form-section"><div className="wrap form-layout">
         <div className="form-card">
-          {done?<div className="success-panel"><h2>已收到你的報名！</h2><p>你已加入 {round?.title||'本期'}。截止後會統一配對，結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
-          :<><div className="form-head"><h1>清交配對報名表</h1><p>填寫後送出即可。每期最多配對一位，也可能沒有合適對象。</p><p>{round?round.title+' · 截止：'+localDate(round.closesAt):'本期時間尚未公告'} · 結果通知：{localDate(round?.notificationTargetAt||null)}</p></div>
-          {!open&&<div className="notice">目前尚未開放報名，表單會在本期開放時啟用。你可以先看看題目。</div>}
+          {done?<div className="success-panel"><h2>已收到你的報名！</h2><p>你已加入 {periodTitle}。主要配對與結果通知期間為 {deliveryWindow}，結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
+          :<><div className="form-head"><h1>清交配對報名表</h1><p className="period-title">{periodTitle}</p><p>填寫後送出即可。每期最多配對一位，也可能沒有合適對象。</p><p>報名：{calendar.month}/1～{calendar.month}/20 · 配對與通知：{deliveryWindow}（台灣時間）</p></div>
+          {!open&&<div className="notice">{Date.now()<Date.parse(round?.opensAt||calendar.opensAt)?`${calendar.year} 年 ${calendar.month} 月 1 日 00:00 開始報名。2026 年 10 月不開放報名。`:round?.status==='DRAFT'?'本期正在準備中，尚未開放報名。':'本期報名已截止，21 日起為配對與結果通知期間，次月 1 日開放下一期。'}</div>}
           {open&&!ready&&<div className="notice">主辦者尚未完成收件防護或聯絡窗口設定，目前暫停收件。</div>}
-          <form onSubmit={submit} noValidate>
+          <form onSubmit={submit} noValidate><fieldset className="form-fields" disabled={!canSubmit}>
             <div className="form-block"><div className="block-label">01 / 關於你</div>
               <PillGroup title="你是哪一校？" desc="自行填寫，不會要求學校信箱驗證" options={choices.schoolClaimed} value={draft.schoolClaimed} onChange={v=>set('schoolClaimed',v as Draft['schoolClaimed'])}/>
               <label className="question"><span className="question-title">想怎麼稱呼你？</span><input className="text-input" placeholder="你的暱稱（2–16 字）" value={draft.nickname} maxLength={16} onChange={e=>set('nickname',e.target.value)}/></label>
@@ -186,11 +190,16 @@ export function PublicApp(){
               <div className="honeypot" aria-hidden="true"><label>網站網址<input name="website" tabIndex={-1} autoComplete="off" value={draft.website||''} onChange={e=>set('website',e.target.value)}/></label></div>
               {config?.turnstileSiteKey&&<Turnstile siteKey={config.turnstileSiteKey} onToken={setToken}/>}
             </div>
+            </fieldset>
             {error&&<div role="alert" className="form-error">{error}</div>}
             <button className="submit-btn" type="submit" disabled={!canSubmit}>{sending?'送出中…':open?'送出報名':'尚未開放報名'}</button>
             <p className="submit-note">按一次送出就完成。沒有驗證信、登入或第二步。</p>
           </form></>}
         </div></div></section>
+      <section hidden={page!=='about'} className="about-page wrap"><h1>每月一期，怎麼進行？</h1><p className="about-intro">每月 1～20 日報名，21 日至月底配對並寄送結果。所有時間以台灣時間為準。</p>
+        <figure className="cycle-figure"><svg viewBox="0 0 300 300" role="img" aria-labelledby="cycle-title cycle-desc"><title id="cycle-title">每月報名與配對分發時程</title><desc id="cycle-desc">1 日到 20 日開放報名，約佔三分之二；21 日到月底關閉報名，進行配對與寄送。下個月 1 日重新開始。</desc><circle cx="150" cy="150" r="112" fill="none" stroke="#e6d6b9" strokeWidth="26"/><circle cx="150" cy="150" r="112" fill="none" stroke="#397254" strokeWidth="26" pathLength="100" strokeDasharray={`${20/calendar.daysInMonth*100} 100`} transform="rotate(-90 150 150)"/><text x="150" y="137" textAnchor="middle" className="cycle-main">每月一期</text><text x="150" y="165" textAnchor="middle" className="cycle-sub">1 日重新開始</text></svg><figcaption><span><i className="legend-enroll"/>1～20 日：報名期間</span><span><i className="legend-deliver"/>21 日～月底：配對與分發</span></figcaption></figure>
+        <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">提前分發仍在規劃，尚未啟用；目前請以 21 日至月底的通知期間為準。</p></div>
+      </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
         <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
           <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你明確同意的資訊，並不保證一定配到對象。</p>

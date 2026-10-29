@@ -6,6 +6,8 @@ vi.mock('../src/worker/auth', async importOriginal => ({
   ...await importOriginal(), verifyAdmin: async () => 'operator@example.invalid'
 }));
 import worker from '../src/worker/index';
+import { syncMonthlyRounds } from '../src/worker/schedule';
+import { currentRound } from '../src/worker/db';
 import { snapshotHash } from '../src/matching/engine';
 import { PRIVACY_VERSION } from '../src/shared/schema';
 
@@ -51,7 +53,7 @@ beforeEach(()=>{
     }}};
   vi.stubGlobal('fetch',vi.fn(async()=>Response.json({success:true,hostname:env.PUBLIC_HOST})));
 });
-afterEach(()=>{sqlite.close();vi.unstubAllGlobals();});
+afterEach(()=>{sqlite.close();vi.unstubAllGlobals();vi.useRealTimers();});
 describe('single-submit and settlement with real SQLite',()=>{
   it('stores optional custom interests privately with the entry answers',async()=>{
     const r=await request('/api/entry',{...participant('custom@example.invalid'),interests:['其他'],customInterests:[' 桌遊 ','烘焙']},false);
@@ -90,7 +92,7 @@ describe('single-submit and settlement with real SQLite',()=>{
     expect((await commit(preview)).status).toBe(409);
     for(const table of ['match_runs','matches','match_members','email_outbox'])
       expect(sqlite.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n).toBe(0);
-    expect(sqlite.prepare('SELECT status FROM rounds').get().status).toBe('LOCKED');
+    expect(sqlite.prepare("SELECT status FROM rounds WHERE id='r'").get().status).toBe('LOCKED');
   });
   it('detects tampering with every frozen participant field used for matching or delivery',async()=>{
     await submit('a@example.invalid');const preview=await lockAndPreview();
@@ -114,4 +116,48 @@ describe('single-submit and settlement with real SQLite',()=>{
     await request('/api/admin/mail/retry',{confirm:'RETRY',roundId:'r'});
     expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='queued'").get().n).toBe(2);
   });
+});
+
+describe('monthly scheduler using real SQLite and synthetic credentials',()=>{
+  function configure(){Object.assign(env,{MONTHLY_ROUNDS_ENABLED:'true',TURNSTILE_SITE_KEY:'synthetic',MAIL_PROVIDER:'gmail_smtp',GMAIL_SMTP_USER:'sender@example.invalid',GMAIL_SMTP_APP_PASSWORD:'synthetic'});}
+  it('keeps October closed and opens November once with sending still disabled',async()=>{
+    configure();sqlite.exec("DELETE FROM rounds WHERE id='r'");
+    await syncMonthlyRounds(env,Date.parse('2026-10-29T00:00:00Z'));
+    expect(sqlite.prepare("SELECT status FROM rounds WHERE slug='2026-11'").get().status).toBe('DRAFT');
+    const start=Date.parse('2026-10-31T16:00:00Z');
+    await syncMonthlyRounds(env,start);await syncMonthlyRounds(env,start);
+    expect(sqlite.prepare("SELECT status FROM rounds WHERE slug='2026-11'").get().status).toBe('OPEN');
+    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM admin_audit_events WHERE action='round.auto-open'").get().n).toBe(1);
+    expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(0);
+    expect(env.EMAIL.send).not.toHaveBeenCalled();
+  });
+  it('closes at 21st midnight, freezes once, then opens next month despite older locked round',async()=>{
+    configure();sqlite.exec("DELETE FROM rounds WHERE id='r'");
+    await syncMonthlyRounds(env,Date.parse('2026-11-20T15:59:59Z'));
+    expect(sqlite.prepare("SELECT status FROM rounds WHERE slug='2026-11'").get().status).toBe('OPEN');
+    await syncMonthlyRounds(env,Date.parse('2026-11-20T16:00:00Z'));
+    await syncMonthlyRounds(env,Date.parse('2026-11-20T16:15:00Z'));
+    const locked=sqlite.prepare("SELECT * FROM rounds WHERE slug='2026-11'").get();
+    expect(locked.status).toBe('LOCKED');expect(locked.snapshot_hash).toBeTruthy();
+    const start=Date.parse('2026-11-30T16:00:00Z');await syncMonthlyRounds(env,start);
+    expect((await currentRound(env.DB,start)).slug).toBe('2026-12');
+    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM rounds WHERE status='OPEN'").get().n).toBe(1);
+    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM admin_audit_events WHERE action='round.auto-lock'").get().n).toBe(1);
+  });
+  it('fails closed with missing sender credentials or disabled scheduler',async()=>{
+    configure();sqlite.exec("DELETE FROM rounds WHERE id='r'");delete env.GMAIL_SMTP_APP_PASSWORD;
+    await syncMonthlyRounds(env,Date.parse('2026-10-31T16:00:00Z'));
+    expect(sqlite.prepare("SELECT status FROM rounds WHERE slug='2026-11'").get().status).toBe('DRAFT');
+    env.MONTHLY_ROUNDS_ENABLED='false';await syncMonthlyRounds(env,Date.parse('2026-11-30T16:00:00Z'));
+    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM rounds WHERE slug='2026-12'").get().n).toBe(0);
+  });
+});
+
+it('rejects submission at the exact close even before cron locks the round',async()=>{
+  sqlite.exec("DELETE FROM rounds WHERE id='r'; UPDATE rounds SET status='OPEN' WHERE slug='2026-11';");
+  vi.useFakeTimers();vi.setSystemTime(new Date('2026-11-20T15:59:59.999Z'));
+  expect((await submit('before@example.invalid')).status).toBe(200);
+  vi.setSystemTime(new Date('2026-11-20T16:00:00.000Z'));
+  expect((await submit('after@example.invalid')).status).toBe(409);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM entries').get().n).toBe(1);
 });

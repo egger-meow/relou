@@ -1,8 +1,9 @@
 import type { Env } from './types';
 import type { EntryRow, RoundRow } from '../shared/schema';
 
-export async function currentRound(db: D1Database): Promise<RoundRow | null> {
-  return db.prepare("SELECT * FROM rounds ORDER BY CASE status WHEN 'OPEN' THEN 0 WHEN 'LOCKED' THEN 1 WHEN 'MATCHED' THEN 2 WHEN 'NOTIFIED' THEN 3 WHEN 'DRAFT' THEN 4 ELSE 5 END, created_at DESC LIMIT 1").first<RoundRow>();
+export async function currentRound(db: D1Database, time=Date.now()): Promise<RoundRow | null> {
+  const now=new Date(time).toISOString();
+  return db.prepare("SELECT * FROM rounds ORDER BY CASE WHEN opens_at<=? THEN 0 ELSE 1 END, CASE WHEN opens_at<=? THEN opens_at END DESC, opens_at ASC LIMIT 1").bind(now,now).first<RoundRow>();
 }
 export async function roundById(db: D1Database, id: string): Promise<RoundRow | null> {
   return db.prepare('SELECT * FROM rounds WHERE id = ?').bind(id).first<RoundRow>();

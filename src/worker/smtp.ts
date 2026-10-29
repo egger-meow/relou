@@ -53,7 +53,10 @@ export async function smtpSession(socket:SmtpSocket, user:string, password:strin
 }
 
 export function mailReady(env:Env){
-  if(env.EMAIL_DRY_RUN!=='false'||env.EMAIL_ENABLED!=='true'||!env.EMAIL_FROM)return false;
+  return env.EMAIL_DRY_RUN==='false' && env.EMAIL_ENABLED==='true' && mailCredentialsReady(env);
+}
+export function mailCredentialsReady(env:Env){
+  if(!env.EMAIL_FROM)return false;
   return env.MAIL_PROVIDER==='gmail_smtp'
     ? !!env.GMAIL_SMTP_USER && !!env.GMAIL_SMTP_APP_PASSWORD && env.EMAIL_FROM===env.GMAIL_SMTP_USER
     : !!env.EMAIL;

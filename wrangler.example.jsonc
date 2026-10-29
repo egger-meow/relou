@@ -11,18 +11,40 @@
     "run_worker_first": true
   },
   "routes": [
-    { "pattern": "relou.jjmowlab.com", "custom_domain": true },
-    { "pattern": "admin.relou.jjmowlab.com", "custom_domain": true }
+    {
+      "pattern": "relou.jjmowlab.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "admin.relou.jjmowlab.com",
+      "custom_domain": true
+    }
   ],
-  "d1_databases": [{
-    "binding": "DB",
-    "database_name": "relou",
-    "database_id": "__REAL_D1_DATABASE_ID__",
-    "migrations_dir": "migrations"
-  }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "relou",
+      "database_id": "__REAL_D1_DATABASE_ID__",
+      "migrations_dir": "migrations"
+    }
+  ],
   "ratelimits": [
-    { "name": "SUBMIT_LIMITER", "namespace_id": "1001", "simple": { "limit": 8, "period": 60 } },
-    { "name": "EMAIL_LIMITER", "namespace_id": "1002", "simple": { "limit": 4, "period": 60 } }
+    {
+      "name": "SUBMIT_LIMITER",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 8,
+        "period": 60
+      }
+    },
+    {
+      "name": "EMAIL_LIMITER",
+      "namespace_id": "1002",
+      "simple": {
+        "limit": 4,
+        "period": 60
+      }
+    }
   ],
   "vars": {
     "PUBLIC_HOST": "relou.jjmowlab.com",
@@ -35,6 +57,12 @@
     "GMAIL_SMTP_USER": "",
     "TURNSTILE_SITE_KEY": "",
     "SUPPORT_EMAIL": "",
-    "ENVIRONMENT": "production"
+    "ENVIRONMENT": "production",
+    "MONTHLY_ROUNDS_ENABLED": "true"
+  },
+  "triggers": {
+    "crons": [
+      "*/15 * * * *"
+    ]
   }
 }

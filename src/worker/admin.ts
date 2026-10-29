@@ -5,7 +5,7 @@ import { verifyAdmin, adminMutationAllowed } from './auth';
 import { audit, currentRound, eligibleRows, roundById } from './db';
 import type { Env } from './types';
 import { registerOperations } from './operations';
-import { mailReady } from './smtp';
+import { mailReady, mailCredentialsReady } from './smtp';
 
 type App = Hono<{ Bindings: Env; Variables: { adminEmail: string } }>;
 type Confirmation = { confirm?: string };
@@ -102,8 +102,8 @@ export function registerAdmin(app: App) {
     if (b.confirm!=='OPEN') return c.json({error:'需要 OPEN 確認'},400);
     if (!c.env.SUPPORT_EMAIL || !c.env.TURNSTILE_SITE_KEY || !c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER)
       return c.json({error:'開池前必須設定主辦者聯絡窗口、Turnstile 與限速'},503);
-    if (c.env.ENVIRONMENT !== 'local' && !mailReady(c.env))
-      return c.json({error:'正式開池前必須確認寄件設定可用，並解除全域 dry-run'},503);
+    if (c.env.ENVIRONMENT !== 'local' && !mailCredentialsReady(c.env))
+      return c.json({error:'正式開池前必須設定寄件帳號與憑證；寄送仍需另行確認'},503);
     const now = new Date().toISOString();
     try {
       const r = await c.env.DB.prepare(

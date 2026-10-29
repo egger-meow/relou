@@ -1,3 +1,4 @@
+import { syncMonthlyRounds } from './schedule';
 import { Hono } from 'hono';
 import { registerPublic } from './public';
 import { registerAdmin } from './admin';
@@ -11,6 +12,9 @@ app.notFound(c => c.json({ error: 'Not found' },404));
 app.onError((_error,c) => c.json({ error: '服務暫時無法處理請求' },500,{ 'Cache-Control':'no-store' }));
 
 export default {
+  async scheduled(controller: ScheduledController, env: Env): Promise<void> {
+    await syncMonthlyRounds(env,controller.scheduledTime);
+  },
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const isAdmin = url.hostname === env.ADMIN_HOST;

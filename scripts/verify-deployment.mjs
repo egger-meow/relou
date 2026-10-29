@@ -24,7 +24,11 @@ const stats=await get(publicOrigin+'/api/public/stats');assert.equal(stats.statu
 const data=await stats.json();
 assert.deepEqual(Object.keys(data).sort(),['round','activeSubmissionCount','lifetimeSubmissionCount','previousRoundPairCount','asOf'].sort());
 assert.doesNotMatch(JSON.stringify(data),/gender|desiredGenders|email|contact|schoolClaimed|intent|mbti/i);
-assert.equal(data.round,null);assert.equal(data.activeSubmissionCount,0);
+if(data.round){
+  assert.deepEqual(Object.keys(data.round).sort(),['slug','title','status','opensAt','closesAt','notificationTargetAt'].sort());
+  assert.ok(Date.parse(data.round.opensAt)<Date.parse(data.round.closesAt));
+}
+assert.ok(Number.isInteger(data.activeSubmissionCount)&&data.activeSubmissionCount>=0);
 for(const path of ['/admin','/api/admin/dashboard','/api/admin/health']){
   const res=await get(publicOrigin+path,{headers:{'Cf-Access-Jwt-Assertion':'forged'}});assert.equal(res.status,404);
 }
@@ -35,4 +39,4 @@ for(const path of ['/','/api/admin/dashboard','/assets/'+adminAsset]){
   assert.ok([302,303].includes(response.status),'Admin must redirect to Access: '+path);
   assert.equal(new URL(response.headers.get('location')).hostname,'quiet-leaf-d9e5.cloudflareaccess.com');
 }
-console.log('PASS: HTTPS public page, empty real D1 stats, no public demographics, public admin routes/assets denied, entire admin host redirects to Access. No participant data written or mail sent.');
+console.log('PASS: HTTPS public page, safe real D1 stats, no public demographics, public admin routes/assets denied, entire admin host redirects to Access. No participant data written or mail sent.');

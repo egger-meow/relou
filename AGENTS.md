@@ -56,3 +56,8 @@ READ `docs/ANALYTICS_ADMIN_SPEC.md` as an authoritative P0 specification (not a 
 ## Execution
 
 Inspect repo and docs, then IMPLEMENT actual MVP (not only specs) with small Conventional Commits. Prefer local working demo and tests over unwarranted production claims. Run install/typecheck/lint/tests/build if runner available and state accurately what ran. Without Cloudflare account access, leave deployment-ready project + manual instructions; do not claim DNS, D1 provisioning, Email Service or site live. Do not send live emails without setup, explicit approval and real-domain limits checks.
+
+
+## Monthly lifecycle (owner correction, 2026-10-29)
+
+Start November 2026 (no October enrollment). Taiwan time: enroll from day 1 00:00 inclusive to day 21 00:00 exclusive; match/distribute day 21 through month end. Three public tabs: form (default), stats, explanation with monthly ring diagram. Show month and sequence number. MONTHLY_ROUNDS_ENABLED controls the scheduled lifecycle; cron provisions monthly DRAFT, opens with configured sender/anti-abuse credentials and locks expired rounds with a frozen snapshot. Enrollment does not require enabling live email. Cron does not commit matches or send email; those remain operator-approved. Early matching/distribution is not implemented or enabled pending owner decision.
