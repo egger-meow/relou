@@ -23,7 +23,7 @@ export const entrySchema = z.object({
   topValue: z.enum(['honesty', 'ease', 'growth', 'passion']),
   openAnswer: z.string().trim().max(100).optional(),
   mbti: z.string().trim().regex(/^(?:[EI][NS][TF][JP]|unknown)$/).nullable().optional(),
-  notificationEmail: z.email().max(254),
+  notificationEmail: z.email().max(254).refine(value => /@(?:[a-z0-9-]+\.)*(?:nycu|nthu)\.edu\.tw$/i.test(value), {message:'請使用陽明交大或清大學校信箱（nycu.edu.tw／nthu.edu.tw，含子網域）'}),
   contactKind: z.enum(['instagram', 'submitted_email']),
   contactValue: z.string().trim().max(31).optional(),
   adultAttested: z.literal(true),

@@ -73,3 +73,6 @@ Highly compatible early allocation is owner-approved: EARLY_MATCHING_ENABLED con
 ## Result email templates
 
 See docs/EMAIL_TEMPLATES.md. result-v2 freezes subject/plain text/HTML/version into outbox on allocation; never regenerate a different outcome on retry. New privacy v3 explicitly authorizes common-point summaries. Both participants must have the current summary consent before non-interest answer summaries are shared; older consent remains limited to standard shared interests. Never include academic data, demographics, full free text, custom interests, scores or a private notification address unless it was the explicitly selected shared contact. MIME must retain plain-text fallback, safe escaped HTML, UTF-8 subject folding, one recipient and support Reply-To. Synthetic previews: pnpm run preview:emails; no live test send without approval.
+
+## Latest school email restriction (2026-10-30)
+Owner now requires notificationEmail to end in nycu.edu.tw or nthu.edu.tw, including proper subdomains; this replaces arbitrary/Gmail recipient acceptance. Keep single-submit without verification. Domain syntax restriction does not verify mailbox ownership or current student status. Sender Gmail SMTP remains unchanged.

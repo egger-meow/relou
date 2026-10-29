@@ -4,20 +4,22 @@ import { contactForMatch,entrySchema,normalizeEmail,PRIVACY_VERSION } from '../s
 const valid={
   schoolClaimed:'NYCU',degreeLevel:'bachelor',programId:PROGRAMS.find(p=>p.school==='NYCU'&&p.degree==='bachelor')!.id,departmentPreference:'either_department',nickname:'小魚',gender:'woman',desiredGenders:['man'],intent:'either',
   campusPreference:'either_school',interests:['音樂'],dayOffStyle:'both',conflictStyle:'depends',
-  chatStyle:'deep',firstMeet:'cafe',topValue:'ease',notificationEmail:'Student@Gmail.COM',
+  chatStyle:'deep',firstMeet:'cafe',topValue:'ease',notificationEmail:'Student@CS.NYCU.EDU.TW',
   contactKind:'instagram',contactValue:'@littlefish',adultAttested:true,shareContactConsent:true,
   privacyConsentVersion:PRIVACY_VERSION,turnstileToken:'synthetic-token'
 };
 describe('single submit contract',()=>{
-  it('accepts ordinary Gmail with no campus email or verification field',()=>{
+  it('accepts school email subdomains without a verification step',()=>{
     expect(entrySchema.safeParse(valid).success).toBe(true);
-    expect(normalizeEmail(' Student@Gmail.COM ')).toBe('Student@gmail.com');
+    for(const email of ['a@nycu.edu.tw','a@nthu.edu.tw','a@cs.nthu.edu.tw']) expect(entrySchema.safeParse({...valid,notificationEmail:email}).success).toBe(true);
+    for(const email of ['a@gmail.com','a@nycu.edu','a@fakenycu.edu.tw','a@nycu.edu.tw.evil.com']) expect(entrySchema.safeParse({...valid,notificationEmail:email}).success).toBe(false);
+    expect(normalizeEmail(' Student@CS.NYCU.EDU.TW ')).toBe('Student@cs.nycu.edu.tw');
   });
   it('separates notification address from shared IG',()=>{
     const p=entrySchema.parse(valid);
     expect(contactForMatch(p)).toBe('@littlefish');
     const email=entrySchema.parse({...valid,contactKind:'submitted_email',contactValue:''});
-    expect(contactForMatch(email)).toBe('Student@gmail.com');
+    expect(contactForMatch(email)).toBe('Student@cs.nycu.edu.tw');
   });
   it('requires consent and blocks fake IG handles',()=>{
     expect(entrySchema.safeParse({...valid,adultAttested:false}).success).toBe(false);
