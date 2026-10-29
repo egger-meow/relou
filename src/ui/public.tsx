@@ -143,7 +143,7 @@ export function PublicApp(){
     }finally{setSending(false);}
   }
   return <div className="site">
-    <header className="nav"><span className="brand">青椒配對表單</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
+    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
     <main id="top">
       <section hidden={page!=='stats'} className="stats-band"><div className="wrap">
         <h1>報名統計</h1>
