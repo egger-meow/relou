@@ -82,7 +82,7 @@ function FeedbackForm({siteKey}:{siteKey:string|null}) {
  const response=await fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,turnstileToken:token,website})});
  const data=await response.json() as {error?:string};if(!response.ok)throw new Error(data.error||'送出失敗');setSent(true);
  }catch(error){setStatus(error instanceof Error?error.message:'送出失敗');}finally{setBusy(false);}}
- return <div className="schedule-notes feedback-section"><h2>有什麼建議？</h2><p className="question-desc">回饋僅主辦者可見，不會公開。不必填姓名或聯絡方式，請勿填寫自己或他人的敏感資料。回饋會儲存供主辦者檢視；需要回覆或申請刪除請使用聯絡窗口。</p>{sent?<p role="status">已收到，謝謝你的回饋！</p>:<form onSubmit={submit}><label className="question"><span className="question-title">你的回饋</span><textarea className="text-input" required maxLength={2000} rows={4} value={message} onChange={e=>setMessage(e.target.value)} placeholder="哪裡不好填、想增加什麼，或對配對方式的建議…"/></label><input className="honeypot" tabIndex={-1} aria-hidden="true" autoComplete="off" value={website} onChange={e=>setWebsite(e.target.value)}/>{siteKey&&<Turnstile siteKey={siteKey} onToken={setToken}/>}<p role="status">{status}</p><button className="small-btn" disabled={busy||!token||!message.trim()}>{busy?'送出中…':'送出回饋'}</button></form>}</div>;
+ return <div className="feedback-section"><div className="about-section-heading"><span>一起改好這份表單</span><h2>有什麼建議，直接告訴我們。</h2></div><p className="question-desc">僅主辦者可見，不必留下姓名或 Email。</p>{sent?<p role="status">已收到，謝謝你的回饋！</p>:<form onSubmit={submit}><label className="question"><span className="question-title">你的回饋 <small>最多 2,000 字</small></span><textarea className="text-input" required maxLength={2000} rows={4} value={message} onChange={e=>setMessage(e.target.value)} placeholder="哪裡不好填、想增加什麼，或對配對方式的建議…"/></label><input className="honeypot" tabIndex={-1} aria-hidden="true" autoComplete="off" value={website} onChange={e=>setWebsite(e.target.value)}/>{siteKey&&<Turnstile siteKey={siteKey} onToken={setToken}/>}<p className="question-desc">請勿填寫敏感資料。回饋會儲存供主辦者檢視；需要回覆或申請刪除，請使用聯絡窗口。</p><p role="status">{status}</p><button className="feedback-submit" disabled={busy||!token||!message.trim()}>{busy?'送出中…':'送出回饋'}</button></form>}</div>;
 }
 function Turnstile({siteKey,onToken}: {siteKey:string;onToken:(token:string)=>void}) {
   const holder=useRef<HTMLDivElement>(null);
@@ -235,8 +235,16 @@ export function PublicApp(){
           <text x="16" y="284" className="cycle-date">當月 20 號</text>
           <text x="16" y="304" className="cycle-date-note">報名截止</text>
           <text x="200" y="160" textAnchor="middle" className="cycle-main">每月一期</text><text x="200" y="187" textAnchor="middle" className="cycle-sub">1 日重新開始</text></svg><figcaption><span><i className="legend-enroll"/>1～20 日：報名期間</span><span><i className="legend-deliver"/>21 日～月底：配對與分發</span></figcaption></figure>
-        <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">報名期間若出現高度契合、且雙方條件皆符合的對象，可能提前配對並寄送結果；並非每份報名都會提前收到。已配對者當期不會再次配對，其餘報名仍在 20 日截止後進行主要配對。</p></div>
-        <div className="schedule-notes"><h2>配對怎麼分配？</h2><p>先確認雙方都接受彼此的性別、參加目的、學校與同系偏好。符合條件後，再綜合共同興趣、相處習慣、聊天及初次見面方式計分；MBTI 僅作選填的小幅加分。</p><p>系統在最低分門檻內，先讓盡可能多人配得到，再挑整體總分較高的組合。因此不一定是每個人各自的最高分對象，也可能沒有適合的配對。</p><p>同領域興趣只取一次貢獻，相關細項可得部分分數，「其他」與自填內容不計共通分。提前配對須達不含 MBTI 的 90 分、符合雙方條件，且至少一項具體興趣完全相同。提前確定後不再參與當期配對。</p><p className="question-desc">分數是填答符合程度，不是交往成功機率。提前配對使用當下候選池，可能減少月底其他組合的機會。</p></div>
+        <div className="about-timeline" aria-label="每月三個步驟">
+          <article><span className="step-number">01</span><div><span className="step-date">當月 1–20 日</span><h2>填表，送出就完成</h2><p>1 日 00:00 開放，20 日 23:59 截止。不需登入，也不用點驗證信。</p></div></article>
+          <article><span className="step-number">02</span><div><span className="step-date">21 日至月底</span><h2>等候配對結果</h2><p>主辦者確認後陸續寄信。每期最多配到一位，也可能沒有合適對象。</p></div></article>
+          <article><span className="step-number">03</span><div><span className="step-date">次月 1 日</span><h2>想再參加，就重新填表</h2><p>每月重新報名，不自動沿用上一期資料。第一期於 2026 年 11 月開始。</p></div></article>
+        </div>
+        <section className="matching-explainer"><div className="about-section-heading"><span>配對方式</span><h2>先尊重條件，再找共同點。</h2></div>
+          <div className="matching-steps"><article><h3>雙方都願意</h3><p>性別、參加目的、學校與同系偏好，必須雙方都接受。</p></article><article><h3>比較相處偏好</h3><p>綜合興趣、相處習慣、聊天與見面方式。MBTI 是選填的小幅加分。</p></article><article><h3>整批一起分配</h3><p>在最低分門檻內，先讓更多人配得到，再選整體總分較高的組合。</p></article></div>
+          <aside className="early-explanation"><span className="early-label">也可能提前收到</span><h3>填答高度符合，就可能先配對。</h3><p>須達不含 MBTI 的 90 分、符合全部雙向條件，且至少有一項完全相同的具體興趣。確定配對後，當期不再分配其他對象。</p></aside>
+          <details className="algorithm-details"><summary>想多了解一點計分方式？</summary><p>同領域興趣只計一次，相關細項可得部分分數；「其他」和自填興趣不計共通分。分配考量整體組合，不保證是你個別的最高分對象。</p><p>分數代表填答符合程度，不是交往成功機率。提前配對只看當下候選池，可能減少月底其他組合的機會。</p></details>
+        </section>
         {page==='about'&&<FeedbackForm siteKey={config?.turnstileSiteKey||null}/>}
       </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
