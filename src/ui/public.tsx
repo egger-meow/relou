@@ -108,6 +108,8 @@ export function PublicApp(){
   const round=stats?.round;
   const calendar=monthlyRound(round?Date.parse(round.opensAt):Date.now());
   const periodTitle=round?.title||calendar.title;
+  const junctionAngle=2*Math.PI*20/calendar.daysInMonth-Math.PI/2;
+  const junction=(radius:number)=>({x:200+Math.cos(junctionAngle)*radius,y:170+Math.sin(junctionAngle)*radius});
   const deliveryWindow=`${calendar.month}/21～${calendar.month}/${calendar.daysInMonth}`;
   const open=round?.status==='OPEN' && Date.now()>=Date.parse(round.opensAt) && Date.now()<Date.parse(round.closesAt);
   const ready=!!config?.turnstileSiteKey && !!config?.supportEmail;
@@ -197,7 +199,19 @@ export function PublicApp(){
           </form></>}
         </div></div></section>
       <section hidden={page!=='about'} className="about-page wrap"><h1>每月一期，怎麼進行？</h1><p className="about-intro">每月 1～20 日報名，21 日至月底配對並寄送結果。所有時間以台灣時間為準。</p>
-        <figure className="cycle-figure"><svg viewBox="0 0 300 300" role="img" aria-labelledby="cycle-title cycle-desc"><title id="cycle-title">每月報名與配對分發時程</title><desc id="cycle-desc">1 日到 20 日開放報名，約佔三分之二；21 日到月底關閉報名，進行配對與寄送。下個月 1 日重新開始。</desc><circle cx="150" cy="150" r="112" fill="none" stroke="#e6d6b9" strokeWidth="26"/><circle cx="150" cy="150" r="112" fill="none" stroke="#397254" strokeWidth="26" pathLength="100" strokeDasharray={`${20/calendar.daysInMonth*100} 100`} transform="rotate(-90 150 150)"/><text x="150" y="137" textAnchor="middle" className="cycle-main">每月一期</text><text x="150" y="165" textAnchor="middle" className="cycle-sub">1 日重新開始</text></svg><figcaption><span><i className="legend-enroll"/>1～20 日：報名期間</span><span><i className="legend-deliver"/>21 日～月底：配對與分發</span></figcaption></figure>
+        <figure className="cycle-figure"><svg viewBox="0 0 380 340" role="img" aria-labelledby="cycle-title cycle-desc"><title id="cycle-title">每月報名與配對分發時程</title><desc id="cycle-desc">頂部接點是當月 1 號，左下接點是當月 20 號結束。1 日到 20 日開放報名；21 日到月底關閉報名，進行配對與寄送。</desc>
+          <circle cx="200" cy="170" r="100" fill="none" stroke="#e6d6b9" strokeWidth="24"/>
+          <circle cx="200" cy="170" r="100" fill="none" stroke="#397254" strokeWidth="24" pathLength="100" strokeDasharray={`${20/calendar.daysInMonth*100} 100`} transform="rotate(-90 200 170)"/>
+          <path d="M200 52V88" stroke="white" strokeWidth="9"/>
+          <line x1={junction(82).x} y1={junction(82).y} x2={junction(118).x} y2={junction(118).y} stroke="white" strokeWidth="9"/>
+          <path d="M200 36V55" className="cycle-guide"/>
+          <polyline points={`${junction(122).x},${junction(122).y} 72,260 16,260`} className="cycle-guide"/>
+          <circle cx="200" cy="70" r="5" fill="#397254" stroke="white" strokeWidth="2"/>
+          <circle cx={junction(100).x} cy={junction(100).y} r="5" fill="#397254" stroke="white" strokeWidth="2"/>
+          <text x="200" y="24" textAnchor="middle" className="cycle-date">當月 1 號</text>
+          <text x="16" y="284" className="cycle-date">當月 20 號</text>
+          <text x="16" y="304" className="cycle-date-note">報名截止</text>
+          <text x="200" y="160" textAnchor="middle" className="cycle-main">每月一期</text><text x="200" y="187" textAnchor="middle" className="cycle-sub">1 日重新開始</text></svg><figcaption><span><i className="legend-enroll"/>1～20 日：報名期間</span><span><i className="legend-deliver"/>21 日～月底：配對與分發</span></figcaption></figure>
         <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">提前分發仍在規劃，尚未啟用；目前請以 21 日至月底的通知期間為準。</p></div>
       </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
