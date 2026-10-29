@@ -1,3 +1,4 @@
+import { interestSimilarity } from '../src/shared/interests';
 import { PROGRAMS } from '../src/shared/programs';
 import { describe, expect, it } from 'vitest';
 import { compatible, computePlan, scorePair, solveEdges } from '../src/matching/engine';
@@ -93,4 +94,22 @@ it('applies reciprocal optional MBTI preference without excluding unknown or I/I
  b.answers.mbti='ESFP';expect(scorePair(a,b)).toBe(base);
  a.answers.mbtiPreference='different';b.answers.mbtiPreference='different';expect(scorePair(a,b)).toBeCloseTo(base+4,2);
  b.answers.mbti=null;expect(scorePair(a,b)).toBe(base);expect(compatible(a,b)).toBe(true);
+});
+
+it('scores related interests partially, caps each domain and ignores Other',()=>{
+ expect(interestSimilarity(['音樂'],['獨立音樂'])).toBe(0.6);
+ expect(interestSimilarity(['籃球'],['羽球'])).toBe(0.25);
+ expect(interestSimilarity(['音樂','搖滾'],['音樂','搖滾'])).toBe(1);
+ expect(interestSimilarity(['音樂','其他'],['音樂'])).toBe(1);
+ expect(interestSimilarity(['其他'],['其他'])).toBe(0);
+ expect(interestSimilarity([],[])).toBe(0);
+ expect(interestSimilarity(['音樂','搖滾','搖滾'],['音樂'])).toBe(1);
+});
+it('does not let MBTI qualify a pair for early allocation',()=>{
+ const a=person('a'),b=person('b');b.answers.firstMeet='walk';
+ a.answers.mbti=b.answers.mbti='INTJ';a.answers.mbtiPreference=b.answers.mbtiPreference='similar';
+ expect(scorePair(a,b)).toBeGreaterThan(scorePair(a,b,false));
+ const threshold=scorePair(a,b);
+ expect(computePlan([a,b],threshold).pairs).toHaveLength(1);
+ expect(computePlan([a,b],threshold,()=>true,(x,y)=>scorePair(x,y,false)).pairs).toHaveLength(0);
 });

@@ -175,3 +175,22 @@ export const INTEREST_GROUPS = [
   }
 ] as const;
 export const INTERESTS = INTEREST_GROUPS.flatMap(group => [...group.tags]);
+
+// Broad legacy labels describe their category; related subtopics are weaker than exact matches.
+const BROAD_INTERESTS=new Set(['運動健身','音樂','電影影集','遊戲','美食','戶外旅行','攝影','閱讀','科技 AI']);
+export function interestSimilarity(a:readonly string[],b:readonly string[]):number {
+ const clean=(tags:readonly string[])=>new Set(tags.filter(t=>t!=='其他'&&(INTERESTS as readonly string[]).includes(t)));
+ const x=clean(a),y=clean(b);
+ let total=0,domains=0;
+ for(const group of INTEREST_GROUPS) {
+  if(group.label==='其他')continue;
+  const left=group.tags.filter(t=>x.has(t)),right=group.tags.filter(t=>y.has(t));
+  if(!left.length&&!right.length)continue;
+  domains++;
+  // One contribution per domain, regardless of how many overlapping tags were selected.
+  let best=0;
+  for(const l of left)for(const r of right)best=Math.max(best,l===r?1:BROAD_INTERESTS.has(l)||BROAD_INTERESTS.has(r)?0.6:0.25);
+  total+=best;
+ }
+ return domains?total/domains:0;
+}

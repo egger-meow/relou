@@ -1,4 +1,4 @@
-import { ALGORITHM_VERSION, computePlan, fromRow, planDigest, snapshotHash } from '../matching/engine';
+import { ALGORITHM_VERSION, scorePair, computePlan, fromRow, planDigest, snapshotHash } from '../matching/engine';
 import { eligibleRows, roundById } from './db';
 import { resultEmail } from './mail';
 import { mailReady } from './smtp';
@@ -11,7 +11,7 @@ export async function earlyPlan(env:Env,id:string) {
  const rows=await eligibleRows(env.DB,id),hash=await snapshotHash(rows);
  const candidates=rows.map(fromRow).map(c=>({...c,answers:{...c.answers,interests:c.answers.interests.filter(tag=>tag!=='其他')}})).filter(c=>c.answers.interests.length>0);
  const complete=computePlan(candidates,Math.max(EARLY_MIN_SCORE,round.min_pair_score),(a,b)=>
-  a.answers.interests.some(tag=>tag!=='其他'&&b.answers.interests.includes(tag)));
+  a.answers.interests.some(tag=>tag!=='其他'&&b.answers.interests.includes(tag)),(a,b)=>scorePair(a,b,false));
  const pairs=[...complete.pairs].sort((a,b)=>b.score-a.score||a.a.localeCompare(b.a)).slice(0,2);
  const scores=pairs.map(p=>p.score).sort((a,b)=>a-b);
  const plan={...complete,pairs,unmatchedCount:complete.eligibleCount-pairs.length*2,

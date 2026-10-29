@@ -1,8 +1,9 @@
+import { interestSimilarity } from '../shared/interests';
 import { programById } from '../shared/programs';
 import blossom from 'edmonds-blossom';
 import type { EntryRow, MatchAnswers } from '../shared/schema';
 
-export const ALGORITHM_VERSION = 'blossom-reciprocal-v4-mbti';
+export const ALGORITHM_VERSION = 'blossom-reciprocal-v5-interest-domains';
 
 export interface Candidate {
   id: string;
@@ -82,10 +83,9 @@ function firstMeetScore(a: string, b: string): number {
   const casual = ['cafe','walk','food'];
   return casual.includes(a) && casual.includes(b) ? 0.65 : a === 'chat_first' || b === 'chat_first' ? 0.45 : 0.2;
 }
-export function scorePair(a: Candidate, b: Candidate): number {
+export function scorePair(a: Candidate, b: Candidate, includeMbti = true): number {
   const x = a.answers, y = b.answers;
-  const common = x.interests.filter(tag => y.interests.includes(tag)).length;
-  const interests = 2 * common / (x.interests.length + y.interests.length);
+  const interests = interestSimilarity(x.interests,y.interests);
   const values = (
     sameOrFlexible(x.dayOffStyle, y.dayOffStyle, 'both') +
     sameOrFlexible(x.conflictStyle, y.conflictStyle, 'depends') +
@@ -95,7 +95,7 @@ export function scorePair(a: Candidate, b: Candidate): number {
   const base=100 * weighted / 85;
   const validMbti=(value:unknown):value is string=>typeof value==='string'&&/^[EI][NS][TF][JP]$/.test(value);
   let bonus=0;
-  if(validMbti(x.mbti)&&validMbti(y.mbti)) {
+  if(includeMbti&&validMbti(x.mbti)&&validMbti(y.mbti)) {
     const same=[...x.mbti].filter((letter,i)=>letter===y.mbti![i]).length/4;
     // Each participant contributes up to 2 points; no preference and unknown types are neutral.
     for(const preference of [x.mbtiPreference,y.mbtiPreference]) {
@@ -128,14 +128,14 @@ export function solveEdges(n: number, edges: [number,number,number][]): [number,
   return out;
 }
 
-export function computePlan(candidates: Candidate[], minScore = 55, acceptPair: (a:Candidate,b:Candidate)=>boolean = ()=>true): MatchPlan {
+export function computePlan(candidates: Candidate[], minScore = 55, acceptPair: (a:Candidate,b:Candidate)=>boolean = ()=>true, scorer: (a:Candidate,b:Candidate)=>number = scorePair): MatchPlan {
   const eligible = candidates.filter(c => c.status === 'eligible' && c.adultAttested && c.shareContactConsent && c.contactValue).sort((a,b) => a.id.localeCompare(b.id));
   if (eligible.length > 300) throw new Error('Round exceeds safe synchronous matching limit (300); use offline reviewed batch');
   const edges: [number,number,number][] = [];
   const scores = new Map<string,number>();
   for (let i=0;i<eligible.length;i++) for (let j=i+1;j<eligible.length;j++) {
     if (!compatible(eligible[i],eligible[j]) || !acceptPair(eligible[i],eligible[j])) continue;
-    const score = scorePair(eligible[i],eligible[j]);
+    const score = scorer(eligible[i],eligible[j]);
     if (score < minScore) continue;
     scores.set(i + ':' + j, score);
     // The sum of all tie breakers must never outweigh one hundredth of score.
