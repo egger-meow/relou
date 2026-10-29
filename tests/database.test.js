@@ -250,3 +250,14 @@ it('rejects an early allocation atomically if the round locks after planning',as
  for(const table of ['match_runs','allocation_batches','matches','match_members','email_outbox'])
   expect(sqlite.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n).toBe(0);
 });
+
+it('stores private feedback and blocks public reading, invalid content and rate abuse',async()=>{
+ expect((await request('/api/feedback',{message:'  合成回饋 <script>  ',turnstileToken:'synthetic'},false)).status).toBe(200);
+ expect(sqlite.prepare('SELECT message FROM feedback').get().message).toBe('合成回饋 <script>');
+ const inbox=await (await request('/api/admin/feedback')).json();expect(inbox.items).toHaveLength(1);
+ expect((await request('/api/admin/feedback',undefined,false)).status).toBe(404);
+ expect((await request('/api/feedback',{message:'x'.repeat(2001),turnstileToken:'synthetic'},false)).status).toBe(400);
+ env.SUBMIT_LIMITER.limit=async()=>({success:false});
+ expect((await request('/api/feedback',{message:'spam',turnstileToken:'synthetic'},false)).status).toBe(429);
+ expect(sqlite.prepare('SELECT count(*) n FROM feedback').get().n).toBe(1);
+});

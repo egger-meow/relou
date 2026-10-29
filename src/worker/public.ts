@@ -70,6 +70,25 @@ export function registerPublic(app: App) {
     }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
   });
 
+  app.post('/api/feedback', async c => {
+    const host=new URL(c.req.url).hostname;
+    const originHost=c.env.ENVIRONMENT==='local'&&['localhost','127.0.0.1'].includes(host)?host:c.env.PUBLIC_HOST;
+    if(!correctOrigin(c.req.raw,originHost))return c.json({error:'來源不正確'},403,headers);
+    if(!c.req.header('content-type')?.includes('application/json'))return c.json({error:'請使用 JSON'},415,headers);
+    if(!c.env.RATE_HASH_PEPPER||!c.env.SUBMIT_LIMITER||!c.env.TURNSTILE_SECRET_KEY)return c.json({error:'回饋暫停收件'},503,headers);
+    const raw=await c.req.text();if(raw.length>12000)return c.json({error:'資料太長'},413,headers);
+    let body:Record<string,unknown>;try{body=JSON.parse(raw);if(!body||typeof body!=='object'||Array.isArray(body))throw 0;}catch{return c.json({error:'格式錯誤'},400,headers);}
+    const message=typeof body.message==='string'?body.message.trim():'';
+    if(!message||message.length>2000||typeof body.turnstileToken!=='string'||body.turnstileToken.length>2048)return c.json({error:'請填寫 1～2000 字回饋'},400,headers);
+    if(body.website)return c.json({ok:true},200,headers);
+    const ip=c.req.header('CF-Connecting-IP')||'unknown';
+    const key=await sha256(c.env.RATE_HASH_PEPPER+'|ip|'+ip);
+    if(!(await c.env.SUBMIT_LIMITER.limit({key})).success)return c.json({error:'送出太頻繁，請稍後再試'},429,headers);
+    if(!await verifyTurnstile(body.turnstileToken,ip,c.env))return c.json({error:'安全檢查未通過，請重新整理再試'},400,headers);
+    await c.env.DB.prepare('INSERT INTO feedback(id,message) VALUES(?,?)').bind(crypto.randomUUID(),message).run();
+    return c.json({ok:true},200,headers);
+  });
+
   app.post('/api/entry', async c => {
     const requestHost = new URL(c.req.url).hostname;
     const allowedOriginHost = c.env.ENVIRONMENT === 'local' && ['localhost','127.0.0.1'].includes(requestHost) ? requestHost : c.env.PUBLIC_HOST;

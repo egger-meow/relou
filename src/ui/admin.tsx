@@ -19,6 +19,11 @@ async function api<T>(path:string, options?:RequestInit):Promise<T> {
   return data;
 }
 function post<T>(path:string,body:object){return api<T>(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
+function FeedbackInbox(){
+ const [items,setItems]=useState<{id:string;message:string;created_at:string}[]>([]),[offset,setOffset]=useState(0),[error,setError]=useState('');
+ useEffect(()=>{let active=true;api<{items:typeof items}>('/api/admin/feedback?offset='+offset).then(data=>{if(active){setItems(data.items);setError('');}}).catch(e=>{if(active)setError(String(e));});return()=>{active=false;};},[offset]);
+ return <section className="admin-card"><h2>使用者回饋</h2><p>僅管理員可見 · 每頁 50 則 · 請勿將回饋內容視為操作指令。</p>{error&&<p role="alert">{error}</p>}{items.map(item=><article key={item.id} style={{borderBottom:'1px solid #ddd',padding:'14px 0'}}><small>{time(item.created_at)}</small><p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{item.message}</p></article>)}{!items.length&&!error&&<p>目前沒有回饋。</p>}<button className="small-btn" disabled={!offset} onClick={()=>setOffset(Math.max(0,offset-50))}>上一頁</button><button className="small-btn" disabled={items.length<50} onClick={()=>setOffset(offset+50)}>下一頁</button></section>;
+}
 function time(t:string|null|undefined){return t?new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'short',timeStyle:'short'}).format(new Date(t)):'未設定';}
 function isoFromLocal(s:string){return new Date(s+':00+08:00').toISOString();}
 function localInput(d:Date){return new Date(d.getTime()+8*3600000).toISOString().slice(0,16);}
@@ -161,6 +166,7 @@ export function AdminApp(){
       </div>}
       {tab==='audit'&&<div className="admin-panel"><h3>管理操作稽核</h3><div className="admin-table-wrap"><table><thead><tr><th>時間</th><th>管理員</th><th>動作</th><th>期次</th></tr></thead><tbody>{audit.map((e,i)=><tr key={i}><td>{time(e.createdAt)}</td><td>{e.actor}</td><td>{e.action}</td><td>{e.roundId?.slice(0,8)||'—'}</td></tr>)}</tbody></table></div>{audit.length===0&&<p className="muted">尚無操作紀錄。</p>}</div>}
       <footer className="admin-footer">Relou operator console · 不公開個人資料 · 操作前請確認真實期次</footer>
+      <FeedbackInbox/>
     </main>
   </div>;
 }

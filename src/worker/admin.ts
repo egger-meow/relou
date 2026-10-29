@@ -28,6 +28,11 @@ export function registerAdmin(app: App) {
     c.header('Cache-Control','no-store');
   });
 
+  app.get('/api/admin/feedback', async c => {
+    const rows=await c.env.DB.prepare('SELECT id,message,created_at FROM feedback ORDER BY created_at DESC,id DESC LIMIT 50 OFFSET ?').bind(Math.min(100000,Math.max(0,Math.floor(Number(c.req.query('offset'))||0)))).all();
+    return c.json({items:rows.results||[]},200,noStore);
+  });
+
   app.get('/api/admin/dashboard', async c => {
     const db = c.env.DB;
     const round = await currentRound(db);
