@@ -103,7 +103,7 @@ export function registerPublic(app: App) {
 
     const answers = {
       schoolClaimed: v.schoolClaimed, gender: v.gender, desiredGenders: v.desiredGenders,
-      intent: v.intent, campusPreference: v.campusPreference, interests: v.interests,
+      intent: v.intent, campusPreference: v.campusPreference, interests: v.interests, customInterests: v.customInterests || [],
       dayOffStyle: v.dayOffStyle, conflictStyle: v.conflictStyle, chatStyle: v.chatStyle,
       firstMeet: v.firstMeet, topValue: v.topValue,
       openAnswer: v.openAnswer || '', mbti: v.mbti || null

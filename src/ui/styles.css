@@ -15,3 +15,5 @@ h1{font-size:25px;line-height:1.4;margin:0 0 12px;font-weight:700}.form-head{pad
 
 @media(max-width:960px){.admin-shell{grid-template-columns:1fr}.admin-sidebar{min-height:0;padding:16px;flex-direction:row;align-items:center;gap:25px}.admin-menu{display:flex;gap:3px;margin:0;overflow:auto}.admin-menu button{padding:9px 12px;white-space:nowrap}.admin-side-foot{display:none}.admin-kpis{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.admin-sidebar{display:block}.admin-menu{margin-top:14px}.admin-main{padding:25px 16px}.admin-kpis{gap:10px}.admin-panel{padding:19px 16px}.preview-grid{grid-template-columns:repeat(2,1fr)}.round-form{grid-template-columns:1fr}}
+
+.custom-interests{margin-top:16px;display:grid;gap:10px}.custom-interests>p{margin-bottom:0}.custom-interests label .question-desc{margin-bottom:5px}

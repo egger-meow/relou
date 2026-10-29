@@ -53,6 +53,14 @@ beforeEach(()=>{
 });
 afterEach(()=>{sqlite.close();vi.unstubAllGlobals();});
 describe('single-submit and settlement with real SQLite',()=>{
+  it('stores optional custom interests privately with the entry answers',async()=>{
+    const r=await request('/api/entry',{...participant('custom@example.invalid'),interests:['其他'],customInterests:[' 桌遊 ','烘焙']},false);
+    expect(r.status).toBe(200);
+    expect(JSON.parse(sqlite.prepare('SELECT answers_json FROM entries').get().answers_json).customInterests).toEqual(['桌遊','烘焙']);
+    const stats=await (await request('/api/public/stats',null,false)).text();
+    expect(stats).not.toContain('桌遊');
+    expect(stats).not.toContain('customInterests');
+  });
   it('persists one entry and never overwrites or sends signup mail',async()=>{
     const first=await submit('synthetic@example.invalid');
     expect(first.status).toBe(200);

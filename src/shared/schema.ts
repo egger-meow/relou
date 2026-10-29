@@ -11,6 +11,7 @@ export const entrySchema = z.object({
   intent: z.enum(['friends', 'dating', 'either']),
   campusPreference: z.enum(['same_school', 'either_school']),
   interests: z.array(z.enum(INTERESTS)).min(1).max(4),
+  customInterests: z.array(z.string().trim().min(1).max(30).regex(/^[^\x00-\x1f\x7f<>]+$/)).max(3).optional(),
   dayOffStyle: z.enum(['plan', 'spontaneous', 'both']),
   conflictStyle: z.enum(['listen', 'direct', 'depends']),
   chatStyle: z.enum(['often', 'deep', 'meet']),
@@ -27,6 +28,9 @@ export const entrySchema = z.object({
   turnstileToken: z.string().min(1).max(2048),
   website: z.string().max(200).optional()
 }).strict().superRefine((v, ctx) => {
+  if (v.customInterests?.length && !v.interests.includes('其他')) {
+    ctx.addIssue({code:'custom',path:['customInterests'],message:'請先選擇其他興趣'});
+  }
   if (v.contactKind === 'instagram' && !/^@?(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/.test(v.contactValue || '')) {
     ctx.addIssue({ code: 'custom', path: ['contactValue'], message: '請輸入有效的 IG 帳號' });
   }

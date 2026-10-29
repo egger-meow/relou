@@ -111,7 +111,7 @@ export function PublicApp(){
   async function submit(e:FormEvent){
     e.preventDefault();setError('');
     if(!canSubmit)return;
-    const p=entrySchema.safeParse({...draft,turnstileToken:token});
+    const p=entrySchema.safeParse({...draft,customInterests:draft.interests.includes('其他')?(draft.customInterests||[]).map(v=>v.trim()).filter(Boolean):[],turnstileToken:token});
     if(!p.success){setError('還有欄位沒有填好，請檢查必填題目、聯絡方式與同意事項。');return;}
     setSending(true);
     try{
@@ -157,7 +157,9 @@ export function PublicApp(){
               <PillGroup title="來 Relou 想遇見？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
               <PillGroup title="跨校 OK 嗎？" options={choices.campusPreference} value={draft.campusPreference} onChange={v=>set('campusPreference',v as Draft['campusPreference'])}/>
               <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><p className="question-desc">選 1–4 個，配對後也許就是破冰話題。</p><div className="pill-list">{INTERESTS.map(t=><button key={t} type="button" aria-pressed={draft.interests.includes(t)} className={'pill '+(draft.interests.includes(t)?'selected':'')}
-                onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<4?[...draft.interests,t]:draft.interests)}>{t}</button>)}</div></fieldset>
+                onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<4?[...draft.interests,t]:draft.interests)}>{t}</button>)}</div>
+                {draft.interests.includes('其他')&&<div className="custom-interests"><p className="question-desc">其他興趣（選填，最多 3 項，每項 30 字）。</p>{[0,1,2].map(i=><label key={i}><span className="question-desc">自填興趣 {i+1}</span><input className="text-input" maxLength={30} placeholder={i===0?'例如：烘焙、桌遊或手作':'還有其他喜歡的事嗎？'} value={draft.customInterests?.[i]||''} onChange={e=>{const values=[...(draft.customInterests||[])];values[i]=e.target.value;set('customInterests',values);}}/></label>)}</div>}
+              </fieldset>
             </div>
             <div className="form-block"><div className="block-label">03 / 相處的模樣</div>
               <PillGroup title="放假時你比較…" options={choices.dayOffStyle} value={draft.dayOffStyle} onChange={v=>set('dayOffStyle',v as Draft['dayOffStyle'])}/>

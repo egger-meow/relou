@@ -27,3 +27,13 @@ describe('single submit contract',()=>{
     expect(entrySchema.safeParse({...valid,desiredGenders:['all','man']}).success).toBe(false);
   });
 });
+
+it('accepts up to three optional custom interests only with Other selected',()=>{
+  const input={...valid,interests:['其他'],customInterests:[' 桌遊 ','烘焙','陶藝']};
+  expect(entrySchema.parse(input).customInterests).toEqual(['桌遊','烘焙','陶藝']);
+  expect(entrySchema.safeParse({...input,customInterests:[]}).success).toBe(true);
+  expect(entrySchema.safeParse({...input,customInterests:['a','b','c','d']}).success).toBe(false);
+  expect(entrySchema.safeParse({...input,customInterests:['字'.repeat(31)]}).success).toBe(false);
+  expect(entrySchema.safeParse({...input,customInterests:['<script>']}).success).toBe(false);
+  expect(entrySchema.safeParse({...input,interests:['音樂']}).success).toBe(false);
+});
