@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { PROGRAMS } from '../shared/programs';
 import { monthlyRound } from '../shared/calendar';
 import { entrySchema, INTERESTS, PRIVACY_VERSION } from '../shared/schema';
 import type { EntryInput } from '../shared/schema';
@@ -31,7 +32,7 @@ const choices = {
 } satisfies Record<string,Choice[]>;
 
 const initial:Draft = {
-  schoolClaimed:'NYCU',nickname:'',gender:'undisclosed',desiredGenders:[],intent:'either',
+  schoolClaimed:'NYCU',degreeLevel:'bachelor',programId:'',departmentPreference:'either_department',nickname:'',gender:'undisclosed',desiredGenders:[],intent:'either',
   campusPreference:'either_school',interests:[],dayOffStyle:'both',conflictStyle:'depends',
   chatStyle:'deep',firstMeet:'chat_first',topValue:'ease',openAnswer:'',mbti:null,
   notificationEmail:'',contactKind:'instagram',contactValue:'',adultAttested:false,
@@ -148,13 +149,15 @@ export function PublicApp(){
       </div></section>
       <section hidden={page!=='form'} id="form" className="form-section"><div className="wrap form-layout">
         <div className="form-card">
-          {done?<div className="success-panel"><h2>已收到你的報名！</h2><p>你已加入 {periodTitle}。主要配對與結果通知期間為 {deliveryWindow}，結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
+          {done?<div className="success-panel"><h2>已收到你的報名！</h2><p>你已加入 {periodTitle}。主要配對與結果通知期間為 {deliveryWindow}；若雙方高度契合，也可能提前收到結果。結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
           :<><div className="form-head"><h1>清交配對報名表</h1><p className="period-title">{periodTitle}</p><p>填寫後送出即可。每期最多配對一位，也可能沒有合適對象。</p><p>報名：{calendar.month}/1～{calendar.month}/20 · 配對與通知：{deliveryWindow}（台灣時間）</p></div>
           {!open&&<div className="notice">{Date.now()<Date.parse(round?.opensAt||calendar.opensAt)?`${calendar.year} 年 ${calendar.month} 月 1 日 00:00 開始報名。2026 年 10 月不開放報名。`:round?.status==='DRAFT'?'本期正在準備中，尚未開放報名。':'本期報名已截止，21 日起為配對與結果通知期間，次月 1 日開放下一期。'}</div>}
           {open&&!ready&&<div className="notice">主辦者尚未完成收件防護或聯絡窗口設定，目前暫停收件。</div>}
           <form onSubmit={submit} noValidate><fieldset className="form-fields" disabled={!canSubmit}>
             <div className="form-block"><div className="block-label">01 / 關於你</div>
-              <PillGroup title="你是哪一校？" desc="自行填寫，不會要求學校信箱驗證" options={choices.schoolClaimed} value={draft.schoolClaimed} onChange={v=>set('schoolClaimed',v as Draft['schoolClaimed'])}/>
+              <label className="question"><span className="question-title">學校</span><select className="text-input" value={draft.schoolClaimed} onChange={e=>setDraft(v=>({...v,schoolClaimed:e.target.value as Draft['schoolClaimed'],programId:''}))}>{choices.schoolClaimed.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}</select><span className="question-desc">學校與系所由你自行填寫，不驗證學生身分。</span></label>
+              <label className="question"><span className="question-title">學位</span><select className="text-input" value={draft.degreeLevel} onChange={e=>setDraft(v=>({...v,degreeLevel:e.target.value as Draft['degreeLevel'],programId:''}))}><option value="bachelor">學士（含學士後）</option><option value="master">碩士（含在職專班）</option><option value="doctor">博士</option></select></label>
+              <label className="question"><span className="question-title">系所／學位學程</span><select className="text-input" value={draft.programId} onChange={e=>set('programId',e.target.value)}><option value="">請選擇系所或學位學程</option>{PROGRAMS.filter(p=>p.school===draft.schoolClaimed&&p.degree===draft.degreeLevel).sort((a,b)=>a.name.localeCompare(b.name,'zh-TW')).map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select><span className="question-desc">名單依教育部資料及 115 學年異動核對。找不到系所請聯絡主辦者；校系只用於配對，不公開或放進結果信。</span></label>
               <label className="question"><span className="question-title">想怎麼稱呼你？</span><input className="text-input" placeholder="你的暱稱（2–16 字）" value={draft.nickname} maxLength={16} onChange={e=>set('nickname',e.target.value)}/></label>
               <PillGroup title="你的性別？" options={choices.gender} value={draft.gender} onChange={v=>set('gender',v as Draft['gender'])}/>
               <PillGroup title="你願意認識誰？" desc="可以複選，選「都可以」則不用選其他" options={choices.desiredGenders} value={draft.desiredGenders} multiple onChange={v=>set('desiredGenders',v as Draft['desiredGenders'])}/>
@@ -162,6 +165,7 @@ export function PublicApp(){
             <div className="form-block"><div className="block-label">02 / 你想遇見誰</div>
               <PillGroup title="來 Relou 想遇見？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
               <PillGroup title="跨校 OK 嗎？" options={choices.campusPreference} value={draft.campusPreference} onChange={v=>set('campusPreference',v as Draft['campusPreference'])}/>
+              <PillGroup title="對同校系的偏好？" desc="同系指同一所學校、同一系所，跨學位仍算同系；獨立研究所不因名稱相近而合併。這是配對限制，雙方都必須同意。" options={[{value:'same_department',label:'只限同校同系'},{value:'different_department',label:'避開同校同系'},{value:'either_department',label:'都可以'}]} value={draft.departmentPreference} onChange={v=>set('departmentPreference',v as Draft['departmentPreference'])}/>
               <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><p className="question-desc">選 1–4 個，配對後也許就是破冰話題。</p><div className="pill-list">{INTERESTS.map(t=><button key={t} type="button" aria-pressed={draft.interests.includes(t)} className={'pill '+(draft.interests.includes(t)?'selected':'')}
                 onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<4?[...draft.interests,t]:draft.interests)}>{t}</button>)}</div>
                 {draft.interests.includes('其他')&&<div className="custom-interests"><p className="question-desc">其他興趣（選填，最多 3 項，每項 30 字）。</p>{[0,1,2].map(i=><label key={i}><span className="question-desc">自填興趣 {i+1}</span><input className="text-input" maxLength={30} placeholder={i===0?'例如：烘焙、桌遊或手作':'還有其他喜歡的事嗎？'} value={draft.customInterests?.[i]||''} onChange={e=>{const values=[...(draft.customInterests||[])];values[i]=e.target.value;set('customInterests',values);}}/></label>)}</div>}
@@ -212,10 +216,10 @@ export function PublicApp(){
           <text x="16" y="284" className="cycle-date">當月 20 號</text>
           <text x="16" y="304" className="cycle-date-note">報名截止</text>
           <text x="200" y="160" textAnchor="middle" className="cycle-main">每月一期</text><text x="200" y="187" textAnchor="middle" className="cycle-sub">1 日重新開始</text></svg><figcaption><span><i className="legend-enroll"/>1～20 日：報名期間</span><span><i className="legend-deliver"/>21 日～月底：配對與分發</span></figcaption></figure>
-        <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">提前分發仍在規劃，尚未啟用；目前請以 21 日至月底的通知期間為準。</p></div>
+        <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">報名期間若出現高度契合、且雙方條件皆符合的對象，可能提前配對並寄送結果；並非每份報名都會提前收到。已配對者當期不會再次配對，其餘報名仍在 20 日截止後進行主要配對。</p></div>
       </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
-        <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
+        <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的學校、學位、系所、答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
           <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你明確同意的資訊，並不保證一定配到對象。</p>
           <p>資料用於本期配對及通知；期次封存滿 30 天後，主辦者可從後台清除個人資料（目前為人工執行）。需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
         <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></details></section>

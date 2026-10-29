@@ -1,3 +1,4 @@
+import { programById, PROGRAM_CATALOG_VERSION } from '../shared/programs';
 import type { Hono } from 'hono';
 import { entrySchema, normalizeEmail, contactForMatch, publicRound } from '../shared/schema';
 import { sha256 } from '../matching/engine';
@@ -103,6 +104,8 @@ export function registerPublic(app: App) {
 
     const answers = {
       schoolClaimed: v.schoolClaimed, gender: v.gender, desiredGenders: v.desiredGenders,
+      degreeLevel:v.degreeLevel, programId:v.programId, departmentPreference:v.departmentPreference,
+      departmentGroup:programById(v.programId)!.departmentGroup,programCatalogVersion:PROGRAM_CATALOG_VERSION,
       intent: v.intent, campusPreference: v.campusPreference, interests: v.interests, customInterests: v.customInterests || [],
       dayOffStyle: v.dayOffStyle, conflictStyle: v.conflictStyle, chatStyle: v.chatStyle,
       firstMeet: v.firstMeet, topValue: v.topValue,

@@ -1,3 +1,4 @@
+import { PROGRAMS } from '../src/shared/programs';
 import { describe, expect, it } from 'vitest';
 import { compatible, computePlan, scorePair, solveEdges } from '../src/matching/engine';
 import type { Candidate } from '../src/matching/engine';
@@ -68,4 +69,19 @@ describe('reciprocal matching',()=>{
     expect(new Set(a.pairs.flatMap(x=>[x.a,x.b])).size).toBe(4);
     expect(a.unmatchedCount).toBe(1);
   });
+});
+
+it('enforces reciprocal same/different department rules across degrees and schools',()=>{
+ const undergrad=PROGRAMS.find(p=>p.school==='NTHU'&&p.degree==='bachelor'&&p.name==='資訊工程學系')!;
+ const graduate=PROGRAMS.find(p=>p.school==='NTHU'&&p.degree==='master'&&p.name==='資訊工程學系')!;
+ const same={...person('a').answers,schoolClaimed:'NTHU' as const,programId:undergrad.id,departmentGroup:undergrad.departmentGroup,departmentPreference:'same_department' as const};
+ const a=person('a',{school:'NTHU',answers:same}),b=person('b',{school:'NTHU',answers:{...same,degreeLevel:'master',programId:graduate.id}});
+ expect(compatible(a,b)).toBe(true);
+ b.answers.departmentPreference='different_department';expect(compatible(a,b)).toBe(false);
+ a.answers.departmentPreference='different_department';expect(compatible(a,b)).toBe(false);
+ b.answers.departmentGroup='NYCU:獨立研究所';expect(compatible(a,b)).toBe(true);
+ a.answers.departmentPreference='same_department';expect(compatible(a,b)).toBe(false);
+ b.school='NYCU';b.answers.departmentGroup=undergrad.departmentGroup;expect(compatible(a,b)).toBe(false);
+ a.answers.departmentPreference='different_department';expect(compatible(a,b)).toBe(true);
+ const unknown=person('legacy');expect(compatible(a,unknown)).toBe(false);
 });

@@ -58,7 +58,8 @@
     "TURNSTILE_SITE_KEY": "",
     "SUPPORT_EMAIL": "",
     "ENVIRONMENT": "production",
-    "MONTHLY_ROUNDS_ENABLED": "true"
+    "MONTHLY_ROUNDS_ENABLED": "true",
+    "EARLY_MATCHING_ENABLED": "true"
   },
   "triggers": {
     "crons": [

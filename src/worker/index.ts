@@ -1,3 +1,4 @@
+import { runEarlySchedule } from './early';
 import { syncMonthlyRounds } from './schedule';
 import { Hono } from 'hono';
 import { registerPublic } from './public';
@@ -14,6 +15,7 @@ app.onError((_error,c) => c.json({ error: '服務暫時無法處理請求' },500
 export default {
   async scheduled(controller: ScheduledController, env: Env): Promise<void> {
     await syncMonthlyRounds(env,controller.scheduledTime);
+    await runEarlySchedule(env);
   },
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);

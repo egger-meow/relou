@@ -1,0 +1,3755 @@
+[
+  {
+    "id": "NTHU-bachelor-817441d579a9",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "中國文學系",
+    "departmentGroup": "NTHU:中國文學系",
+    "sourceYear": 114,
+    "moeCode": "2322003"
+  },
+  {
+    "id": "NTHU-bachelor-d5a5d361b6a4",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "人文社會學院學士班",
+    "departmentGroup": "NTHU:人文社會學院學士班",
+    "sourceYear": 114,
+    "moeCode": "2299010"
+  },
+  {
+    "id": "NTHU-bachelor-841c83e77836",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "動力機械工程學系",
+    "departmentGroup": "NTHU:動力機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151056"
+  },
+  {
+    "id": "NTHU-bachelor-acc72b747540",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "化學工程學系",
+    "departmentGroup": "NTHU:化學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7111057"
+  },
+  {
+    "id": "NTHU-bachelor-3b69454ef355",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "化學系",
+    "departmentGroup": "NTHU:化學系",
+    "sourceYear": 114,
+    "moeCode": "5311037"
+  },
+  {
+    "id": "NTHU-bachelor-f966fb2b062d",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "原子科學院學士班",
+    "departmentGroup": "NTHU:原子科學院學士班",
+    "sourceYear": 114,
+    "moeCode": "7194069"
+  },
+  {
+    "id": "NTHU-bachelor-e862b0596210",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "外國語文學系",
+    "departmentGroup": "NTHU:外國語文學系",
+    "sourceYear": 114,
+    "moeCode": "2311002"
+  },
+  {
+    "id": "NTHU-bachelor-f2016a4ae6a6",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "學士後法律學士學位學程",
+    "departmentGroup": "NTHU:學士後法律學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "04211B01"
+  },
+  {
+    "id": "NTHU-bachelor-cab6421f08eb",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "學士後醫學系",
+    "departmentGroup": "NTHU:學士後醫學系",
+    "sourceYear": 114,
+    "moeCode": "9121140"
+  },
+  {
+    "id": "NTHU-bachelor-6afccd15767c",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "工學院學士班",
+    "departmentGroup": "NTHU:工學院學士班",
+    "sourceYear": 114,
+    "moeCode": "7112071"
+  },
+  {
+    "id": "NTHU-bachelor-cd2951a31605",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "工業工程與工程管理學系",
+    "departmentGroup": "NTHU:工業工程與工程管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191061"
+  },
+  {
+    "id": "NTHU-bachelor-981c18922553",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "工程與系統科學系",
+    "departmentGroup": "NTHU:工程與系統科學系",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NTHU-bachelor-8b93f5cbf8e3",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "幼兒教育學系",
+    "departmentGroup": "NTHU:幼兒教育學系",
+    "sourceYear": 114,
+    "moeCode": "1121091"
+  },
+  {
+    "id": "NTHU-bachelor-69ba6c13c018",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "應用科學系",
+    "departmentGroup": "NTHU:應用科學系",
+    "sourceYear": 114,
+    "moeCode": "5111106"
+  },
+  {
+    "id": "NTHU-bachelor-53b36eda5f50",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "教育心理與諮商學系",
+    "departmentGroup": "NTHU:教育心理與諮商學系",
+    "sourceYear": 114,
+    "moeCode": "3131077"
+  },
+  {
+    "id": "NTHU-bachelor-4779f843579d",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "教育與學習科技學系",
+    "departmentGroup": "NTHU:教育與學習科技學系",
+    "sourceYear": 114,
+    "moeCode": "1111084"
+  },
+  {
+    "id": "NTHU-bachelor-21c9827fa9eb",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "數學系",
+    "departmentGroup": "NTHU:數學系",
+    "sourceYear": 114,
+    "moeCode": "5411043"
+  },
+  {
+    "id": "NTHU-bachelor-8ec783de1ce1",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "材料科學工程學系",
+    "departmentGroup": "NTHU:材料科學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112058"
+  },
+  {
+    "id": "NTHU-bachelor-01068d8f5567",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "清華學院國際學士班",
+    "departmentGroup": "NTHU:清華學院國際學士班",
+    "sourceYear": 114,
+    "moeCode": "2323120"
+  },
+  {
+    "id": "NTHU-bachelor-e194a764c4b1",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "清華學院學士班",
+    "departmentGroup": "NTHU:清華學院學士班",
+    "sourceYear": 114,
+    "moeCode": "99999075"
+  },
+  {
+    "id": "NTHU-bachelor-48a06b7dc803",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "物理學系",
+    "departmentGroup": "NTHU:物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331038"
+  },
+  {
+    "id": "NTHU-bachelor-9b30efd02b64",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "特殊教育學系",
+    "departmentGroup": "NTHU:特殊教育學系",
+    "sourceYear": 114,
+    "moeCode": "1113095"
+  },
+  {
+    "id": "NTHU-bachelor-b7b20799f7e7",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "理學院學士班",
+    "departmentGroup": "NTHU:理學院學士班",
+    "sourceYear": 114,
+    "moeCode": "5399042"
+  },
+  {
+    "id": "NTHU-bachelor-e512726d9091",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "環境與文化資源學系",
+    "departmentGroup": "NTHU:環境與文化資源學系",
+    "sourceYear": 114,
+    "moeCode": "5211102"
+  },
+  {
+    "id": "NTHU-bachelor-f92a0e43d1b5",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "生命科學暨醫學院學士班",
+    "departmentGroup": "NTHU:生命科學暨醫學院學士班",
+    "sourceYear": 114,
+    "moeCode": "5199142"
+  },
+  {
+    "id": "NTHU-bachelor-f9d00c4e3bea",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "生命科學系",
+    "departmentGroup": "NTHU:生命科學系",
+    "sourceYear": 114,
+    "moeCode": "5121025"
+  },
+  {
+    "id": "NTHU-bachelor-09dfa8112364",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "生醫工程與環境科學系",
+    "departmentGroup": "NTHU:生醫工程與環境科學系",
+    "sourceYear": 114,
+    "moeCode": "7193063"
+  },
+  {
+    "id": "NTHU-bachelor-1c3e1ae0036b",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "科技管理學院學士班",
+    "departmentGroup": "NTHU:科技管理學院學士班",
+    "sourceYear": 114,
+    "moeCode": "4199023"
+  },
+  {
+    "id": "NTHU-bachelor-b1591b0af484",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "竹師教育學院學士班",
+    "departmentGroup": "NTHU:竹師教育學院學士班",
+    "sourceYear": 114,
+    "moeCode": "1111112"
+  },
+  {
+    "id": "NTHU-bachelor-033a627654ab",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "經濟學系",
+    "departmentGroup": "NTHU:經濟學系",
+    "sourceYear": 114,
+    "moeCode": "3111011"
+  },
+  {
+    "id": "NTHU-bachelor-6fdddc6169cb",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "英語教學系",
+    "departmentGroup": "NTHU:英語教學系",
+    "sourceYear": 114,
+    "moeCode": "1131105"
+  },
+  {
+    "id": "NTHU-bachelor-5ddad469aa8d",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "藝術學院學士班",
+    "departmentGroup": "NTHU:藝術學院學士班",
+    "sourceYear": 114,
+    "moeCode": "2191113"
+  },
+  {
+    "id": "NTHU-bachelor-1800b3e626d0",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "藝術與設計學系",
+    "departmentGroup": "NTHU:藝術與設計學系",
+    "sourceYear": 114,
+    "moeCode": "2131098"
+  },
+  {
+    "id": "NTHU-bachelor-f4d92a4511f0",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "計量財務金融學系",
+    "departmentGroup": "NTHU:計量財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NTHU-bachelor-0866ad27f4f4",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "資訊工程學系",
+    "departmentGroup": "NTHU:資訊工程學系",
+    "sourceYear": 114,
+    "moeCode": "6131053"
+  },
+  {
+    "id": "NTHU-bachelor-1202b6ab7d17",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "運動科學系",
+    "departmentGroup": "NTHU:運動科學系",
+    "sourceYear": 114,
+    "moeCode": "1141127"
+  },
+  {
+    "id": "NTHU-bachelor-8e5032a2ea78",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "醫學科學系",
+    "departmentGroup": "NTHU:醫學科學系",
+    "sourceYear": 114,
+    "moeCode": "9121073"
+  },
+  {
+    "id": "NTHU-bachelor-dee311f46670",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "電機工程學系",
+    "departmentGroup": "NTHU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141049"
+  },
+  {
+    "id": "NTHU-bachelor-9f27e6f023ae",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "電機資訊學院學士班",
+    "departmentGroup": "NTHU:電機資訊學院學士班",
+    "sourceYear": 114,
+    "moeCode": "7141055"
+  },
+  {
+    "id": "NTHU-bachelor-21b0255c2744",
+    "school": "NTHU",
+    "degree": "bachelor",
+    "name": "音樂學系",
+    "departmentGroup": "NTHU:音樂學系",
+    "sourceYear": 114,
+    "moeCode": "2151096"
+  },
+  {
+    "id": "NTHU-doctor-817441d579a9",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "中國文學系",
+    "departmentGroup": "NTHU:中國文學系",
+    "sourceYear": 114,
+    "moeCode": "2322003"
+  },
+  {
+    "id": "NTHU-doctor-30a43461c8ac",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "人類學研究所",
+    "departmentGroup": "NTHU:人類學研究所",
+    "sourceYear": 114,
+    "moeCode": "2222007"
+  },
+  {
+    "id": "NTHU-doctor-dae1c8168ce6",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "光電博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NTHU:光電博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-doctor-24984d951272",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "光電工程研究所",
+    "departmentGroup": "NTHU:光電工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141052"
+  },
+  {
+    "id": "NTHU-doctor-87b6ccfb306e",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "分子與細胞生物研究所",
+    "departmentGroup": "NTHU:分子與細胞生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5121028"
+  },
+  {
+    "id": "NTHU-doctor-bd4df5e23059",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "分子醫學研究所",
+    "departmentGroup": "NTHU:分子醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "5121072"
+  },
+  {
+    "id": "NTHU-doctor-00d744edb595",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "分析與環境科學研究所",
+    "departmentGroup": "NTHU:分析與環境科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5211121"
+  },
+  {
+    "id": "NTHU-doctor-c8d3ef641eda",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "前瞻功能材料產業博士學位學程",
+    "departmentGroup": "NTHU:前瞻功能材料產業",
+    "sourceYear": 114,
+    "moeCode": "7112118"
+  },
+  {
+    "id": "NTHU-doctor-841c83e77836",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "動力機械工程學系",
+    "departmentGroup": "NTHU:動力機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151056"
+  },
+  {
+    "id": "NTHU-doctor-acc72b747540",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "化學工程學系",
+    "departmentGroup": "NTHU:化學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7111057"
+  },
+  {
+    "id": "NTHU-doctor-3b69454ef355",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "化學系",
+    "departmentGroup": "NTHU:化學系",
+    "sourceYear": 114,
+    "moeCode": "5311037"
+  },
+  {
+    "id": "NTHU-doctor-a3d2543aa911",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "半導體研究學院博士班",
+    "departmentGroup": "NTHU:半導體研究學院",
+    "sourceYear": 114,
+    "moeCode": "7141146"
+  },
+  {
+    "id": "NTHU-doctor-863ccec0f2c3",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "台北政經學院政治經濟博士班",
+    "departmentGroup": "NTHU:台北政經學院政治經濟",
+    "sourceYear": 114,
+    "moeCode": "3121139"
+  },
+  {
+    "id": "NTHU-doctor-5fd783df5478",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "台灣文學研究所",
+    "departmentGroup": "NTHU:台灣文學研究所",
+    "sourceYear": 114,
+    "moeCode": "2321001"
+  },
+  {
+    "id": "NTHU-doctor-85925b9724c7",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "哲學研究所",
+    "departmentGroup": "NTHU:哲學研究所",
+    "sourceYear": 114,
+    "moeCode": "2231008"
+  },
+  {
+    "id": "NTHU-doctor-9160436c3ed3",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "天文研究所",
+    "departmentGroup": "NTHU:天文研究所",
+    "sourceYear": 114,
+    "moeCode": "5332039"
+  },
+  {
+    "id": "NTHU-doctor-bdb571955878",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "奈米工程與微系統研究所",
+    "departmentGroup": "NTHU:奈米工程與微系統研究所",
+    "sourceYear": 114,
+    "moeCode": "7194059"
+  },
+  {
+    "id": "NTHU-doctor-cd2951a31605",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "工業工程與工程管理學系",
+    "departmentGroup": "NTHU:工業工程與工程管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191061"
+  },
+  {
+    "id": "NTHU-doctor-981c18922553",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "工程與系統科學系",
+    "departmentGroup": "NTHU:工程與系統科學系",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NTHU-doctor-53b36eda5f50",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "教育心理與諮商學系",
+    "departmentGroup": "NTHU:教育心理與諮商學系",
+    "sourceYear": 114,
+    "moeCode": "3131077"
+  },
+  {
+    "id": "NTHU-doctor-4779f843579d",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "教育與學習科技學系",
+    "departmentGroup": "NTHU:教育與學習科技學系",
+    "sourceYear": 114,
+    "moeCode": "1111084"
+  },
+  {
+    "id": "NTHU-doctor-21c9827fa9eb",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "數學系",
+    "departmentGroup": "NTHU:數學系",
+    "sourceYear": 114,
+    "moeCode": "5411043"
+  },
+  {
+    "id": "NTHU-doctor-4e75ba8c0d3a",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "智慧生醫博士學位學程",
+    "departmentGroup": "NTHU:智慧生醫",
+    "sourceYear": 114,
+    "moeCode": "7193132"
+  },
+  {
+    "id": "NTHU-doctor-6430fc9520e8",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "服務科學研究所",
+    "departmentGroup": "NTHU:服務科學研究所",
+    "sourceYear": 114,
+    "moeCode": "4199022"
+  },
+  {
+    "id": "NTHU-doctor-8ec783de1ce1",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "材料科學工程學系",
+    "departmentGroup": "NTHU:材料科學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112058"
+  },
+  {
+    "id": "NTHU-doctor-6794e9da56e5",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "東亞與現代世界形成國際研究生博士學位學程",
+    "departmentGroup": "NTHU:東亞與現代世界形成國際研究生",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-doctor-6a226dee4e3e",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "核子工程與科學研究所",
+    "departmentGroup": "NTHU:核子工程與科學研究所",
+    "sourceYear": 114,
+    "moeCode": "7131068"
+  },
+  {
+    "id": "NTHU-doctor-27816e713747",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "歷史研究所",
+    "departmentGroup": "NTHU:歷史研究所",
+    "sourceYear": 114,
+    "moeCode": "2221006"
+  },
+  {
+    "id": "NTHU-doctor-48a06b7dc803",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "物理學系",
+    "departmentGroup": "NTHU:物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331038"
+  },
+  {
+    "id": "NTHU-doctor-586baec87bad",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "環境科技博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NTHU:環境科技博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "5211041"
+  },
+  {
+    "id": "NTHU-doctor-61557e47e715",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "生技產業博士學位學程",
+    "departmentGroup": "NTHU:生技產業",
+    "sourceYear": 114,
+    "moeCode": "5121029"
+  },
+  {
+    "id": "NTHU-doctor-b6942f580443",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "生物科技研究所",
+    "departmentGroup": "NTHU:生物科技研究所",
+    "sourceYear": 114,
+    "moeCode": "5121026"
+  },
+  {
+    "id": "NTHU-doctor-4bd2b9d55852",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "生物資訊與結構生物研究所",
+    "departmentGroup": "NTHU:生物資訊與結構生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5121030"
+  },
+  {
+    "id": "NTHU-doctor-7366775ea27a",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "生物醫學工程研究所",
+    "departmentGroup": "NTHU:生物醫學工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7193065"
+  },
+  {
+    "id": "NTHU-doctor-09dfa8112364",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "生醫工程與環境科學系",
+    "departmentGroup": "NTHU:生醫工程與環境科學系",
+    "sourceYear": 114,
+    "moeCode": "7193063"
+  },
+  {
+    "id": "NTHU-doctor-5032753dd3c0",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "社會學研究所",
+    "departmentGroup": "NTHU:社會學研究所",
+    "sourceYear": 114,
+    "moeCode": "3141012"
+  },
+  {
+    "id": "NTHU-doctor-d22593f17718",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "社群網路與人智計算國際研究生博士學位學程",
+    "departmentGroup": "NTHU:社群網路與人智計算國際研究生",
+    "sourceYear": 114,
+    "moeCode": "6134048"
+  },
+  {
+    "id": "NTHU-doctor-21a82b1b96c5",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "科技法律研究所",
+    "departmentGroup": "NTHU:科技法律研究所",
+    "sourceYear": 114,
+    "moeCode": "4212024"
+  },
+  {
+    "id": "NTHU-doctor-db6ff0bce6a7",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "科技管理研究所",
+    "departmentGroup": "NTHU:科技管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4199017"
+  },
+  {
+    "id": "NTHU-doctor-9811cfdb76c2",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "竹師教育學院博士班",
+    "departmentGroup": "NTHU:竹師教育學院",
+    "sourceYear": 114,
+    "moeCode": "1199112"
+  },
+  {
+    "id": "NTHU-doctor-869e2e18b699",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "精準醫療博士學位學程",
+    "departmentGroup": "NTHU:精準醫療",
+    "sourceYear": 114,
+    "moeCode": "9121133"
+  },
+  {
+    "id": "NTHU-doctor-54dbcc9947f2",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "系統神經科學研究所",
+    "departmentGroup": "NTHU:系統神經科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5199033"
+  },
+  {
+    "id": "NTHU-doctor-fd04fe1d4dde",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "統計與數據科學研究所",
+    "departmentGroup": "NTHU:統計與數據科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5421147"
+  },
+  {
+    "id": "NTHU-doctor-033a627654ab",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "經濟學系",
+    "departmentGroup": "NTHU:經濟學系",
+    "sourceYear": 114,
+    "moeCode": "3111011"
+  },
+  {
+    "id": "NTHU-doctor-5d2574282bec",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "臺灣語言研究與教學研究所",
+    "departmentGroup": "NTHU:臺灣語言研究與教學研究所",
+    "sourceYear": 114,
+    "moeCode": "2321101"
+  },
+  {
+    "id": "NTHU-doctor-3c525d0f6927",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "藝術學院藝術跨域博士班",
+    "departmentGroup": "NTHU:藝術學院藝術跨域",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-doctor-f4d92a4511f0",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "計量財務金融學系",
+    "departmentGroup": "NTHU:計量財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NTHU-doctor-f455bf2e1d81",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "語言學研究所",
+    "departmentGroup": "NTHU:語言學研究所",
+    "sourceYear": 114,
+    "moeCode": "2399005"
+  },
+  {
+    "id": "NTHU-doctor-0866ad27f4f4",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "資訊工程學系",
+    "departmentGroup": "NTHU:資訊工程學系",
+    "sourceYear": 114,
+    "moeCode": "6131053"
+  },
+  {
+    "id": "NTHU-doctor-57f27edafb27",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "資訊系統與應用研究所",
+    "departmentGroup": "NTHU:資訊系統與應用研究所",
+    "sourceYear": 114,
+    "moeCode": "6134046"
+  },
+  {
+    "id": "NTHU-doctor-df66255cbc7d",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "跨院國際博士班學位學程",
+    "departmentGroup": "NTHU:跨院國際博士班學位學程",
+    "sourceYear": 114,
+    "moeCode": "99999074"
+  },
+  {
+    "id": "NTHU-doctor-4ad4a7cf276a",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "跨領域神經科學博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NTHU:跨領域神經科學博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-doctor-3fcbd047b576",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "通訊工程研究所",
+    "departmentGroup": "NTHU:通訊工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141054"
+  },
+  {
+    "id": "NTHU-doctor-9aba95211390",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "量子科技暨尖端材料博士學位學程",
+    "departmentGroup": "NTHU:量子科技暨尖端材料",
+    "sourceYear": 114,
+    "moeCode": "5331137"
+  },
+  {
+    "id": "NTHU-doctor-8591fb5f8dc5",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "電子工程研究所",
+    "departmentGroup": "NTHU:電子工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141050"
+  },
+  {
+    "id": "NTHU-doctor-dee311f46670",
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "電機工程學系",
+    "departmentGroup": "NTHU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141049"
+  },
+  {
+    "id": "NTHU-master-d3a0b2faf718",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "114秋季班國際半導體暨IC設計產業人才專班",
+    "departmentGroup": "NTHU:114秋季班國際半導體暨IC設計產業人才專班",
+    "sourceYear": 114,
+    "moeCode": "7141151"
+  },
+  {
+    "id": "NTHU-master-db9ae8c18974",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "AI智慧製造與智慧物聯網產業碩士專班",
+    "departmentGroup": "NTHU:AI智慧製造與智慧物聯網產業",
+    "sourceYear": 114,
+    "moeCode": "7151141"
+  },
+  {
+    "id": "NTHU-master-817441d579a9",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "中國文學系",
+    "departmentGroup": "NTHU:中國文學系",
+    "sourceYear": 114,
+    "moeCode": "2322003"
+  },
+  {
+    "id": "NTHU-master-0c5d90293f82",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "中國語文學系語文碩士在職專班",
+    "departmentGroup": "NTHU:中國語文學系",
+    "sourceYear": 114,
+    "moeCode": "2322109"
+  },
+  {
+    "id": "NTHU-master-b1e82bb28949",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "亞際文化研究國際碩士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NTHU:亞際文化研究國際碩士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "2299009"
+  },
+  {
+    "id": "NTHU-master-30a43461c8ac",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "人類學研究所",
+    "departmentGroup": "NTHU:人類學研究所",
+    "sourceYear": 114,
+    "moeCode": "2222007"
+  },
+  {
+    "id": "NTHU-master-24984d951272",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "光電工程研究所",
+    "departmentGroup": "NTHU:光電工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141052"
+  },
+  {
+    "id": "NTHU-master-87b6ccfb306e",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "分子與細胞生物研究所",
+    "departmentGroup": "NTHU:分子與細胞生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5121028"
+  },
+  {
+    "id": "NTHU-master-bd4df5e23059",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "分子醫學研究所",
+    "departmentGroup": "NTHU:分子醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "5121072"
+  },
+  {
+    "id": "NTHU-master-00d744edb595",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "分析與環境科學研究所",
+    "departmentGroup": "NTHU:分析與環境科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5211121"
+  },
+  {
+    "id": "NTHU-master-841c83e77836",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "動力機械工程學系",
+    "departmentGroup": "NTHU:動力機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151056"
+  },
+  {
+    "id": "NTHU-master-acc72b747540",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "化學工程學系",
+    "departmentGroup": "NTHU:化學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7111057"
+  },
+  {
+    "id": "NTHU-master-3b69454ef355",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "化學系",
+    "departmentGroup": "NTHU:化學系",
+    "sourceYear": 114,
+    "moeCode": "5311037"
+  },
+  {
+    "id": "NTHU-master-4c6feb4d67dd",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "半導體研究學院碩士班",
+    "departmentGroup": "NTHU:半導體研究學院",
+    "sourceYear": 114,
+    "moeCode": "7141146"
+  },
+  {
+    "id": "NTHU-master-e85dbafe8881",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "台北政經學院政治經濟碩士班",
+    "departmentGroup": "NTHU:台北政經學院政治經濟",
+    "sourceYear": 114,
+    "moeCode": "3121139"
+  },
+  {
+    "id": "NTHU-master-5fd783df5478",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "台灣文學研究所",
+    "departmentGroup": "NTHU:台灣文學研究所",
+    "sourceYear": 114,
+    "moeCode": "2321001"
+  },
+  {
+    "id": "NTHU-master-2874f6f29a02",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "台灣研究教師在職進修碩士學位班",
+    "departmentGroup": "NTHU:台灣研究教師在職進修碩士學位班",
+    "sourceYear": 114,
+    "moeCode": "3143013"
+  },
+  {
+    "id": "NTHU-master-85925b9724c7",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "哲學研究所",
+    "departmentGroup": "NTHU:哲學研究所",
+    "sourceYear": 114,
+    "moeCode": "2231008"
+  },
+  {
+    "id": "NTHU-master-a4a50d633eb2",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "國際專業管理碩士班",
+    "departmentGroup": "NTHU:國際專業管理",
+    "sourceYear": 114,
+    "moeCode": "4131018"
+  },
+  {
+    "id": "NTHU-master-e862b0596210",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "外國語文學系",
+    "departmentGroup": "NTHU:外國語文學系",
+    "sourceYear": 114,
+    "moeCode": "2311002"
+  },
+  {
+    "id": "NTHU-master-9160436c3ed3",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "天文研究所",
+    "departmentGroup": "NTHU:天文研究所",
+    "sourceYear": 114,
+    "moeCode": "5332039"
+  },
+  {
+    "id": "NTHU-master-fca95f82bf91",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "太空工程研究所",
+    "departmentGroup": "NTHU:太空工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7151149"
+  },
+  {
+    "id": "NTHU-master-bdb571955878",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "奈米工程與微系統研究所",
+    "departmentGroup": "NTHU:奈米工程與微系統研究所",
+    "sourceYear": 114,
+    "moeCode": "7194059"
+  },
+  {
+    "id": "NTHU-master-5685418fa96f",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "學前特殊教育碩士在職學位學程",
+    "departmentGroup": "NTHU:學前特殊教育",
+    "sourceYear": 114,
+    "moeCode": "1113110"
+  },
+  {
+    "id": "NTHU-master-c4d01c1d6041",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "學習科學與科技研究所",
+    "departmentGroup": "NTHU:學習科學與科技研究所",
+    "sourceYear": 114,
+    "moeCode": "3199111"
+  },
+  {
+    "id": "NTHU-master-cd2951a31605",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "工業工程與工程管理學系",
+    "departmentGroup": "NTHU:工業工程與工程管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191061"
+  },
+  {
+    "id": "NTHU-master-981c18922553",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "工程與系統科學系",
+    "departmentGroup": "NTHU:工程與系統科學系",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NTHU-master-8b93f5cbf8e3",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "幼兒教育學系",
+    "departmentGroup": "NTHU:幼兒教育學系",
+    "sourceYear": 114,
+    "moeCode": "1121091"
+  },
+  {
+    "id": "NTHU-master-53b36eda5f50",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "教育心理與諮商學系",
+    "departmentGroup": "NTHU:教育心理與諮商學系",
+    "sourceYear": 114,
+    "moeCode": "3131077"
+  },
+  {
+    "id": "NTHU-master-d089c306fe3b",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "教育心理與諮商學系教育心理與諮商碩士在職專班",
+    "departmentGroup": "NTHU:教育心理與諮商學系",
+    "sourceYear": 114,
+    "moeCode": "3131077"
+  },
+  {
+    "id": "NTHU-master-4779f843579d",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "教育與學習科技學系",
+    "departmentGroup": "NTHU:教育與學習科技學系",
+    "sourceYear": 114,
+    "moeCode": "1111084"
+  },
+  {
+    "id": "NTHU-master-c3da57b352d1",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "教育與學習科技學系教育行政碩士在職專班",
+    "departmentGroup": "NTHU:教育與學習科技學系",
+    "sourceYear": 114,
+    "moeCode": "1111084"
+  },
+  {
+    "id": "NTHU-master-05884bae51ba",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "教育與學習科技學系課程與教學碩士在職專班",
+    "departmentGroup": "NTHU:教育與學習科技學系",
+    "sourceYear": 114,
+    "moeCode": "1111084"
+  },
+  {
+    "id": "NTHU-master-21c9827fa9eb",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "數學系",
+    "departmentGroup": "NTHU:數學系",
+    "sourceYear": 114,
+    "moeCode": "5411043"
+  },
+  {
+    "id": "NTHU-master-13291f5cab98",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "數理教育研究所",
+    "departmentGroup": "NTHU:數理教育研究所",
+    "sourceYear": 114,
+    "moeCode": "1131085"
+  },
+  {
+    "id": "NTHU-master-ab23a0880994",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "智慧製造技術產業碩士專班",
+    "departmentGroup": "NTHU:智慧製造技術產業",
+    "sourceYear": 114,
+    "moeCode": "7151148"
+  },
+  {
+    "id": "NTHU-master-320d08b31fd2",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "智慧製造跨院高階主管碩士在職學位學程",
+    "departmentGroup": "NTHU:智慧製造跨院高階主管",
+    "sourceYear": 114,
+    "moeCode": "7191123"
+  },
+  {
+    "id": "NTHU-master-6430fc9520e8",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "服務科學研究所",
+    "departmentGroup": "NTHU:服務科學研究所",
+    "sourceYear": 114,
+    "moeCode": "4199022"
+  },
+  {
+    "id": "NTHU-master-8ec783de1ce1",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "材料科學工程學系",
+    "departmentGroup": "NTHU:材料科學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112058"
+  },
+  {
+    "id": "NTHU-master-6a226dee4e3e",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "核子工程與科學研究所",
+    "departmentGroup": "NTHU:核子工程與科學研究所",
+    "sourceYear": 114,
+    "moeCode": "7131068"
+  },
+  {
+    "id": "NTHU-master-27816e713747",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "歷史研究所",
+    "departmentGroup": "NTHU:歷史研究所",
+    "sourceYear": 114,
+    "moeCode": "2221006"
+  },
+  {
+    "id": "NTHU-master-f58aa76a0a32",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "永續科技碩士學位學程",
+    "departmentGroup": "NTHU:永續科技",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-master-4983020e52b8",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "永續經營與氣候政策研究所",
+    "departmentGroup": "NTHU:永續經營與氣候政策研究所",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NTHU-master-d468873447cf",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "流體機械暨先進材料與智慧檢測產業碩士專班",
+    "departmentGroup": "NTHU:流體機械暨先進材料與智慧檢測產業",
+    "sourceYear": 114,
+    "moeCode": "7151145"
+  },
+  {
+    "id": "NTHU-master-48a06b7dc803",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "物理學系",
+    "departmentGroup": "NTHU:物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331038"
+  },
+  {
+    "id": "NTHU-master-9b30efd02b64",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "特殊教育學系",
+    "departmentGroup": "NTHU:特殊教育學系",
+    "sourceYear": 114,
+    "moeCode": "1113095"
+  },
+  {
+    "id": "NTHU-master-e512726d9091",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "環境與文化資源學系",
+    "departmentGroup": "NTHU:環境與文化資源學系",
+    "sourceYear": 114,
+    "moeCode": "5211102"
+  },
+  {
+    "id": "NTHU-master-855ac1c9ab84",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "環境與文化資源學系社區與社會學習領域碩士在職專班",
+    "departmentGroup": "NTHU:環境與文化資源學系",
+    "sourceYear": 114,
+    "moeCode": "5211102"
+  },
+  {
+    "id": "NTHU-master-b6942f580443",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "生物科技研究所",
+    "departmentGroup": "NTHU:生物科技研究所",
+    "sourceYear": 114,
+    "moeCode": "5121026"
+  },
+  {
+    "id": "NTHU-master-4bd2b9d55852",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "生物資訊與結構生物研究所",
+    "departmentGroup": "NTHU:生物資訊與結構生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5121030"
+  },
+  {
+    "id": "NTHU-master-7366775ea27a",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "生物醫學工程研究所",
+    "departmentGroup": "NTHU:生物醫學工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7193065"
+  },
+  {
+    "id": "NTHU-master-09dfa8112364",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "生醫工程與環境科學系",
+    "departmentGroup": "NTHU:生醫工程與環境科學系",
+    "sourceYear": 114,
+    "moeCode": "7193063"
+  },
+  {
+    "id": "NTHU-master-5032753dd3c0",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "社會學研究所",
+    "departmentGroup": "NTHU:社會學研究所",
+    "sourceYear": 114,
+    "moeCode": "3141012"
+  },
+  {
+    "id": "NTHU-master-21a82b1b96c5",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技法律研究所",
+    "departmentGroup": "NTHU:科技法律研究所",
+    "sourceYear": 114,
+    "moeCode": "4212024"
+  },
+  {
+    "id": "NTHU-master-39dab5f0919c",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理學院健康政策與經營管理碩士在職專班",
+    "departmentGroup": "NTHU:科技管理學院健康政策與經營管理",
+    "sourceYear": 114,
+    "moeCode": "4199131"
+  },
+  {
+    "id": "NTHU-master-b3e6c36e7ff3",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理學院公共政策與管理碩士在職專班",
+    "departmentGroup": "NTHU:科技管理學院公共政策與管理",
+    "sourceYear": 114,
+    "moeCode": "4134014"
+  },
+  {
+    "id": "NTHU-master-7e9735eea796",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理學院財務金融碩士在職專班",
+    "departmentGroup": "NTHU:科技管理學院財務金融",
+    "sourceYear": 114,
+    "moeCode": "4121019"
+  },
+  {
+    "id": "NTHU-master-41d538b782f9",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理學院高階經營管理亞太地區馬來西亞境外碩士在職專班",
+    "departmentGroup": "NTHU:科技管理學院高階經營管理亞太地區馬來西亞境外",
+    "sourceYear": 114,
+    "moeCode": "4199021"
+  },
+  {
+    "id": "NTHU-master-4cbc9ab58360",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理學院高階經營管理深圳境外碩士在職專班",
+    "departmentGroup": "NTHU:科技管理學院高階經營管理深圳境外",
+    "sourceYear": 114,
+    "moeCode": "4199021"
+  },
+  {
+    "id": "NTHU-master-db6ff0bce6a7",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技管理研究所",
+    "departmentGroup": "NTHU:科技管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4199017"
+  },
+  {
+    "id": "NTHU-master-b8b6217035bf",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "科技藝術研究所",
+    "departmentGroup": "NTHU:科技藝術研究所",
+    "sourceYear": 114,
+    "moeCode": "2111136"
+  },
+  {
+    "id": "NTHU-master-60d27f1bf90d",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "竹師教育學院心理與諮商碩士新加坡境外在職專班",
+    "departmentGroup": "NTHU:竹師教育學院心理與諮商碩士新加坡境外在職專班",
+    "sourceYear": 114,
+    "moeCode": "3131135"
+  },
+  {
+    "id": "NTHU-master-ee3c1b3f2ef1",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "竹師教育學院跨領域STEAM教育碩士在職專班",
+    "departmentGroup": "NTHU:竹師教育學院跨領域STEAM教育",
+    "sourceYear": 114,
+    "moeCode": "1199130"
+  },
+  {
+    "id": "NTHU-master-54dbcc9947f2",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "系統神經科學研究所",
+    "departmentGroup": "NTHU:系統神經科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5199033"
+  },
+  {
+    "id": "NTHU-master-fd04fe1d4dde",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "統計與數據科學研究所",
+    "departmentGroup": "NTHU:統計與數據科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5421147"
+  },
+  {
+    "id": "NTHU-master-033a627654ab",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "經濟學系",
+    "departmentGroup": "NTHU:經濟學系",
+    "sourceYear": 114,
+    "moeCode": "3111011"
+  },
+  {
+    "id": "NTHU-master-6ffb109d366b",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "經營管理碩士在職專班",
+    "departmentGroup": "NTHU:經營管理",
+    "sourceYear": 114,
+    "moeCode": "4131016"
+  },
+  {
+    "id": "NTHU-master-da3d0ed1f781",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "經營管理碩士在職專班現役軍人營區碩士在職專班",
+    "departmentGroup": "NTHU:經營管理碩士在職專班現役軍人營區",
+    "sourceYear": 114,
+    "moeCode": "4131016"
+  },
+  {
+    "id": "NTHU-master-5d2574282bec",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "臺灣語言研究與教學研究所",
+    "departmentGroup": "NTHU:臺灣語言研究與教學研究所",
+    "sourceYear": 114,
+    "moeCode": "2321101"
+  },
+  {
+    "id": "NTHU-master-6fdddc6169cb",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "英語教學系",
+    "departmentGroup": "NTHU:英語教學系",
+    "sourceYear": 114,
+    "moeCode": "1131105"
+  },
+  {
+    "id": "NTHU-master-3238534d2db7",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "華德福教育碩士在職學位學程",
+    "departmentGroup": "NTHU:華德福教育",
+    "sourceYear": 114,
+    "moeCode": "1115124"
+  },
+  {
+    "id": "NTHU-master-63cd1296cc14",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "華文文學研究所",
+    "departmentGroup": "NTHU:華文文學研究所",
+    "sourceYear": 114,
+    "moeCode": "2323114"
+  },
+  {
+    "id": "NTHU-master-b68a643c4f45",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "華語文碩士學位學程",
+    "departmentGroup": "NTHU:華語文",
+    "sourceYear": 114,
+    "moeCode": "2323144"
+  },
+  {
+    "id": "NTHU-master-1800b3e626d0",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "藝術與設計學系",
+    "departmentGroup": "NTHU:藝術與設計學系",
+    "sourceYear": 114,
+    "moeCode": "2131098"
+  },
+  {
+    "id": "NTHU-master-2bfb8f38603a",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "藝術與設計學系美勞教師碩士在職專班",
+    "departmentGroup": "NTHU:藝術與設計學系",
+    "sourceYear": 114,
+    "moeCode": "1141098"
+  },
+  {
+    "id": "NTHU-master-9517a79b9ce0",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "藥品與醫材法規科學碩士在職學位學程",
+    "departmentGroup": "NTHU:藥品與醫材法規科學",
+    "sourceYear": 114,
+    "moeCode": "5121143"
+  },
+  {
+    "id": "NTHU-master-e7531fb2f97d",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "計算與建模科學研究所",
+    "departmentGroup": "NTHU:計算與建模科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5411115"
+  },
+  {
+    "id": "NTHU-master-f4d92a4511f0",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "計量財務金融學系",
+    "departmentGroup": "NTHU:計量財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NTHU-master-f455bf2e1d81",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "語言學研究所",
+    "departmentGroup": "NTHU:語言學研究所",
+    "sourceYear": 114,
+    "moeCode": "2399005"
+  },
+  {
+    "id": "NTHU-master-21eaad53a141",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "資訊安全研究所",
+    "departmentGroup": "NTHU:資訊安全研究所",
+    "sourceYear": 114,
+    "moeCode": "6131122"
+  },
+  {
+    "id": "NTHU-master-0866ad27f4f4",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "資訊工程學系",
+    "departmentGroup": "NTHU:資訊工程學系",
+    "sourceYear": 114,
+    "moeCode": "6131053"
+  },
+  {
+    "id": "NTHU-master-57f27edafb27",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "資訊系統與應用研究所",
+    "departmentGroup": "NTHU:資訊系統與應用研究所",
+    "sourceYear": 114,
+    "moeCode": "6134046"
+  },
+  {
+    "id": "NTHU-master-92fade42d55b",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "跨院國際碩士學位學程",
+    "departmentGroup": "NTHU:跨院國際",
+    "sourceYear": 114,
+    "moeCode": "99999074"
+  },
+  {
+    "id": "NTHU-master-3fcbd047b576",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "通訊工程研究所",
+    "departmentGroup": "NTHU:通訊工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141054"
+  },
+  {
+    "id": "NTHU-master-1202b6ab7d17",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "運動科學系",
+    "departmentGroup": "NTHU:運動科學系",
+    "sourceYear": 114,
+    "moeCode": "1141127"
+  },
+  {
+    "id": "NTHU-master-97b11720d4ac",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "醫學資訊碩士學位學程",
+    "departmentGroup": "NTHU:醫學資訊",
+    "sourceYear": 114,
+    "moeCode": "6131150"
+  },
+  {
+    "id": "NTHU-master-8591fb5f8dc5",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "電子工程研究所",
+    "departmentGroup": "NTHU:電子工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141050"
+  },
+  {
+    "id": "NTHU-master-dee311f46670",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "電機工程學系",
+    "departmentGroup": "NTHU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141049"
+  },
+  {
+    "id": "NTHU-master-21b0255c2744",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "音樂學系",
+    "departmentGroup": "NTHU:音樂學系",
+    "sourceYear": 114,
+    "moeCode": "2151096"
+  },
+  {
+    "id": "NTHU-master-f867cb8e60d9",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "音樂學系音樂教師碩士在職專班",
+    "departmentGroup": "NTHU:音樂學系",
+    "sourceYear": 114,
+    "moeCode": "2151096"
+  },
+  {
+    "id": "NTHU-master-0f7659112401",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "高階經營管理碩士在職專班",
+    "departmentGroup": "NTHU:高階經營管理",
+    "sourceYear": 114,
+    "moeCode": "4199021"
+  },
+  {
+    "id": "NTHU-master-874d6b4d5419",
+    "school": "NTHU",
+    "degree": "master",
+    "name": "高階經營管理雙聯碩士在職學位學程",
+    "departmentGroup": "NTHU:高階經營管理雙聯",
+    "sourceYear": 114,
+    "moeCode": "4199021"
+  },
+  {
+    "id": "NYCU-bachelor-b022ef5f38f8",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "中醫學系",
+    "departmentGroup": "NYCU:中醫學系",
+    "sourceYear": 114,
+    "moeCode": "9121183"
+  },
+  {
+    "id": "NYCU-bachelor-7c30efcd0c53",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "人文社會學系",
+    "departmentGroup": "NYCU:人文社會學系",
+    "sourceYear": 114,
+    "moeCode": "2299008"
+  },
+  {
+    "id": "NYCU-bachelor-45a3dc2ad0cb",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "傳播與科技學系",
+    "departmentGroup": "NYCU:傳播與科技學系",
+    "sourceYear": 114,
+    "moeCode": "3211015"
+  },
+  {
+    "id": "NYCU-bachelor-61a3c2cb86e4",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "光電工程學系",
+    "departmentGroup": "NYCU:光電工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141055"
+  },
+  {
+    "id": "NYCU-bachelor-cb4a7cd80078",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "半導體工程學系",
+    "departmentGroup": "NYCU:半導體工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141184"
+  },
+  {
+    "id": "NYCU-bachelor-dfc07f67b648",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "土木工程學系",
+    "departmentGroup": "NYCU:土木工程學系",
+    "sourceYear": 114,
+    "moeCode": "7321071"
+  },
+  {
+    "id": "NYCU-bachelor-e862b0596210",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "外國語文學系",
+    "departmentGroup": "NYCU:外國語文學系",
+    "sourceYear": 114,
+    "moeCode": "2311005"
+  },
+  {
+    "id": "NYCU-bachelor-a16ec8eb49eb",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "學士後電子與光子學士學位學程",
+    "departmentGroup": "NYCU:學士後電子與光子學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "7141179"
+  },
+  {
+    "id": "NYCU-bachelor-e0ac3bbc54bd",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "學士班大一大二不分系",
+    "departmentGroup": "NYCU:學士班大一大二不分系",
+    "sourceYear": 114,
+    "moeCode": "5199163"
+  },
+  {
+    "id": "NYCU-bachelor-1bf5a16ef9ba",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "工業工程與管理學系",
+    "departmentGroup": "NYCU:工業工程與管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191075"
+  },
+  {
+    "id": "NYCU-bachelor-b16106148d69",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "應用化學系",
+    "departmentGroup": "NYCU:應用化學系",
+    "sourceYear": 114,
+    "moeCode": "5311036"
+  },
+  {
+    "id": "NYCU-bachelor-739b73fe6c21",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "應用數學系",
+    "departmentGroup": "NYCU:應用數學系",
+    "sourceYear": 114,
+    "moeCode": "5411045"
+  },
+  {
+    "id": "NYCU-bachelor-34514cbb5209",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "數位醫療學士學位學程",
+    "departmentGroup": "NYCU:數位醫療學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "7193172"
+  },
+  {
+    "id": "NYCU-bachelor-b0571ce0abc7",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "材料科學與工程學系",
+    "departmentGroup": "NYCU:材料科學與工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112072"
+  },
+  {
+    "id": "NYCU-bachelor-50ad2430c50b",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "機械工程學系",
+    "departmentGroup": "NYCU:機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151070"
+  },
+  {
+    "id": "NYCU-bachelor-f92279bac796",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "牙醫學系",
+    "departmentGroup": "NYCU:牙醫學系",
+    "sourceYear": 114,
+    "moeCode": "9111160"
+  },
+  {
+    "id": "NYCU-bachelor-563a0e3515a2",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "物理治療暨輔助科技學系",
+    "departmentGroup": "NYCU:物理治療暨輔助科技學系",
+    "sourceYear": 114,
+    "moeCode": "9151148"
+  },
+  {
+    "id": "NYCU-bachelor-6e75977be222",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "理學院科學學士學位學程",
+    "departmentGroup": "NYCU:理學院科學學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "5399044"
+  },
+  {
+    "id": "NYCU-bachelor-07169deba2d1",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "生命科學系暨基因體科學研究所",
+    "departmentGroup": "NYCU:生命科學系暨基因體科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5121112"
+  },
+  {
+    "id": "NYCU-bachelor-bd16aea00da1",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "生物科技學系",
+    "departmentGroup": "NYCU:生物科技學系",
+    "sourceYear": 114,
+    "moeCode": "5121028"
+  },
+  {
+    "id": "NYCU-bachelor-73db9f26ec9f",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "生物醫學工程學系",
+    "departmentGroup": "NYCU:生物醫學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7193122"
+  },
+  {
+    "id": "NYCU-bachelor-cccc9c4fd4ec",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "生物醫學影像暨放射科學系",
+    "departmentGroup": "NYCU:生物醫學影像暨放射科學系",
+    "sourceYear": 114,
+    "moeCode": "9141159"
+  },
+  {
+    "id": "NYCU-bachelor-87c56a031cf9",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "百川學士學位學程",
+    "departmentGroup": "NYCU:百川學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "99999096"
+  },
+  {
+    "id": "NYCU-bachelor-4c41f36c05fa",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "管理科學系",
+    "departmentGroup": "NYCU:管理科學系",
+    "sourceYear": 114,
+    "moeCode": "4131018"
+  },
+  {
+    "id": "NYCU-bachelor-48cd80f6f8e9",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "系統工程與科技學士學位學程",
+    "departmentGroup": "NYCU:系統工程與科技學士學位學程",
+    "sourceYear": 114,
+    "moeCode": "7199102"
+  },
+  {
+    "id": "NYCU-bachelor-6eabd025078d",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "藥學系",
+    "departmentGroup": "NYCU:藥學系",
+    "sourceYear": 114,
+    "moeCode": "9161142"
+  },
+  {
+    "id": "NYCU-bachelor-cd64590831a5",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "護理學系",
+    "departmentGroup": "NYCU:護理學系",
+    "sourceYear": 114,
+    "moeCode": "9131149"
+  },
+  {
+    "id": "NYCU-bachelor-0866ad27f4f4",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "資訊工程學系",
+    "departmentGroup": "NYCU:資訊工程學系",
+    "sourceYear": 114,
+    "moeCode": "6131058"
+  },
+  {
+    "id": "NYCU-bachelor-3aeb7c470573",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "資訊管理與財務金融學系",
+    "departmentGroup": "NYCU:資訊管理與財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NYCU-bachelor-2efb2a664cc5",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "運輸與物流管理學系",
+    "departmentGroup": "NYCU:運輸與物流管理學系",
+    "sourceYear": 114,
+    "moeCode": "10411086"
+  },
+  {
+    "id": "NYCU-bachelor-fa2cb0fa3eb8",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "醫學生物技術暨檢驗學系",
+    "departmentGroup": "NYCU:醫學生物技術暨檢驗學系",
+    "sourceYear": 114,
+    "moeCode": "9141158"
+  },
+  {
+    "id": "NYCU-bachelor-bac3ef6e282f",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "醫學系",
+    "departmentGroup": "NYCU:醫學系",
+    "sourceYear": 114,
+    "moeCode": "9121125"
+  },
+  {
+    "id": "NYCU-bachelor-bcd806e6b7b7",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "醫學系七年制",
+    "departmentGroup": "NYCU:醫學系七年制",
+    "sourceYear": 114,
+    "moeCode": "9121125"
+  },
+  {
+    "id": "NYCU-bachelor-e316089b9a13",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "電子物理學系",
+    "departmentGroup": "NYCU:電子物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331041"
+  },
+  {
+    "id": "NYCU-bachelor-dee311f46670",
+    "school": "NYCU",
+    "degree": "bachelor",
+    "name": "電機工程學系",
+    "departmentGroup": "NYCU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141050"
+  },
+  {
+    "id": "NYCU-doctor-4ee0a3f094d7",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "傳統醫藥研究所",
+    "departmentGroup": "NYCU:傳統醫藥研究所",
+    "sourceYear": 114,
+    "moeCode": "9171143"
+  },
+  {
+    "id": "NYCU-doctor-dae1c8168ce6",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "光電博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NYCU:光電博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "7141054"
+  },
+  {
+    "id": "NYCU-doctor-915daf2f368f",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "光電學院博士班",
+    "departmentGroup": "NYCU:光電學院",
+    "sourceYear": 114,
+    "moeCode": "7141101"
+  },
+  {
+    "id": "NYCU-doctor-61a3c2cb86e4",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "光電工程學系",
+    "departmentGroup": "NYCU:光電工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141055"
+  },
+  {
+    "id": "NYCU-doctor-e3e3e6b2586d",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "公共衛生研究所",
+    "departmentGroup": "NYCU:公共衛生研究所",
+    "sourceYear": 114,
+    "moeCode": "9191137"
+  },
+  {
+    "id": "NYCU-doctor-8ce9cfcbe331",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "分子醫學博士學位學程",
+    "departmentGroup": "NYCU:分子醫學",
+    "sourceYear": 114,
+    "moeCode": "9121128"
+  },
+  {
+    "id": "NYCU-doctor-2ecd9e741043",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "分子醫學與生物工程研究所",
+    "departmentGroup": "NYCU:分子醫學與生物工程研究所",
+    "sourceYear": 114,
+    "moeCode": "5121030"
+  },
+  {
+    "id": "NYCU-doctor-8a9952e1a591",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "前瞻半導體研究所",
+    "departmentGroup": "NYCU:前瞻半導體研究所",
+    "sourceYear": 114,
+    "moeCode": "7141181"
+  },
+  {
+    "id": "NYCU-doctor-398c152911b4",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "口腔生物研究所",
+    "departmentGroup": "NYCU:口腔生物研究所",
+    "sourceYear": 114,
+    "moeCode": "9111162"
+  },
+  {
+    "id": "NYCU-doctor-3e27d5b658b1",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "國際半導體產業學院博士班",
+    "departmentGroup": "NYCU:國際半導體產業學院",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NYCU-doctor-dfc07f67b648",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "土木工程學系",
+    "departmentGroup": "NYCU:土木工程學系",
+    "sourceYear": 114,
+    "moeCode": "7321071"
+  },
+  {
+    "id": "NYCU-doctor-dc6211b73a0f",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "客家文化學院博士班",
+    "departmentGroup": "NYCU:客家文化學院",
+    "sourceYear": 114,
+    "moeCode": "2222095"
+  },
+  {
+    "id": "NYCU-doctor-1bf5a16ef9ba",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "工業工程與管理學系",
+    "departmentGroup": "NYCU:工業工程與管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191075"
+  },
+  {
+    "id": "NYCU-doctor-4d1f8b8090c4",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "工程生物科學學院產業博士班",
+    "departmentGroup": "NYCU:工程生物科學學院產業",
+    "sourceYear": 114,
+    "moeCode": "5121186"
+  },
+  {
+    "id": "NYCU-doctor-5f1309134b76",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "微生物及免疫學研究所",
+    "departmentGroup": "NYCU:微生物及免疫學研究所",
+    "sourceYear": 114,
+    "moeCode": "5122114"
+  },
+  {
+    "id": "NYCU-doctor-994148bc7ddd",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "急重症醫學研究所",
+    "departmentGroup": "NYCU:急重症醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121133"
+  },
+  {
+    "id": "NYCU-doctor-b16106148d69",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "應用化學系",
+    "departmentGroup": "NYCU:應用化學系",
+    "sourceYear": 114,
+    "moeCode": "5311036"
+  },
+  {
+    "id": "NYCU-doctor-edeb50d9bc1f",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "應用化學系分子科學博士班",
+    "departmentGroup": "NYCU:應用化學系",
+    "sourceYear": 114,
+    "moeCode": "5311036"
+  },
+  {
+    "id": "NYCU-doctor-739b73fe6c21",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "應用數學系",
+    "departmentGroup": "NYCU:應用數學系",
+    "sourceYear": 114,
+    "moeCode": "5411045"
+  },
+  {
+    "id": "NYCU-doctor-edab112d7319",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "應用藝術研究所",
+    "departmentGroup": "NYCU:應用藝術研究所",
+    "sourceYear": 114,
+    "moeCode": "2122004"
+  },
+  {
+    "id": "NYCU-doctor-9367282d403a",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "教育研究所",
+    "departmentGroup": "NYCU:教育研究所",
+    "sourceYear": 114,
+    "moeCode": "1111001"
+  },
+  {
+    "id": "NYCU-doctor-645f3590feaa",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "智慧科學暨綠能學院博士班",
+    "departmentGroup": "NYCU:智慧科學暨綠能學院",
+    "sourceYear": 114,
+    "moeCode": "6131106"
+  },
+  {
+    "id": "NYCU-doctor-8517c9273f0c",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "智慧醫療與政策管理產業博士學位學程",
+    "departmentGroup": "NYCU:智慧醫療與政策管理產業",
+    "sourceYear": 114,
+    "moeCode": "9191185"
+  },
+  {
+    "id": "NYCU-doctor-389535b0f14a",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "智能系統研究所",
+    "departmentGroup": "NYCU:智能系統研究所",
+    "sourceYear": 114,
+    "moeCode": "6199180"
+  },
+  {
+    "id": "NYCU-doctor-b0571ce0abc7",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "材料科學與工程學系",
+    "departmentGroup": "NYCU:材料科學與工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112072"
+  },
+  {
+    "id": "NYCU-doctor-50ad2430c50b",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "機械工程學系",
+    "departmentGroup": "NYCU:機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151070"
+  },
+  {
+    "id": "NYCU-doctor-3baba163b1f1",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "永續化學科技國際研究生博士學位學程",
+    "departmentGroup": "NYCU:永續化學科技國際研究生",
+    "sourceYear": 114,
+    "moeCode": "5311039"
+  },
+  {
+    "id": "NYCU-doctor-f92279bac796",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "牙醫學系",
+    "departmentGroup": "NYCU:牙醫學系",
+    "sourceYear": 114,
+    "moeCode": "9111160"
+  },
+  {
+    "id": "NYCU-doctor-563a0e3515a2",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "物理治療暨輔助科技學系",
+    "departmentGroup": "NYCU:物理治療暨輔助科技學系",
+    "sourceYear": 114,
+    "moeCode": "9151148"
+  },
+  {
+    "id": "NYCU-doctor-d69c4353bc24",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "物理研究所",
+    "departmentGroup": "NYCU:物理研究所",
+    "sourceYear": 114,
+    "moeCode": "5331040"
+  },
+  {
+    "id": "NYCU-doctor-83c5366fc12b",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "環境工程研究所",
+    "departmentGroup": "NYCU:環境工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7121076"
+  },
+  {
+    "id": "NYCU-doctor-586baec87bad",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "環境科技博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NYCU:環境科技博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "5211043"
+  },
+  {
+    "id": "NYCU-doctor-1d0a17ed360f",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "環境與職業衛生研究所",
+    "departmentGroup": "NYCU:環境與職業衛生研究所",
+    "sourceYear": 114,
+    "moeCode": "9191140"
+  },
+  {
+    "id": "NYCU-doctor-6869c17b777e",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生化暨分子生物研究所",
+    "departmentGroup": "NYCU:生化暨分子生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5123116"
+  },
+  {
+    "id": "NYCU-doctor-07169deba2d1",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生命科學系暨基因體科學研究所",
+    "departmentGroup": "NYCU:生命科學系暨基因體科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5121112"
+  },
+  {
+    "id": "NYCU-doctor-f89d7b0b03b8",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生技醫療產業博士學位學程",
+    "departmentGroup": "NYCU:生技醫療產業",
+    "sourceYear": 114,
+    "moeCode": "5121165"
+  },
+  {
+    "id": "NYCU-doctor-bd16aea00da1",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物科技學系",
+    "departmentGroup": "NYCU:生物科技學系",
+    "sourceYear": 114,
+    "moeCode": "5121028"
+  },
+  {
+    "id": "NYCU-doctor-a368413fdfe5",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物藥學研究所",
+    "departmentGroup": "NYCU:生物藥學研究所",
+    "sourceYear": 114,
+    "moeCode": "9161145"
+  },
+  {
+    "id": "NYCU-doctor-2a6393a65645",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物資訊及系統生物研究所",
+    "departmentGroup": "NYCU:生物資訊及系統生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5124034"
+  },
+  {
+    "id": "NYCU-doctor-73db9f26ec9f",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物醫學工程學系",
+    "departmentGroup": "NYCU:生物醫學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7193122"
+  },
+  {
+    "id": "NYCU-doctor-cccc9c4fd4ec",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物醫學影像暨放射科學系",
+    "departmentGroup": "NYCU:生物醫學影像暨放射科學系",
+    "sourceYear": 114,
+    "moeCode": "9141159"
+  },
+  {
+    "id": "NYCU-doctor-b88f3ed57423",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物醫學暨工程科技產業博士學位學程",
+    "departmentGroup": "NYCU:生物醫學暨工程科技產業",
+    "sourceYear": 114,
+    "moeCode": "9141166"
+  },
+  {
+    "id": "NYCU-doctor-70a6f73d5a7e",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生物醫學資訊研究所",
+    "departmentGroup": "NYCU:生物醫學資訊研究所",
+    "sourceYear": 114,
+    "moeCode": "5124117"
+  },
+  {
+    "id": "NYCU-doctor-74ee049e8983",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生理學研究所",
+    "departmentGroup": "NYCU:生理學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121129"
+  },
+  {
+    "id": "NYCU-doctor-f806a7742e2b",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生醫光電研究所",
+    "departmentGroup": "NYCU:生醫光電研究所",
+    "sourceYear": 114,
+    "moeCode": "7193120"
+  },
+  {
+    "id": "NYCU-doctor-ddd7dd571d77",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "生醫科學與工程博士學位學程",
+    "departmentGroup": "NYCU:生醫科學與工程",
+    "sourceYear": 114,
+    "moeCode": "7193080"
+  },
+  {
+    "id": "NYCU-doctor-12a3770146a7",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "社會與文化研究所",
+    "departmentGroup": "NYCU:社會與文化研究所",
+    "sourceYear": 114,
+    "moeCode": "2299010"
+  },
+  {
+    "id": "NYCU-doctor-4b53444dcef9",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "神經科學研究所",
+    "departmentGroup": "NYCU:神經科學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121130"
+  },
+  {
+    "id": "NYCU-doctor-21a82b1b96c5",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "科技法律研究所",
+    "departmentGroup": "NYCU:科技法律研究所",
+    "sourceYear": 114,
+    "moeCode": "4212027"
+  },
+  {
+    "id": "NYCU-doctor-db6ff0bce6a7",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "科技管理研究所",
+    "departmentGroup": "NYCU:科技管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4199023"
+  },
+  {
+    "id": "NYCU-doctor-4c41f36c05fa",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "管理科學系",
+    "departmentGroup": "NYCU:管理科學系",
+    "sourceYear": 114,
+    "moeCode": "4131018"
+  },
+  {
+    "id": "NYCU-doctor-c86b4da446e9",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "統計學研究所",
+    "departmentGroup": "NYCU:統計學研究所",
+    "sourceYear": 114,
+    "moeCode": "5421047"
+  },
+  {
+    "id": "NYCU-doctor-0c534d5073f6",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "經營管理研究所",
+    "departmentGroup": "NYCU:經營管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4131017"
+  },
+  {
+    "id": "NYCU-doctor-f8e2a10ba6a8",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "腦科學研究所",
+    "departmentGroup": "NYCU:腦科學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121134"
+  },
+  {
+    "id": "NYCU-doctor-7210480fb814",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "臨床護理研究所",
+    "departmentGroup": "NYCU:臨床護理研究所",
+    "sourceYear": 114,
+    "moeCode": "9131150"
+  },
+  {
+    "id": "NYCU-doctor-79858c44d423",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "臨床醫學研究所",
+    "departmentGroup": "NYCU:臨床醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121126"
+  },
+  {
+    "id": "NYCU-doctor-2543289c8d9c",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "藥理學研究所",
+    "departmentGroup": "NYCU:藥理學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121144"
+  },
+  {
+    "id": "NYCU-doctor-71cad52130a3",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "衛生福利研究所",
+    "departmentGroup": "NYCU:衛生福利研究所",
+    "sourceYear": 114,
+    "moeCode": "9191138"
+  },
+  {
+    "id": "NYCU-doctor-cd64590831a5",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "護理學系",
+    "departmentGroup": "NYCU:護理學系",
+    "sourceYear": 114,
+    "moeCode": "9131149"
+  },
+  {
+    "id": "NYCU-doctor-963cd7397b0d",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "資訊學院博士班",
+    "departmentGroup": "NYCU:資訊學院",
+    "sourceYear": 114,
+    "moeCode": "6131069"
+  },
+  {
+    "id": "NYCU-doctor-5c9c4459351b",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "資訊科學與工程研究所",
+    "departmentGroup": "NYCU:資訊科學與工程研究所",
+    "sourceYear": 114,
+    "moeCode": "6131061"
+  },
+  {
+    "id": "NYCU-doctor-d26881edfc13",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "資訊管理研究所",
+    "departmentGroup": "NYCU:資訊管理研究所",
+    "sourceYear": 114,
+    "moeCode": "6131022"
+  },
+  {
+    "id": "NYCU-doctor-6ec02dc5c81c",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "資訊管理與財務金融學系財務金融博士班",
+    "departmentGroup": "NYCU:資訊管理與財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NYCU-doctor-4ad4a7cf276a",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "跨領域神經科學博士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NYCU:跨領域神經科學博士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "5199035"
+  },
+  {
+    "id": "NYCU-doctor-45d96a61dc3e",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "跨領域神經科學國際研究生博士學位學程",
+    "departmentGroup": "NYCU:跨領域神經科學國際研究生",
+    "sourceYear": 114,
+    "moeCode": "5199035"
+  },
+  {
+    "id": "NYCU-doctor-af27c81a1428",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "跨領域醫學博士學位學程",
+    "departmentGroup": "NYCU:跨領域醫學",
+    "sourceYear": 114,
+    "moeCode": "9121171"
+  },
+  {
+    "id": "NYCU-doctor-3ddc95b908f4",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "轉譯醫學博士學位學程",
+    "departmentGroup": "NYCU:轉譯醫學",
+    "sourceYear": 114,
+    "moeCode": "9121136"
+  },
+  {
+    "id": "NYCU-doctor-2efb2a664cc5",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "運輸與物流管理學系",
+    "departmentGroup": "NYCU:運輸與物流管理學系",
+    "sourceYear": 114,
+    "moeCode": "10411086"
+  },
+  {
+    "id": "NYCU-doctor-fa2cb0fa3eb8",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "醫學生物技術暨檢驗學系",
+    "departmentGroup": "NYCU:醫學生物技術暨檢驗學系",
+    "sourceYear": 114,
+    "moeCode": "9141158"
+  },
+  {
+    "id": "NYCU-doctor-711de44a73d3",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "醫藥品法規科學博士學位學程",
+    "departmentGroup": "NYCU:醫藥品法規科學",
+    "sourceYear": 114,
+    "moeCode": "9161176"
+  },
+  {
+    "id": "NYCU-doctor-40f5440e93a8",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電信工程研究所",
+    "departmentGroup": "NYCU:電信工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141062"
+  },
+  {
+    "id": "NYCU-doctor-e316089b9a13",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電子物理學系",
+    "departmentGroup": "NYCU:電子物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331041"
+  },
+  {
+    "id": "NYCU-doctor-57ef2d8056ce",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電子研究所",
+    "departmentGroup": "NYCU:電子研究所",
+    "sourceYear": 114,
+    "moeCode": "7141053"
+  },
+  {
+    "id": "NYCU-doctor-a498572ac446",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電控工程研究所",
+    "departmentGroup": "NYCU:電控工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141064"
+  },
+  {
+    "id": "NYCU-doctor-02b19bed47e9",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電機學院博士班",
+    "departmentGroup": "NYCU:電機學院",
+    "sourceYear": 114,
+    "moeCode": "7141067"
+  },
+  {
+    "id": "NYCU-doctor-dee311f46670",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電機工程學系",
+    "departmentGroup": "NYCU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141050"
+  },
+  {
+    "id": "NYCU-doctor-3c5031fa798e",
+    "school": "NYCU",
+    "degree": "doctor",
+    "name": "電機資訊國際博士學位學程",
+    "departmentGroup": "NYCU:電機資訊國際",
+    "sourceYear": 114,
+    "moeCode": "7141068"
+  },
+  {
+    "id": "NYCU-master-849c579f1c93",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "113春季班國際半導體人才教育專班",
+    "departmentGroup": "NYCU:113春季班國際半導體人才教育專班",
+    "sourceYear": 114,
+    "moeCode": "7141187"
+  },
+  {
+    "id": "NYCU-master-b5333708a65c",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "113春季班國際資訊碩士班",
+    "departmentGroup": "NYCU:113春季班國際資訊",
+    "sourceYear": 114,
+    "moeCode": "6131188"
+  },
+  {
+    "id": "NYCU-master-d812e0fff231",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "114秋季班國際半導體人才教育專班",
+    "departmentGroup": "NYCU:114秋季班國際半導體人才教育專班",
+    "sourceYear": 114,
+    "moeCode": "7141187"
+  },
+  {
+    "id": "NYCU-master-16a93212cb84",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "114秋季班國際資訊碩士班",
+    "departmentGroup": "NYCU:114秋季班國際資訊",
+    "sourceYear": 114,
+    "moeCode": "6131188"
+  },
+  {
+    "id": "NYCU-master-b1e82bb28949",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "亞際文化研究國際碩士學位學程(台灣聯合大學系統)",
+    "departmentGroup": "NYCU:亞際文化研究國際碩士學位學程(台灣聯合大學系",
+    "sourceYear": 114,
+    "moeCode": "2299009"
+  },
+  {
+    "id": "NYCU-master-100e4a5e5806",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "人工智慧技術與應用碩士學位學程",
+    "departmentGroup": "NYCU:人工智慧技術與應用",
+    "sourceYear": 114,
+    "moeCode": "7141099"
+  },
+  {
+    "id": "NYCU-master-abeb6842d3d6",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "人文社會學系族群與文化碩士班",
+    "departmentGroup": "NYCU:人文社會學系",
+    "sourceYear": 114,
+    "moeCode": "2299008"
+  },
+  {
+    "id": "NYCU-master-246f6209e58b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "傳播研究所",
+    "departmentGroup": "NYCU:傳播研究所",
+    "sourceYear": 114,
+    "moeCode": "3211014"
+  },
+  {
+    "id": "NYCU-master-45a3dc2ad0cb",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "傳播與科技學系",
+    "departmentGroup": "NYCU:傳播與科技學系",
+    "sourceYear": 114,
+    "moeCode": "3211015"
+  },
+  {
+    "id": "NYCU-master-4ee0a3f094d7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "傳統醫藥研究所",
+    "departmentGroup": "NYCU:傳統醫藥研究所",
+    "sourceYear": 114,
+    "moeCode": "9171143"
+  },
+  {
+    "id": "NYCU-master-61a3c2cb86e4",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "光電工程學系",
+    "departmentGroup": "NYCU:光電工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141055"
+  },
+  {
+    "id": "NYCU-master-f723d1d2fed4",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "光電系統研究所",
+    "departmentGroup": "NYCU:光電系統研究所",
+    "sourceYear": 114,
+    "moeCode": "7141065"
+  },
+  {
+    "id": "NYCU-master-e3e3e6b2586d",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "公共衛生研究所",
+    "departmentGroup": "NYCU:公共衛生研究所",
+    "sourceYear": 114,
+    "moeCode": "9191137"
+  },
+  {
+    "id": "NYCU-master-86fdfb3cb6f3",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "公共衛生碩士學位學程",
+    "departmentGroup": "NYCU:公共衛生",
+    "sourceYear": 114,
+    "moeCode": "9191137"
+  },
+  {
+    "id": "NYCU-master-2ecd9e741043",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "分子醫學與生物工程研究所",
+    "departmentGroup": "NYCU:分子醫學與生物工程研究所",
+    "sourceYear": 114,
+    "moeCode": "5121030"
+  },
+  {
+    "id": "NYCU-master-8a9952e1a591",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "前瞻半導體研究所",
+    "departmentGroup": "NYCU:前瞻半導體研究所",
+    "sourceYear": 114,
+    "moeCode": "7141181"
+  },
+  {
+    "id": "NYCU-master-398c152911b4",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "口腔生物研究所",
+    "departmentGroup": "NYCU:口腔生物研究所",
+    "sourceYear": 114,
+    "moeCode": "9111162"
+  },
+  {
+    "id": "NYCU-master-4822c9b70fe7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "口腔組織工程暨生技材料研究所",
+    "departmentGroup": "NYCU:口腔組織工程暨生技材料研究所",
+    "sourceYear": 114,
+    "moeCode": "9111169"
+  },
+  {
+    "id": "NYCU-master-5c362eaa620a",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "國際半導體人才教育專班",
+    "departmentGroup": "NYCU:國際半導體人才教育專班",
+    "sourceYear": 114,
+    "moeCode": "7141187"
+  },
+  {
+    "id": "NYCU-master-16f1d9847023",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "國際半導體產業學院碩士班",
+    "departmentGroup": "NYCU:國際半導體產業學院",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NYCU-master-1d469b975002",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "國際半導體產業學院越南境外碩士專班",
+    "departmentGroup": "NYCU:國際半導體產業學院越南境外",
+    "sourceYear": 114,
+    "moeCode": "7141066"
+  },
+  {
+    "id": "NYCU-master-ff172057795d",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "國際衛生碩士學位學程",
+    "departmentGroup": "NYCU:國際衛生",
+    "sourceYear": 114,
+    "moeCode": "9191141"
+  },
+  {
+    "id": "NYCU-master-dfc07f67b648",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "土木工程學系",
+    "departmentGroup": "NYCU:土木工程學系",
+    "sourceYear": 114,
+    "moeCode": "7321071"
+  },
+  {
+    "id": "NYCU-master-02bf3415051f",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "外國語文學系外國文學與語言學碩士班",
+    "departmentGroup": "NYCU:外國語文學系",
+    "sourceYear": 114,
+    "moeCode": "2311005"
+  },
+  {
+    "id": "NYCU-master-dbc1cb7cae0e",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "多媒體工程研究所",
+    "departmentGroup": "NYCU:多媒體工程研究所",
+    "sourceYear": 114,
+    "moeCode": "6132049"
+  },
+  {
+    "id": "NYCU-master-4d6562e2c8f5",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "太空系統工程研究所",
+    "departmentGroup": "NYCU:太空系統工程研究所",
+    "sourceYear": 114,
+    "moeCode": "5322178"
+  },
+  {
+    "id": "NYCU-master-3b45fa82ff3a",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "客家社會與文化碩士在職專班",
+    "departmentGroup": "NYCU:客家社會與文化",
+    "sourceYear": 114,
+    "moeCode": "3143013"
+  },
+  {
+    "id": "NYCU-master-b4860dfd935b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "工學院碩士在職專班",
+    "departmentGroup": "NYCU:工學院",
+    "sourceYear": 114,
+    "moeCode": "7199083"
+  },
+  {
+    "id": "NYCU-master-1bf5a16ef9ba",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "工業工程與管理學系",
+    "departmentGroup": "NYCU:工業工程與管理學系",
+    "sourceYear": 114,
+    "moeCode": "7191075"
+  },
+  {
+    "id": "NYCU-master-0df7530ac40d",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "工程與計算生醫產業碩士專班",
+    "departmentGroup": "NYCU:工程與計算生醫產業",
+    "sourceYear": 114,
+    "moeCode": "5121173"
+  },
+  {
+    "id": "NYCU-master-c884b83b0c93",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "建築研究所",
+    "departmentGroup": "NYCU:建築研究所",
+    "sourceYear": 114,
+    "moeCode": "7311085"
+  },
+  {
+    "id": "NYCU-master-dec266a0576d",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "影像與生醫光電研究所",
+    "departmentGroup": "NYCU:影像與生醫光電研究所",
+    "sourceYear": 114,
+    "moeCode": "7193079"
+  },
+  {
+    "id": "NYCU-master-5f1309134b76",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "微生物及免疫學研究所",
+    "departmentGroup": "NYCU:微生物及免疫學研究所",
+    "sourceYear": 114,
+    "moeCode": "5122114"
+  },
+  {
+    "id": "NYCU-master-2bda4383dab1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "心智哲學研究所",
+    "departmentGroup": "NYCU:心智哲學研究所",
+    "sourceYear": 114,
+    "moeCode": "2231108"
+  },
+  {
+    "id": "NYCU-master-994148bc7ddd",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "急重症醫學研究所",
+    "departmentGroup": "NYCU:急重症醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121133"
+  },
+  {
+    "id": "NYCU-master-b16106148d69",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "應用化學系",
+    "departmentGroup": "NYCU:應用化學系",
+    "sourceYear": 114,
+    "moeCode": "5311036"
+  },
+  {
+    "id": "NYCU-master-194d5185cb45",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "應用化學系分子科學碩士班",
+    "departmentGroup": "NYCU:應用化學系",
+    "sourceYear": 114,
+    "moeCode": "5311036"
+  },
+  {
+    "id": "NYCU-master-739b73fe6c21",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "應用數學系",
+    "departmentGroup": "NYCU:應用數學系",
+    "sourceYear": 114,
+    "moeCode": "5411045"
+  },
+  {
+    "id": "NYCU-master-66bafdaa3d41",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "應用數學系數學建模與科學計算碩士班",
+    "departmentGroup": "NYCU:應用數學系",
+    "sourceYear": 114,
+    "moeCode": "5411045"
+  },
+  {
+    "id": "NYCU-master-edab112d7319",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "應用藝術研究所",
+    "departmentGroup": "NYCU:應用藝術研究所",
+    "sourceYear": 114,
+    "moeCode": "2122004"
+  },
+  {
+    "id": "NYCU-master-9367282d403a",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "教育研究所",
+    "departmentGroup": "NYCU:教育研究所",
+    "sourceYear": 114,
+    "moeCode": "1111001"
+  },
+  {
+    "id": "NYCU-master-6d0a5b5db3d6",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "數據科學與工程研究所",
+    "departmentGroup": "NYCU:數據科學與工程研究所",
+    "sourceYear": 114,
+    "moeCode": "6131092"
+  },
+  {
+    "id": "NYCU-master-0e81b0b9dba8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智慧系統與應用研究所",
+    "departmentGroup": "NYCU:智慧系統與應用研究所",
+    "sourceYear": 114,
+    "moeCode": "6132103"
+  },
+  {
+    "id": "NYCU-master-301576abe12b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智慧與綠能產學研究所",
+    "departmentGroup": "NYCU:智慧與綠能產學研究所",
+    "sourceYear": 114,
+    "moeCode": "6199105"
+  },
+  {
+    "id": "NYCU-master-b674c0a55f26",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智慧計算與科技研究所",
+    "departmentGroup": "NYCU:智慧計算與科技研究所",
+    "sourceYear": 114,
+    "moeCode": "6131104"
+  },
+  {
+    "id": "NYCU-master-5917e845c6b8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智慧計算與科技研究所智慧物聯網產業碩士專班",
+    "departmentGroup": "NYCU:智慧計算與科技研究所智慧物聯網產業",
+    "sourceYear": 114,
+    "moeCode": "6131104"
+  },
+  {
+    "id": "NYCU-master-67d11c6b08ee",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智慧醫電工程研究所",
+    "departmentGroup": "NYCU:智慧醫電工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141189"
+  },
+  {
+    "id": "NYCU-master-389535b0f14a",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "智能系統研究所",
+    "departmentGroup": "NYCU:智能系統研究所",
+    "sourceYear": 114,
+    "moeCode": "6199180"
+  },
+  {
+    "id": "NYCU-master-b0571ce0abc7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "材料科學與工程學系",
+    "departmentGroup": "NYCU:材料科學與工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112072"
+  },
+  {
+    "id": "NYCU-master-44d2054b05ed",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "材料科學與工程學系奈米科技碩士班",
+    "departmentGroup": "NYCU:材料科學與工程學系",
+    "sourceYear": 114,
+    "moeCode": "7112072"
+  },
+  {
+    "id": "NYCU-master-0a34d10cd629",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "機器人碩士學位學程",
+    "departmentGroup": "NYCU:機器人",
+    "sourceYear": 114,
+    "moeCode": "7151093"
+  },
+  {
+    "id": "NYCU-master-50ad2430c50b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "機械工程學系",
+    "departmentGroup": "NYCU:機械工程學系",
+    "sourceYear": 114,
+    "moeCode": "7151070"
+  },
+  {
+    "id": "NYCU-master-0fdef341a952",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "照明與能源光電研究所",
+    "departmentGroup": "NYCU:照明與能源光電研究所",
+    "sourceYear": 114,
+    "moeCode": "7132081"
+  },
+  {
+    "id": "NYCU-master-f92279bac796",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "牙醫學系",
+    "departmentGroup": "NYCU:牙醫學系",
+    "sourceYear": 114,
+    "moeCode": "9111160"
+  },
+  {
+    "id": "NYCU-master-563a0e3515a2",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "物理治療暨輔助科技學系",
+    "departmentGroup": "NYCU:物理治療暨輔助科技學系",
+    "sourceYear": 114,
+    "moeCode": "9151148"
+  },
+  {
+    "id": "NYCU-master-d69c4353bc24",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "物理研究所",
+    "departmentGroup": "NYCU:物理研究所",
+    "sourceYear": 114,
+    "moeCode": "5331040"
+  },
+  {
+    "id": "NYCU-master-32b644a970bb",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "理學院碩士在職專班",
+    "departmentGroup": "NYCU:理學院",
+    "sourceYear": 114,
+    "moeCode": "5399044"
+  },
+  {
+    "id": "NYCU-master-83c5366fc12b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "環境工程研究所",
+    "departmentGroup": "NYCU:環境工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7121076"
+  },
+  {
+    "id": "NYCU-master-1d0a17ed360f",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "環境與職業衛生研究所",
+    "departmentGroup": "NYCU:環境與職業衛生研究所",
+    "sourceYear": 114,
+    "moeCode": "9191140"
+  },
+  {
+    "id": "NYCU-master-6869c17b777e",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生化暨分子生物研究所",
+    "departmentGroup": "NYCU:生化暨分子生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5123116"
+  },
+  {
+    "id": "NYCU-master-07169deba2d1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生命科學系暨基因體科學研究所",
+    "departmentGroup": "NYCU:生命科學系暨基因體科學研究所",
+    "sourceYear": 114,
+    "moeCode": "5121112"
+  },
+  {
+    "id": "NYCU-master-049673cbcfa1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生技醫療經營管理碩士在職學位學程",
+    "departmentGroup": "NYCU:生技醫療經營管理",
+    "sourceYear": 114,
+    "moeCode": "4131164"
+  },
+  {
+    "id": "NYCU-master-bd16aea00da1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物科技學系",
+    "departmentGroup": "NYCU:生物科技學系",
+    "sourceYear": 114,
+    "moeCode": "5121028"
+  },
+  {
+    "id": "NYCU-master-a368413fdfe5",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物藥學研究所",
+    "departmentGroup": "NYCU:生物藥學研究所",
+    "sourceYear": 114,
+    "moeCode": "9161145"
+  },
+  {
+    "id": "NYCU-master-2a6393a65645",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物資訊及系統生物研究所",
+    "departmentGroup": "NYCU:生物資訊及系統生物研究所",
+    "sourceYear": 114,
+    "moeCode": "5124034"
+  },
+  {
+    "id": "NYCU-master-73db9f26ec9f",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物醫學工程學系",
+    "departmentGroup": "NYCU:生物醫學工程學系",
+    "sourceYear": 114,
+    "moeCode": "7193122"
+  },
+  {
+    "id": "NYCU-master-cccc9c4fd4ec",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物醫學影像暨放射科學系",
+    "departmentGroup": "NYCU:生物醫學影像暨放射科學系",
+    "sourceYear": 114,
+    "moeCode": "9141159"
+  },
+  {
+    "id": "NYCU-master-70a6f73d5a7e",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生物醫學資訊研究所",
+    "departmentGroup": "NYCU:生物醫學資訊研究所",
+    "sourceYear": 114,
+    "moeCode": "5124117"
+  },
+  {
+    "id": "NYCU-master-74ee049e8983",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生理學研究所",
+    "departmentGroup": "NYCU:生理學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121129"
+  },
+  {
+    "id": "NYCU-master-f806a7742e2b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "生醫光電研究所",
+    "departmentGroup": "NYCU:生醫光電研究所",
+    "sourceYear": 114,
+    "moeCode": "7193120"
+  },
+  {
+    "id": "NYCU-master-29916605ea88",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "社區健康照護研究所",
+    "departmentGroup": "NYCU:社區健康照護研究所",
+    "sourceYear": 114,
+    "moeCode": "9131153"
+  },
+  {
+    "id": "NYCU-master-12a3770146a7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "社會與文化研究所",
+    "departmentGroup": "NYCU:社會與文化研究所",
+    "sourceYear": 114,
+    "moeCode": "2299010"
+  },
+  {
+    "id": "NYCU-master-4b53444dcef9",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "神經科學研究所",
+    "departmentGroup": "NYCU:神經科學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121130"
+  },
+  {
+    "id": "NYCU-master-21a82b1b96c5",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "科技法律研究所",
+    "departmentGroup": "NYCU:科技法律研究所",
+    "sourceYear": 114,
+    "moeCode": "4212027"
+  },
+  {
+    "id": "NYCU-master-db6ff0bce6a7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "科技管理研究所",
+    "departmentGroup": "NYCU:科技管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4199023"
+  },
+  {
+    "id": "NYCU-master-fd0030498657",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "科技與社會研究所",
+    "departmentGroup": "NYCU:科技與社會研究所",
+    "sourceYear": 114,
+    "moeCode": "3199109"
+  },
+  {
+    "id": "NYCU-master-977728889e97",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "管理學院企業管理碩士學位學程",
+    "departmentGroup": "NYCU:管理學院企業管理",
+    "sourceYear": 114,
+    "moeCode": "4131016"
+  },
+  {
+    "id": "NYCU-master-5b1ab3ee2599",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "管理學院碩士在職專班",
+    "departmentGroup": "NYCU:管理學院",
+    "sourceYear": 114,
+    "moeCode": "4131026"
+  },
+  {
+    "id": "NYCU-master-4c41f36c05fa",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "管理科學系",
+    "departmentGroup": "NYCU:管理科學系",
+    "sourceYear": 114,
+    "moeCode": "4131018"
+  },
+  {
+    "id": "NYCU-master-c86b4da446e9",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "統計學研究所",
+    "departmentGroup": "NYCU:統計學研究所",
+    "sourceYear": 114,
+    "moeCode": "5421047"
+  },
+  {
+    "id": "NYCU-master-0c534d5073f6",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "經營管理研究所",
+    "departmentGroup": "NYCU:經營管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4131017"
+  },
+  {
+    "id": "NYCU-master-6c0ac30fd644",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "網路工程研究所",
+    "departmentGroup": "NYCU:網路工程研究所",
+    "sourceYear": 114,
+    "moeCode": "6121060"
+  },
+  {
+    "id": "NYCU-master-f8e2a10ba6a8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "腦科學研究所",
+    "departmentGroup": "NYCU:腦科學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121134"
+  },
+  {
+    "id": "NYCU-master-ccc9526744b7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "腦科技跨領域工程碩士學位學程",
+    "departmentGroup": "NYCU:腦科技跨領域工程",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NYCU-master-7210480fb814",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "臨床護理研究所",
+    "departmentGroup": "NYCU:臨床護理研究所",
+    "sourceYear": 114,
+    "moeCode": "9131150"
+  },
+  {
+    "id": "NYCU-master-79858c44d423",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "臨床醫學研究所",
+    "departmentGroup": "NYCU:臨床醫學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121126"
+  },
+  {
+    "id": "NYCU-master-44c5eeb9b2b6",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "英語教學研究所",
+    "departmentGroup": "NYCU:英語教學研究所",
+    "sourceYear": 114,
+    "moeCode": "1131002"
+  },
+  {
+    "id": "NYCU-master-6eabd025078d",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "藥學系",
+    "departmentGroup": "NYCU:藥學系",
+    "sourceYear": 114,
+    "moeCode": "9161142"
+  },
+  {
+    "id": "NYCU-master-2543289c8d9c",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "藥理學研究所",
+    "departmentGroup": "NYCU:藥理學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121144"
+  },
+  {
+    "id": "NYCU-master-71cad52130a3",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "衛生福利研究所",
+    "departmentGroup": "NYCU:衛生福利研究所",
+    "sourceYear": 114,
+    "moeCode": "9191138"
+  },
+  {
+    "id": "NYCU-master-2804d494be7e",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "視覺文化研究所",
+    "departmentGroup": "NYCU:視覺文化研究所",
+    "sourceYear": 114,
+    "moeCode": "2191107"
+  },
+  {
+    "id": "NYCU-master-1147071b3a3f",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "解剖學及細胞生物學研究所",
+    "departmentGroup": "NYCU:解剖學及細胞生物學研究所",
+    "sourceYear": 114,
+    "moeCode": "9121132"
+  },
+  {
+    "id": "NYCU-master-cd64590831a5",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "護理學系",
+    "departmentGroup": "NYCU:護理學系",
+    "sourceYear": 114,
+    "moeCode": "9131149"
+  },
+  {
+    "id": "NYCU-master-f73f528c2cf0",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊學院國防資安管理碩士在職專班",
+    "departmentGroup": "NYCU:資訊學院國防資安管理",
+    "sourceYear": 114,
+    "moeCode": "6131098"
+  },
+  {
+    "id": "NYCU-master-fc6b3f1411b7",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊學院碩士在職專班",
+    "departmentGroup": "NYCU:資訊學院",
+    "sourceYear": 114,
+    "moeCode": "7141069"
+  },
+  {
+    "id": "NYCU-master-814e556edc82",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊學院科技犯罪偵查資通訊碩士在職專班",
+    "departmentGroup": "NYCU:資訊學院科技犯罪偵查資通訊",
+    "sourceYear": 114,
+    "moeCode": "6131175"
+  },
+  {
+    "id": "NYCU-master-21eaad53a141",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊安全研究所",
+    "departmentGroup": "NYCU:資訊安全研究所",
+    "sourceYear": 114,
+    "moeCode": "6131182"
+  },
+  {
+    "id": "NYCU-master-5c9c4459351b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊科學與工程研究所",
+    "departmentGroup": "NYCU:資訊科學與工程研究所",
+    "sourceYear": 114,
+    "moeCode": "6131061"
+  },
+  {
+    "id": "NYCU-master-d26881edfc13",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊管理研究所",
+    "departmentGroup": "NYCU:資訊管理研究所",
+    "sourceYear": 114,
+    "moeCode": "6131022"
+  },
+  {
+    "id": "NYCU-master-ce7fe4fcc676",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "資訊管理與財務金融學系財務金融碩士班",
+    "departmentGroup": "NYCU:資訊管理與財務金融學系",
+    "sourceYear": 114,
+    "moeCode": "4121020"
+  },
+  {
+    "id": "NYCU-master-4862c4f4420b",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "跨專業長期照顧與管理碩士學位學程",
+    "departmentGroup": "NYCU:跨專業長期照顧與管理",
+    "sourceYear": 114,
+    "moeCode": "9211168"
+  },
+  {
+    "id": "NYCU-master-e668f9bbccb0",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "跨領域分子醫學碩士學位學程",
+    "departmentGroup": "NYCU:跨領域分子醫學",
+    "sourceYear": 114,
+    "moeCode": "9121177"
+  },
+  {
+    "id": "NYCU-master-c107f66dd5b1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "運輸與物流管理學系交通運輸碩士班",
+    "departmentGroup": "NYCU:運輸與物流管理學系",
+    "sourceYear": 114,
+    "moeCode": "10411086"
+  },
+  {
+    "id": "NYCU-master-a6e8af735848",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "運輸與物流管理學系物流管理碩士班",
+    "departmentGroup": "NYCU:運輸與物流管理學系",
+    "sourceYear": 114,
+    "moeCode": "10411086"
+  },
+  {
+    "id": "NYCU-master-f143e22eadd6",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "醫務管理研究所",
+    "departmentGroup": "NYCU:醫務管理研究所",
+    "sourceYear": 114,
+    "moeCode": "4133110"
+  },
+  {
+    "id": "NYCU-master-fa2cb0fa3eb8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "醫學生物技術暨檢驗學系",
+    "departmentGroup": "NYCU:醫學生物技術暨檢驗學系",
+    "sourceYear": 114,
+    "moeCode": "9141158"
+  },
+  {
+    "id": "NYCU-master-c5c26479a589",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "量子科學與工程碩士學位學程",
+    "departmentGroup": "NYCU:量子科學與工程",
+    "sourceYear": 115,
+    "moeCode": ""
+  },
+  {
+    "id": "NYCU-master-40f5440e93a8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電信工程研究所",
+    "departmentGroup": "NYCU:電信工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141062"
+  },
+  {
+    "id": "NYCU-master-e316089b9a13",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電子物理學系",
+    "departmentGroup": "NYCU:電子物理學系",
+    "sourceYear": 114,
+    "moeCode": "5331041"
+  },
+  {
+    "id": "NYCU-master-57ef2d8056ce",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電子研究所",
+    "departmentGroup": "NYCU:電子研究所",
+    "sourceYear": 114,
+    "moeCode": "7141053"
+  },
+  {
+    "id": "NYCU-master-a498572ac446",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電控工程研究所",
+    "departmentGroup": "NYCU:電控工程研究所",
+    "sourceYear": 114,
+    "moeCode": "7141064"
+  },
+  {
+    "id": "NYCU-master-d331f56b4bf1",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電機學院碩士在職專班",
+    "departmentGroup": "NYCU:電機學院",
+    "sourceYear": 114,
+    "moeCode": "7141067"
+  },
+  {
+    "id": "NYCU-master-dee311f46670",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電機工程學系",
+    "departmentGroup": "NYCU:電機工程學系",
+    "sourceYear": 114,
+    "moeCode": "7141050"
+  },
+  {
+    "id": "NYCU-master-5c3e8ac8db82",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "電機資訊國際碩士學位學程",
+    "departmentGroup": "NYCU:電機資訊國際",
+    "sourceYear": 114,
+    "moeCode": "7141068"
+  },
+  {
+    "id": "NYCU-master-d219ffcaeedb",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "音樂研究所",
+    "departmentGroup": "NYCU:音樂研究所",
+    "sourceYear": 114,
+    "moeCode": "2151003"
+  },
+  {
+    "id": "NYCU-master-62d5ed5ed610",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "食品安全及健康風險評估研究所",
+    "departmentGroup": "NYCU:食品安全及健康風險評估研究所",
+    "sourceYear": 114,
+    "moeCode": "9199167"
+  },
+  {
+    "id": "NYCU-master-ad7b574e6db8",
+    "school": "NYCU",
+    "degree": "master",
+    "name": "高階主管管理碩士學程",
+    "departmentGroup": "NYCU:高階主管管理",
+    "sourceYear": 114,
+    "moeCode": "4199024"
+  }
+]

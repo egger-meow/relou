@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 
-type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;archived_at?:string|null;purged_at?:string|null;opens_at?:string;closes_at?:string;notification_target_at?:string|null;min_pair_score?:number};
+type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;earlyPaused?:boolean;archived_at?:string|null;purged_at?:string|null;opens_at?:string;closes_at?:string;notification_target_at?:string|null;min_pair_score?:number};
 type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withdrawn:number;today:number}|null;
-  trend:{day:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;asOf:string};
+  trend:{day:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;earlyMatchingEnabled?:boolean;earlyMinScore?:number;asOf:string};
 type Preview = {roundId:string;snapshotHash:string;previewDigest:string;metrics:{
   eligibleCount:number;validEdges:number;unmatchedCount:number;matchRate:number;meanScore:number|null;medianScore:number|null}};
-type Mail = {roundId:string;roundStatus:string;paused:boolean;dryRun:boolean;mailConfigured:boolean;states:Record<string,number>;sample:{subject:string;text:string}|null};
+type Mail = {roundId:string;roundStatus:string;paused:boolean;earlyPaused:boolean;finalPaused:boolean;dryRun:boolean;mailConfigured:boolean;states:Record<string,number>;sample:{subject:string;text:string}|null};
 type Entry = {id:string;maskedEmail:string;status:string;submittedAt:string};
 type MailItem = {id:string;maskedEmail:string;state:string;attempts:number;errorCode:string|null;createdAt:string};
 type Audit = {actor:string;action:string;roundId:string;createdAt:string;meta:Record<string,unknown>};
@@ -114,7 +114,7 @@ export function AdminApp(){
           const reason=window.prompt('人工核對後撤回的原因（至少 3 字）');
           if(reason)void action('/api/admin/entries/'+e.id+'/withdraw',{confirm:'WITHDRAW',reason},'撤回這份報名','已撤回並記錄原因');
         }}>撤回</button></td></tr>)}</tbody></table></div>{entries.length===0&&<p className="muted">尚無報名。</p>}</div>}
-      {tab==='matching'&&<div className="admin-panel"><h3>配對結算中心</h3><p className="muted">先鎖池，再模擬配對。模擬不寫入資料庫；正式提交需要同一快照的預覽摘要。</p>
+      {tab==='matching'&&<div className="admin-panel"><h3>配對結算中心</h3><p>提前配對：{dash?.earlyMatchingEnabled?'排程已配置':'停用'} · 門檻至少 90 分、共同具體興趣、雙方硬條件皆符合；{round?.earlyPaused?'本期已暫停':'仍受全域寄件開關控制'}。每次最多 2 組，不提前發送落單通知。</p><p className="muted">先鎖池，再模擬配對。模擬不寫入資料庫；正式提交需要同一快照的預覽摘要。</p>
         <div className="admin-action-row"><button className="small-btn" disabled={busy||round?.status!=='OPEN'} onClick={()=>round&&void action('/api/admin/rounds/'+round.id+'/lock',{confirm:'LOCK'},'鎖定本期報名','已鎖定候選資料')}>① 鎖定本期</button>
           <button className="small-btn" disabled={busy||round?.status!=='LOCKED'} onClick={()=>void runPreview()}>② 模擬配對</button>
           <button className="small-btn" disabled={busy||round?.status!=='LOCKED'} onClick={()=>round&&void action('/api/admin/rounds/'+round.id+'/repair-snapshot',{confirm:'REPAIR'},'修復中斷的鎖池快照（若已存在則不修改）','快照檢查／修復完成')}>修復缺失快照</button>
@@ -122,14 +122,14 @@ export function AdminApp(){
         {preview&&<div className="preview-grid"><div><span>有效候選</span><strong>{preview.metrics.eligibleCount}</strong></div><div><span>雙向合格邊</span><strong>{preview.metrics.validEdges}</strong></div><div><span>預計配對組數</span><strong>{(preview.metrics.eligibleCount-preview.metrics.unmatchedCount)/2}</strong></div><div><span>落單人數</span><strong>{preview.metrics.unmatchedCount}</strong></div><div><span>配對率</span><strong>{preview.metrics.matchRate}%</strong></div><div><span>平均分數</span><strong>{preview.metrics.meanScore??'—'}</strong></div></div>}
         {!preview&&<p className="muted">尚未產生模擬結果。</p>}
       </div>}
-      {tab==='mail'&&<div className="admin-panel"><h3>結果信寄送</h3><p className="muted">只有本期正式配對後才會建立 outbox。送出表單當下不會寄任何信。</p>
+      {tab==='mail'&&<div className="admin-panel"><h3>結果信寄送</h3><p className="muted">高度契合的提前配對及截止後的正式配對都會建立 outbox。送出表單當下不會寄任何信。</p>
         <div className="preview-grid">{['queued','sending','sent','failed','uncertain','suppressed'].map(k=><div key={k}><span>{k}</span><strong>{mail?.states[k]??0}</strong></div>)}</div>
-        <div className="admin-notice">{mail?.dryRun?'🧪 Dry-run 開啟，不會寄真信。':'正式寄件模式'} · {mail?.paused?'目前暫停':'寄送已解除暫停'} · {mail?.mailConfigured?'已配置寄件':'寄件未配置'}</div>
+        <div className="admin-notice">{mail?.dryRun?'🧪 Dry-run 開啟，不會寄真信。':'正式寄件模式'} · 提前：{mail?.earlyPaused?'暫停':'未暫停'} · 期末：{mail?.finalPaused?'暫停':'未暫停'} · {mail?.mailConfigured?'已配置寄件':'寄件未配置'}</div>
         {mail?.sample&&<div className="mail-preview"><b>{mail.sample.subject}</b><p>{mail.sample.text}</p></div>}
-        <div className="admin-action-row"><button className="small-btn" disabled={busy||round?.status!=='MATCHED'||!mail?.mailConfigured||!mail.paused} onClick={()=>round&&void action('/api/admin/mail/resume',{roundId:round.id,confirm:'RESUME'},'解除寄送暫停','已解除寄送暫停')}>解除暫停</button>
-          <button className="small-btn" disabled={busy||round?.status!=='MATCHED'} onClick={()=>round&&void action('/api/admin/mail/pause',{roundId:round.id,confirm:'PAUSE'},'暫停寄送','已暫停寄送')}>暫停</button>
-          <button className="danger-btn" disabled={busy||round?.status!=='MATCHED'||!mail?.mailConfigured||mail.paused} onClick={()=>round&&void action('/api/admin/mail/send',{roundId:round.id,confirm:'SEND'},'正式寄出最多 10 封信','寄送批次已執行，請查看最新狀態')}>正式寄送（最多 10 封）</button>
-          <button className="small-btn" disabled={busy||round?.status!=='MATCHED'} onClick={()=>round&&void action('/api/admin/mail/retry',{roundId:round.id,confirm:'RETRY'},'重新排入確定失敗的信件','已將可重試失敗信件重新排隊')}>重試失敗</button></div>
+        <div className="admin-action-row"><button className="small-btn" disabled={busy||!['OPEN','LOCKED','MATCHED'].includes(round?.status||'')||!mail?.mailConfigured||!mail.paused} onClick={()=>round&&void action('/api/admin/mail/resume',{roundId:round.id,confirm:'RESUME'},'解除寄送暫停','已解除寄送暫停')}>解除暫停</button>
+          <button className="small-btn" disabled={busy||!['OPEN','LOCKED','MATCHED'].includes(round?.status||'')} onClick={()=>round&&void action('/api/admin/mail/pause',{roundId:round.id,confirm:'PAUSE'},'暫停寄送','已暫停寄送')}>暫停</button>
+          <button className="danger-btn" disabled={busy||!['OPEN','LOCKED','MATCHED'].includes(round?.status||'')||!mail?.mailConfigured||mail.paused} onClick={()=>round&&void action('/api/admin/mail/send',{roundId:round.id,confirm:'SEND'},'正式寄出最多 10 封信','寄送批次已執行，請查看最新狀態')}>正式寄送（最多 10 封）</button>
+          <button className="small-btn" disabled={busy||!['OPEN','LOCKED','MATCHED'].includes(round?.status||'')} onClick={()=>round&&void action('/api/admin/mail/retry',{roundId:round.id,confirm:'RETRY'},'重新排入確定失敗的信件','已將可重試失敗信件重新排隊')}>重試失敗</button></div>
         <p className="muted">sent 代表寄件伺服器已接受，不代表收件匣送達。uncertain/sending 可能已寄出，不能盲目重寄；請先核對 Gmail 寄件紀錄。</p>
         <h3 className="space-top">收件清單（遮罩）</h3><div className="admin-table-wrap"><table><thead><tr><th>收件者</th><th>狀態</th><th>次數</th><th>錯誤</th><th>管理</th></tr></thead><tbody>{mailItems.map(item=><tr key={item.id}><td>{item.maskedEmail}</td><td>{item.state}</td><td>{item.attempts}</td><td>{item.errorCode||'—'}</td><td><button disabled={busy||!['queued','failed'].includes(item.state)} onClick={()=>{
           const reason=window.prompt('停止寄送這封信的原因（至少 3 字）');

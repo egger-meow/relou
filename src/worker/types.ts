@@ -1,5 +1,6 @@
 export interface Env {
   MONTHLY_ROUNDS_ENABLED?: string;
+  EARLY_MATCHING_ENABLED?: string;
   DB: D1Database;
   ASSETS: { fetch(request: Request): Promise<Response> };
   EMAIL?: { send(message: { to: string; from: string; subject: string; text: string }): Promise<unknown> };

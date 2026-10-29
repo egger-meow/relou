@@ -1,0 +1,60 @@
+[
+  {
+    "school": "NTHU",
+    "degree": "master",
+    "name": "永續經營與氣候政策研究所",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "藝術學院藝術跨域博士班",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "東亞與現代世界形成國際研究生博士學位學程",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NTHU",
+    "degree": "master",
+    "name": "永續科技碩士學位學程",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NYCU",
+    "degree": "master",
+    "name": "量子科學與工程碩士學位學程",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NYCU",
+    "degree": "master",
+    "name": "腦科技跨領域工程碩士學位學程",
+    "source": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+    "change": "新增"
+  },
+  {
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "跨領域神經科學博士學位學程(台灣聯合大學系統)",
+    "source": "https://dgaa.site.nthu.edu.tw/var/file/209/1209/img/456159921.pdf",
+    "sourceYear": 114,
+    "change": "114學位授予表及現行教學目錄補充（非新增）"
+  },
+  {
+    "school": "NTHU",
+    "degree": "doctor",
+    "name": "光電博士學位學程(台灣聯合大學系統)",
+    "source": "https://dgaa.site.nthu.edu.tw/var/file/209/1209/img/456159921.pdf",
+    "sourceYear": 114,
+    "change": "114學位授予表及現行教學目錄補充（非新增）"
+  }
+]

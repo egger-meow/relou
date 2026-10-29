@@ -1,3 +1,4 @@
+import { PROGRAMS } from '../src/shared/programs';
 // Real SQLite + synthetic records. Cloudflare Access is mocked only in this suite.
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -6,13 +7,14 @@ vi.mock('../src/worker/auth', async importOriginal => ({
   ...await importOriginal(), verifyAdmin: async () => 'operator@example.invalid'
 }));
 import worker from '../src/worker/index';
+import { commitEarly, earlyPlan, runEarlySchedule } from '../src/worker/early';
 import { syncMonthlyRounds } from '../src/worker/schedule';
 import { currentRound } from '../src/worker/db';
 import { snapshotHash } from '../src/matching/engine';
 import { PRIVACY_VERSION } from '../src/shared/schema';
 
 let sqlite, env;
-const participant = email => ({schoolClaimed:'NYCU',nickname:'測試者',gender:'woman',desiredGenders:['all'],
+const participant = email => ({schoolClaimed:'NYCU',degreeLevel:'bachelor',programId:PROGRAMS.find(p=>p.school==='NYCU'&&p.degree==='bachelor').id,departmentPreference:'either_department',nickname:'測試者',gender:'woman',desiredGenders:['all'],
   intent:'either',campusPreference:'either_school',interests:['音樂'],dayOffStyle:'both',
   conflictStyle:'depends',chatStyle:'deep',firstMeet:'cafe',topValue:'ease',notificationEmail:email,
   contactKind:'instagram',contactValue:'@synthetic',adultAttested:true,shareContactConsent:true,
@@ -160,4 +162,90 @@ it('rejects submission at the exact close even before cron locks the round',asyn
   vi.setSystemTime(new Date('2026-11-20T16:00:00.000Z'));
   expect((await submit('after@example.invalid')).status).toBe(409);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM entries').get().n).toBe(1);
+});
+
+describe('high compatibility early allocation (synthetic only)',()=>{
+ function enabled(){Object.assign(env,{EARLY_MATCHING_ENABLED:'true',EMAIL_ENABLED:'true',EMAIL_DRY_RUN:'false'});}
+ it('reserves high pairs once, then final settlement handles only remaining entries',async()=>{
+  enabled();await submit('high-a@example.invalid');await submit('high-b@example.invalid');
+  const p=await earlyPlan(env,'r');expect(p.plan.pairs).toHaveLength(1);expect(p.plan.pairs[0].score).toBe(100);
+  expect((await commitEarly(env,'r')).pairs).toBe(1);
+  expect((await commitEarly(env,'r')).pairs).toBe(0);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM matches').get().n).toBe(1);
+  expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE phase='early'").get().n).toBe(2);
+  const a=sqlite.prepare('SELECT a_id FROM matches').get().a_id;
+  expect((await request('/api/admin/entries/'+a+'/withdraw',{confirm:'WITHDRAW',reason:'synthetic reason'})).status).toBe(409);
+  await submit('remaining@example.invalid');const preview=await lockAndPreview();
+  expect(preview.metrics.eligibleCount).toBe(1);expect(preview.metrics.unmatchedCount).toBe(1);
+  expect((await commit(preview)).status).toBe(200);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_runs').get().n).toBe(1);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM allocation_batches').get().n).toBe(2);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(3);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(2);
+ });
+ it('leaves below-threshold, incompatible and only-Other submissions waiting',async()=>{
+  enabled();await submit('low-a@example.invalid');
+  await request('/api/entry',{...participant('low-b@example.invalid'),chatStyle:'meet'},false);
+  expect((await earlyPlan(env,'r')).plan.pairs).toHaveLength(0);
+  sqlite.exec("UPDATE entries SET answers_json=json_set(answers_json,'$.chatStyle','deep','$.campusPreference','same_school'); UPDATE entries SET school_claimed='NTHU' WHERE normalized_email='low-b@example.invalid';");
+  expect((await earlyPlan(env,'r')).plan.pairs).toHaveLength(0);
+  sqlite.prepare("UPDATE entries SET school_claimed='NYCU',answers_json=json_set(answers_json,'$.interests',json(?))").run(JSON.stringify(['其他']));
+  expect((await commitEarly(env,'r')).pairs).toBe(0);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(0);
+ });
+ it('rolls back early allocation on outbox failure and respects closed/paused rounds and dry-run',async()=>{
+  await submit('rollback-a@example.invalid');await submit('rollback-b@example.invalid');
+  env.EARLY_MATCHING_ENABLED='true';expect((await commitEarly(env,'r')).pairs).toBe(0);enabled();
+  sqlite.exec("CREATE TRIGGER early_outbox_failure BEFORE INSERT ON email_outbox BEGIN SELECT RAISE(ABORT,'synthetic'); END;");
+  await expect(commitEarly(env,'r')).rejects.toThrow();
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(0);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_runs').get().n).toBe(0);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM allocation_batches').get().n).toBe(0);
+  sqlite.exec("DROP TRIGGER early_outbox_failure; UPDATE rounds SET early_paused=1 WHERE id='r';");
+  await expect(earlyPlan(env,'r')).rejects.toThrow();
+  sqlite.exec("UPDATE rounds SET early_paused=0,status='LOCKED' WHERE id='r'");
+  await expect(earlyPlan(env,'r')).rejects.toThrow();
+ });
+ it('sends early results via schedule but keeps OPEN and never sends an unmatched notice early',async()=>{
+  enabled();await submit('send-a@example.invalid');await submit('send-b@example.invalid');await submit('wait@example.invalid');
+  await runEarlySchedule(env);
+  expect(env.EMAIL.send).toHaveBeenCalledTimes(2);
+  expect(sqlite.prepare("SELECT status FROM rounds WHERE id='r'").get().status).toBe('OPEN');
+  expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='sent'").get().n).toBe(2);
+  await runEarlySchedule(env);expect(env.EMAIL.send).toHaveBeenCalledTimes(2);
+ });
+});
+
+it('applies department exclusions to early and final matching, and stores canonical private identifiers',async()=>{
+ Object.assign(env,{EARLY_MATCHING_ENABLED:'true',EMAIL_ENABLED:'true',EMAIL_DRY_RUN:'false'});
+ const input={...participant('dept-a@example.invalid'),departmentPreference:'different_department'};
+ expect((await request('/api/entry',input,false)).status).toBe(200);
+ await submit('dept-b@example.invalid');
+ const row=sqlite.prepare("SELECT answers_json FROM entries WHERE normalized_email='dept-a@example.invalid'").get();
+ expect(JSON.parse(row.answers_json).departmentGroup).toBe(PROGRAMS.find(p=>p.id===input.programId).departmentGroup);
+ expect((await commitEarly(env,'r')).pairs).toBe(0);
+ const preview=await lockAndPreview();expect(preview.metrics.validEdges).toBe(0);
+ expect((await commit(preview)).status).toBe(200);
+ expect(sqlite.prepare('SELECT COUNT(*) AS n FROM matches').get().n).toBe(0);
+ expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(2);
+});
+
+it('rechecks early pause between messages and does not requeue uncertain SMTP outcomes',async()=>{
+ Object.assign(env,{EARLY_MATCHING_ENABLED:'true',EMAIL_ENABLED:'true',EMAIL_DRY_RUN:'false'});
+ await submit('earlypause-a@example.invalid');await submit('earlypause-b@example.invalid');
+ env.EMAIL.send.mockImplementation(async()=>{sqlite.exec("UPDATE rounds SET early_paused=1 WHERE id='r'");throw new Error('synthetic timeout');});
+ await runEarlySchedule(env);expect(env.EMAIL.send).toHaveBeenCalledTimes(1);
+ expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='uncertain'").get().n).toBe(1);
+ expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='queued'").get().n).toBe(1);
+ await request('/api/admin/mail/retry',{confirm:'RETRY',roundId:'r'});
+ expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='uncertain'").get().n).toBe(1);
+});
+it('rejects an early allocation atomically if the round locks after planning',async()=>{
+ Object.assign(env,{EARLY_MATCHING_ENABLED:'true',EMAIL_ENABLED:'true',EMAIL_DRY_RUN:'false'});
+ await submit('stale-a@example.invalid');await submit('stale-b@example.invalid');
+ const batch=env.DB.batch;
+ env.DB.batch=async statements=>{sqlite.exec("UPDATE rounds SET status='LOCKED' WHERE id='r'");return batch(statements);};
+ await expect(commitEarly(env,'r')).rejects.toThrow();
+ for(const table of ['match_runs','allocation_batches','matches','match_members','email_outbox'])
+  expect(sqlite.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n).toBe(0);
 });

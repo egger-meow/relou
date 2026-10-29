@@ -9,7 +9,7 @@ export async function roundById(db: D1Database, id: string): Promise<RoundRow | 
   return db.prepare('SELECT * FROM rounds WHERE id = ?').bind(id).first<RoundRow>();
 }
 export async function eligibleRows(db: D1Database, id: string): Promise<EntryRow[]> {
-  const r = await db.prepare("SELECT * FROM entries WHERE round_id=? AND status='eligible' ORDER BY id").bind(id).all<EntryRow>();
+  const r = await db.prepare("SELECT * FROM entries WHERE round_id=? AND status='eligible' AND NOT EXISTS (SELECT 1 FROM match_members m WHERE m.round_id=entries.round_id AND m.entry_id=entries.id) ORDER BY id").bind(id).all<EntryRow>();
   return r.results || [];
 }
 export async function audit(env: Env, actor: string, action: string, roundId: string | null, meta: object = {}) {

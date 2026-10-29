@@ -1,0 +1,16 @@
+{
+  "retrievedAt": "2026-10-29",
+  "license": "政府資料開放授權條款第1版",
+  "sources": [
+    {
+      "url": "https://stats.moe.gov.tw/files/opendata/students.csv",
+      "sha256": "64f722e01f9a0052c000784d1aecf505f8c06b9e6153c75e64007bad25d45afa",
+      "selection": "Academic year 114, NYCU/NTHU identifier columns only"
+    },
+    {
+      "url": "https://stats.moe.gov.tw/files/bcode_survey/115學年各校新增及異動科系所名單(含高教、技職學校).pdf",
+      "sha256": "7059b7f5d4ffc5f39dd78ce11d13c38d803bb39802b0312ac43c2288a4ef78e5",
+      "selection": "School 0002 and 0007 changes, pages 1-2"
+    }
+  ]
+}

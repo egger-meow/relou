@@ -43,7 +43,7 @@ export function registerAdmin(app: App) {
     return c.json({
       round: { id:round.id,slug:round.slug,title:round.title,status:round.status,opensAt:round.opens_at,
         closesAt:round.closes_at,notificationTargetAt:round.notification_target_at,
-        minPairScore:round.min_pair_score,sendPaused:round.send_paused===1 },
+        minPairScore:round.min_pair_score,sendPaused:round.send_paused===1,earlyPaused:round.early_paused===1 },
       counts: { eligible:grouped.eligible||0, excluded:grouped.excluded||0,withdrawn:grouped.withdrawn||0,
         today:today?.n||0 },
       trend:Array.from({length:14},(_,i)=>{
@@ -52,6 +52,8 @@ export function registerAdmin(app: App) {
       }),
       outbox:mailGrouped,
       mailConfigured:mailReady(c.env),
+      earlyMatchingEnabled:c.env.EARLY_MATCHING_ENABLED==='true',
+      earlyMinScore:90,
       emailDryRun:c.env.EMAIL_DRY_RUN!=='false',
       asOf:new Date().toISOString()
     });
@@ -202,10 +204,10 @@ export function registerAdmin(app: App) {
       return c.json({error:'需確認 WITHDRAW 並提供核對原因'},400);
     const id=c.req.param('id');
     const row=await c.env.DB.prepare(
-      "UPDATE entries SET status='withdrawn' WHERE id=? AND status='eligible' AND EXISTS " +
+      "UPDATE entries SET status='withdrawn' WHERE id=? AND status='eligible' AND NOT EXISTS (SELECT 1 FROM match_members WHERE entry_id=entries.id AND round_id=entries.round_id) AND EXISTS " +
       "(SELECT 1 FROM rounds WHERE id=entries.round_id AND status='OPEN') RETURNING round_id"
     ).bind(id).first<{round_id:string}>();
-    if (!row) return c.json({error:'僅能撤回 OPEN 期次中的有效報名'},409);
+    if (!row) return c.json({error:'僅能撤回 OPEN 期次中尚未配對的有效報名；已分配結果須另行處理'},409);
     await audit(c.env,c.get('adminEmail'),'entry.withdraw',row.round_id,{entryId:id,reason:b.reason.trim()});
     return c.json({ok:true});
   });
@@ -228,10 +230,10 @@ export function registerAdmin(app: App) {
       return c.json({error:'需確認 EXCLUDE 並提供簡短原因'},400);
     const id = c.req.param('id');
     const row = await c.env.DB.prepare(
-      "UPDATE entries SET status='excluded' WHERE id=? AND status='eligible' AND EXISTS " +
+      "UPDATE entries SET status='excluded' WHERE id=? AND status='eligible' AND NOT EXISTS (SELECT 1 FROM match_members WHERE entry_id=entries.id AND round_id=entries.round_id) AND EXISTS " +
       "(SELECT 1 FROM rounds WHERE id=entries.round_id AND status='OPEN') RETURNING round_id"
     ).bind(id).first<{round_id:string}>();
-    if (!row) return c.json({error:'僅能排除 OPEN 期次中的有效報名'},409);
+    if (!row) return c.json({error:'僅能排除 OPEN 期次中尚未配對的有效報名'},409);
     await audit(c.env,c.get('adminEmail'),'entry.exclude',row.round_id,{entryId:id,reason:b.reason.trim()});
     return c.json({ok:true});
   });

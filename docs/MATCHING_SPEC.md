@@ -1,3 +1,5 @@
+> **最新校系與提前分發指示（2026-10-29）：** 使用者已要求增加學校→學位→系所必填下拉（含學士、碩士、博士），並加入「只限同校同系／避開同校同系／都可以」雙向硬條件，取代舊版「不問科系」規則。目錄以教育部最新完整 114 學年資料、115 異動核定表及兩校現行官方資料交叉核對，共 417 個學位別選項，來源及同系群組規則見 [PROGRAM_CATALOG.md](PROGRAM_CATALOG.md)。使用者亦批准「只有高度契合才提前分發」：排程門檻至少 90 分、具體共同興趣及所有雙向硬條件符合；已配對者當期不重配，未達標者等待主要結算。只同選「其他」不算具體共同興趣。提前配對及寄送仍受全域寄信開關與本期暫停控制；不寄報名／驗證信。
+
 > **每月期程與介面更新（2026-10-29，最新使用者指示）：** 自 2026 年 11 月開始每月一期，10 月不收件。台灣時間每月 1 日 00:00 開放、21 日 00:00 關閉（含 20 日整天）；21 日至月底為配對及結果分發期間，次月重新報名。公開介面只有「表單／統計／說明」三頁，預設直接顯示表單；說明頁用按實際月份天數分段的圓環說明時程，表單顯示月份與期次。截止後停用填寫與提交，API 獨立執行日期檢查。提前分發尚未啟用，不對使用者承諾已實作。
 
 > **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.

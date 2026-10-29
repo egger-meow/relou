@@ -1,10 +1,14 @@
+import { programById } from './programs';
 import { z } from 'zod';
 
-export const PRIVACY_VERSION = '2026-10-29-v1';
+export const PRIVACY_VERSION = '2026-10-29-v2';
 export const INTERESTS = ['運動健身','籃球','羽球','音樂','電影影集','遊戲','咖啡探店','美食','戶外旅行','攝影','閱讀','科技 AI','其他'] as const;
 
 export const entrySchema = z.object({
   schoolClaimed: z.enum(['NYCU', 'NTHU']),
+  degreeLevel: z.enum(['bachelor','master','doctor']),
+  programId: z.string().min(1).max(100),
+  departmentPreference: z.enum(['same_department','different_department','either_department']),
   nickname: z.string().trim().min(2).max(16).regex(/^[^\x00-\x1f\x7f<>]+$/),
   gender: z.enum(['man', 'woman', 'nonbinary', 'other', 'undisclosed']),
   desiredGenders: z.array(z.enum(['man', 'woman', 'nonbinary_or_other', 'all'])).min(1).max(4),
@@ -28,6 +32,10 @@ export const entrySchema = z.object({
   turnstileToken: z.string().min(1).max(2048),
   website: z.string().max(200).optional()
 }).strict().superRefine((v, ctx) => {
+  const program=programById(v.programId);
+  if(!program||program.school!==v.schoolClaimed||program.degree!==v.degreeLevel){
+    ctx.addIssue({code:'custom',path:['programId'],message:'請選擇符合學校與學位的系所'});
+  }
   if (v.customInterests?.length && !v.interests.includes('其他')) {
     ctx.addIssue({code:'custom',path:['customInterests'],message:'請先選擇其他興趣'});
   }
@@ -48,7 +56,8 @@ export type EntryInput = z.infer<typeof entrySchema>;
 
 export type MatchAnswers = Pick<EntryInput,
   'schoolClaimed' | 'gender' | 'desiredGenders' | 'intent' | 'campusPreference' |
-  'interests' | 'dayOffStyle' | 'conflictStyle' | 'chatStyle' | 'firstMeet' | 'topValue'>;
+  'interests' | 'dayOffStyle' | 'conflictStyle' | 'chatStyle' | 'firstMeet' | 'topValue'> &
+  Partial<Pick<EntryInput,'degreeLevel'|'programId'|'departmentPreference'>> & {departmentGroup?:string;programCatalogVersion?:string};
 
 export interface EntryRow {
   id: string;
@@ -77,6 +86,7 @@ export interface RoundRow {
   min_pair_score: number;
   snapshot_hash: string | null;
   send_paused: number;
+  early_paused?: number;
   created_at: string;
   archived_at?: string | null;
   final_submission_count?: number | null;

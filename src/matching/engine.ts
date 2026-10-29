@@ -1,7 +1,8 @@
+import { programById } from '../shared/programs';
 import blossom from 'edmonds-blossom';
 import type { EntryRow, MatchAnswers } from '../shared/schema';
 
-export const ALGORITHM_VERSION = 'blossom-reciprocal-v2';
+export const ALGORITHM_VERSION = 'blossom-reciprocal-v3-department';
 
 export interface Candidate {
   id: string;
@@ -56,6 +57,15 @@ export function compatible(a: Candidate, b: Candidate): boolean {
   if (!accepts(a.answers.desiredGenders, b.gender) || !accepts(b.answers.desiredGenders, a.gender)) return false;
   if (!intentSet(a.answers.intent).some(i => intentSet(b.answers.intent).includes(i))) return false;
   if (a.school !== b.school && (a.answers.campusPreference === 'same_school' || b.answers.campusPreference === 'same_school')) return false;
+  const ap=a.answers.departmentPreference||'either_department',bp=b.answers.departmentPreference||'either_department';
+  if(ap!=='either_department'||bp!=='either_department') {
+    const ag=a.answers.departmentGroup||programById(a.answers.programId)?.departmentGroup;
+    const bg=b.answers.departmentGroup||programById(b.answers.programId)?.departmentGroup;
+    if(!ag||!bg)return false; // Legacy unknown departments cannot satisfy a hard department constraint.
+    const same=a.school===b.school&&ag===bg;
+    if((ap==='same_department'||bp==='same_department')&&!same)return false;
+    if((ap==='different_department'||bp==='different_department')&&same)return false;
+  }
   return true;
 }
 
@@ -107,13 +117,13 @@ export function solveEdges(n: number, edges: [number,number,number][]): [number,
   return out;
 }
 
-export function computePlan(candidates: Candidate[], minScore = 55): MatchPlan {
+export function computePlan(candidates: Candidate[], minScore = 55, acceptPair: (a:Candidate,b:Candidate)=>boolean = ()=>true): MatchPlan {
   const eligible = candidates.filter(c => c.status === 'eligible' && c.adultAttested && c.shareContactConsent && c.contactValue).sort((a,b) => a.id.localeCompare(b.id));
   if (eligible.length > 300) throw new Error('Round exceeds safe synchronous matching limit (300); use offline reviewed batch');
   const edges: [number,number,number][] = [];
   const scores = new Map<string,number>();
   for (let i=0;i<eligible.length;i++) for (let j=i+1;j<eligible.length;j++) {
-    if (!compatible(eligible[i],eligible[j])) continue;
+    if (!compatible(eligible[i],eligible[j]) || !acceptPair(eligible[i],eligible[j])) continue;
     const score = scorePair(eligible[i],eligible[j]);
     if (score < minScore) continue;
     scores.set(i + ':' + j, score);

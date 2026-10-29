@@ -1,7 +1,8 @@
+import { PROGRAMS } from '../src/shared/programs';
 import { describe,expect,it } from 'vitest';
 import { contactForMatch,entrySchema,normalizeEmail,PRIVACY_VERSION } from '../src/shared/schema';
 const valid={
-  schoolClaimed:'NYCU',nickname:'小魚',gender:'woman',desiredGenders:['man'],intent:'either',
+  schoolClaimed:'NYCU',degreeLevel:'bachelor',programId:PROGRAMS.find(p=>p.school==='NYCU'&&p.degree==='bachelor')!.id,departmentPreference:'either_department',nickname:'小魚',gender:'woman',desiredGenders:['man'],intent:'either',
   campusPreference:'either_school',interests:['音樂'],dayOffStyle:'both',conflictStyle:'depends',
   chatStyle:'deep',firstMeet:'cafe',topValue:'ease',notificationEmail:'Student@Gmail.COM',
   contactKind:'instagram',contactValue:'@littlefish',adultAttested:true,shareContactConsent:true,
@@ -36,4 +37,12 @@ it('accepts up to three optional custom interests only with Other selected',()=>
   expect(entrySchema.safeParse({...input,customInterests:['字'.repeat(31)]}).success).toBe(false);
   expect(entrySchema.safeParse({...input,customInterests:['<script>']}).success).toBe(false);
   expect(entrySchema.safeParse({...input,interests:['音樂']}).success).toBe(false);
+});
+
+it('requires a real school-degree-program combination',()=>{
+ const nth=PROGRAMS.find(p=>p.school==='NTHU'&&p.degree==='bachelor')!;
+ expect(entrySchema.safeParse({...valid,programId:nth.id}).success).toBe(false);
+ expect(entrySchema.safeParse({...valid,degreeLevel:'master'}).success).toBe(false);
+ expect(entrySchema.safeParse({...valid,programId:'fake-program'}).success).toBe(false);
+ expect(entrySchema.safeParse({...valid,programId:''}).success).toBe(false);
 });
