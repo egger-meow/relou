@@ -143,7 +143,7 @@ export function PublicApp(){
     }finally{setSending(false);}
   }
   return <div className="site">
-    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
+    <header className="nav"><span className="brand">青椒配對表單</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
     <main id="top">
       <section hidden={page!=='stats'} className="stats-band"><div className="wrap">
         <h1>報名統計</h1>
@@ -174,7 +174,7 @@ export function PublicApp(){
               <PillGroup title="你願意認識誰？" desc="可以複選，選「都可以」則不用選其他" options={choices.desiredGenders} value={draft.desiredGenders} multiple onChange={v=>set('desiredGenders',v as Draft['desiredGenders'])}/>
             </div>
             <div className="form-block"><div className="block-label">02 / 你想遇見誰</div>
-              <PillGroup title="來 Relou 想遇見？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
+              <PillGroup title="這次參加的目的？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
               <PillGroup title="跨校 OK 嗎？" options={choices.campusPreference} value={draft.campusPreference} onChange={v=>set('campusPreference',v as Draft['campusPreference'])}/>
               <PillGroup title="對同校系的偏好？" desc="同系指同一所學校、同一系所，跨學位仍算同系；獨立研究所不因名稱相近而合併。這是配對限制，雙方都必須同意。" options={[{value:'same_department',label:'只限同校同系'},{value:'different_department',label:'避開同校同系'},{value:'either_department',label:'都可以'}]} value={draft.departmentPreference} onChange={v=>set('departmentPreference',v as Draft['departmentPreference'])}/>
               <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><InterestPicker value={draft.interests} onChange={v=>set('interests',v)}/>
@@ -230,7 +230,7 @@ export function PublicApp(){
         <div className="schedule-notes"><h2>1～20 日：填表報名</h2><p>當月 1 日 00:00 開始，20 日 23:59 結束。填完按一次送出即可，不需登入或驗證信箱。</p><h2>21 日～月底：配對與寄送結果</h2><p>報名關閉後，依雙方意願與相處偏好配對，主辦者確認後陸續寄出結果。每人一期最多一位，也可能沒有合適對象。</p><h2>次月 1 日：新的一期</h2><p>第一期是 2026 年 11 月期，11 月 1 日開始，10 月不收件。之後每月重新報名與同意，不自動沿用上一期資料。</p><p className="question-desc">報名期間若出現高度契合、且雙方條件皆符合的對象，可能提前配對並寄送結果；並非每份報名都會提前收到。已配對者當期不會再次配對，其餘報名仍在 20 日截止後進行主要配對。</p></div>
       </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
-        <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的學校、學位、系所、答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
+        <div className="privacy-grid"><p>本表單只蒐集本期配對需要的學校、學位、系所、答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
           <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你選定的聯絡方式，以及雙方共同選擇的興趣與相處偏好摘要；不附完整自由回答、校系或配對分數，並不保證一定配到對象。</p>
           <p>資料用於本期配對及通知；期次封存滿 30 天後，主辦者可從後台清除個人資料（目前為人工執行）。需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
         <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></details></section>
