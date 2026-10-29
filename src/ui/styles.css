@@ -23,3 +23,5 @@ h1{font-size:25px;line-height:1.4;margin:0 0 12px;font-weight:700}.form-head{pad
 .form-fields{margin:0;padding:0;border:0;min-width:0}.form-fields:disabled .pill{cursor:default}.form-fields:disabled .text-input{background:#fafbf9}
 
 .cycle-guide{fill:none;stroke:#9aa99f;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round}.cycle-date{font-size:16px;font-weight:650;fill:#253d2d}.cycle-date-note{font-size:12px;fill:#657069}.cycle-figure svg{width:350px}@media(max-width:620px){.cycle-figure svg{width:350px}}
+
+.interest-group{border-bottom:1px solid #e1e6e2;padding:12px 0}.interest-group summary{cursor:pointer;font-weight:600;padding:8px 0}.interest-group summary span{font-size:13px;font-weight:400;color:#647168}.interest-group .pill-list{padding:12px 0}.interest-group .pill:disabled{opacity:.45;cursor:not-allowed}

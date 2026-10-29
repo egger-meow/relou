@@ -1,8 +1,9 @@
+import { INTEREST_GROUPS } from '../shared/interests';
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { PROGRAMS } from '../shared/programs';
 import { monthlyRound } from '../shared/calendar';
-import { entrySchema, INTERESTS, PRIVACY_VERSION } from '../shared/schema';
+import { entrySchema, PRIVACY_VERSION } from '../shared/schema';
 import type { EntryInput } from '../shared/schema';
 
 type Draft = Omit<EntryInput,'adultAttested'|'shareContactConsent'|'privacyConsentVersion'|'turnstileToken'> & {
@@ -166,8 +167,8 @@ export function PublicApp(){
               <PillGroup title="來 Relou 想遇見？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
               <PillGroup title="跨校 OK 嗎？" options={choices.campusPreference} value={draft.campusPreference} onChange={v=>set('campusPreference',v as Draft['campusPreference'])}/>
               <PillGroup title="對同校系的偏好？" desc="同系指同一所學校、同一系所，跨學位仍算同系；獨立研究所不因名稱相近而合併。這是配對限制，雙方都必須同意。" options={[{value:'same_department',label:'只限同校同系'},{value:'different_department',label:'避開同校同系'},{value:'either_department',label:'都可以'}]} value={draft.departmentPreference} onChange={v=>set('departmentPreference',v as Draft['departmentPreference'])}/>
-              <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><p className="question-desc">選 1–4 個，配對後也許就是破冰話題。</p><div className="pill-list">{INTERESTS.map(t=><button key={t} type="button" aria-pressed={draft.interests.includes(t)} className={'pill '+(draft.interests.includes(t)?'selected':'')}
-                onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<4?[...draft.interests,t]:draft.interests)}>{t}</button>)}</div>
+              <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><p className="question-desc">選 1–8 個。展開分類挑選具體興趣，配對後就是聊天話題。已選 {draft.interests.length}/8 個。</p>{INTEREST_GROUPS.map(group=><details key={group.label} className="interest-group"><summary>{group.label} <span>（{group.tags.filter(t=>draft.interests.includes(t)).length} 已選）</span></summary><div className="pill-list">{group.tags.map(t=><button key={t} type="button" aria-pressed={draft.interests.includes(t)} className={'pill '+(draft.interests.includes(t)?'selected':'')}
+                onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<8?[...draft.interests,t]:draft.interests)} disabled={!draft.interests.includes(t)&&draft.interests.length>=8}>{t}</button>)}</div></details>)}
                 {draft.interests.includes('其他')&&<div className="custom-interests"><p className="question-desc">其他興趣（選填，最多 3 項，每項 30 字）。</p>{[0,1,2].map(i=><label key={i}><span className="question-desc">自填興趣 {i+1}</span><input className="text-input" maxLength={30} placeholder={i===0?'例如：烘焙、桌遊或手作':'還有其他喜歡的事嗎？'} value={draft.customInterests?.[i]||''} onChange={e=>{const values=[...(draft.customInterests||[])];values[i]=e.target.value;set('customInterests',values);}}/></label>)}</div>}
               </fieldset>
             </div>

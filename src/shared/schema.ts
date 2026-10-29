@@ -2,7 +2,8 @@ import { programById } from './programs';
 import { z } from 'zod';
 
 export const PRIVACY_VERSION = '2026-10-29-v3';
-export const INTERESTS = ['運動健身','籃球','羽球','音樂','電影影集','遊戲','咖啡探店','美食','戶外旅行','攝影','閱讀','科技 AI','其他'] as const;
+export { INTERESTS } from './interests';
+import { INTERESTS } from './interests';
 
 export const entrySchema = z.object({
   schoolClaimed: z.enum(['NYCU', 'NTHU']),
@@ -14,7 +15,7 @@ export const entrySchema = z.object({
   desiredGenders: z.array(z.enum(['man', 'woman', 'nonbinary_or_other', 'all'])).min(1).max(4),
   intent: z.enum(['friends', 'dating', 'either']),
   campusPreference: z.enum(['same_school', 'either_school']),
-  interests: z.array(z.enum(INTERESTS)).min(1).max(4),
+  interests: z.array(z.enum(INTERESTS)).min(1).max(8),
   customInterests: z.array(z.string().trim().min(1).max(30).regex(/^[^\x00-\x1f\x7f<>]+$/)).max(3).optional(),
   dayOffStyle: z.enum(['plan', 'spontaneous', 'both']),
   conflictStyle: z.enum(['listen', 'direct', 'depends']),
