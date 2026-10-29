@@ -1,4 +1,5 @@
-import { describe,expect,it } from 'vitest';
+import { describe,expect,it,vi } from 'vitest';
+import { exportJWK, generateKeyPair, SignJWT } from 'jose';
 import { correctOrigin,verifyAdmin } from '../src/worker/auth';
 import type { Env } from '../src/worker/types';
 const env={
@@ -7,6 +8,26 @@ const env={
   ADMIN_EMAIL_ALLOWLIST:'admin@example.invalid'
 } as Env;
 describe('Cloudflare Access hardening',()=>{
+  it('requires signed tokens with expiry, correct audience, issuer and exact operator email',async()=>{
+    const {privateKey,publicKey}=await generateKeyPair('RS256');
+    const jwk={...await exportJWK(publicKey),kid:'synthetic-test',alg:'RS256',use:'sig'};
+    vi.stubGlobal('fetch',vi.fn(async()=>Response.json({keys:[jwk]})));
+    try {
+      for (const variant of ['valid','no-expiry','expired','wrong-audience','wrong-issuer','wrong-email']) {
+        const issuer='https://'+variant+'.cloudflareaccess.com';
+        let jwt=new SignJWT({email:variant==='wrong-email'?'attacker@example.invalid':'admin@example.invalid'})
+          .setProtectedHeader({alg:'RS256',kid:'synthetic-test'})
+          .setIssuer(variant==='wrong-issuer'?'https://other.cloudflareaccess.com':issuer)
+          .setAudience(variant==='wrong-audience'?'another-app':'correct-admin-audience');
+        if (variant!=='no-expiry') jwt=jwt.setExpirationTime(variant==='expired'?Math.floor(Date.now()/1000)-120:'5m');
+        const request=new Request('https://admin.relou.jjmowlab.com/',{
+          headers:{'Cf-Access-Jwt-Assertion':await jwt.sign(privateKey)}
+        });
+        expect(await verifyAdmin(request,{...env,CF_ACCESS_TEAM_DOMAIN:issuer}))
+          .toBe(variant==='valid'?'admin@example.invalid':null);
+      }
+    } finally {vi.unstubAllGlobals();}
+  });
   it('never accepts a missing or forged JWT header',async()=>{
     expect(await verifyAdmin(new Request('https://admin.relou.jjmowlab.com/'),env)).toBeNull();
     const forged=new Request('https://admin.relou.jjmowlab.com/',{

@@ -1,3 +1,5 @@
+> **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.
+
 # Relou | Matching Engine 規格 v0.3（一次送出 / 無信箱驗證）
 
 > 結果寄送使用 Cloudflare Email Service `send_email` Workers binding，配對資料與發信 outbox 在 Cloudflare D1 SQLite。正式網址目標 `https://relou.jjmowlab.com`。

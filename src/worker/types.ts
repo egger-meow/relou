@@ -15,6 +15,9 @@ export interface Env {
   EMAIL_DRY_RUN: string;
   EMAIL_ENABLED: string;
   EMAIL_FROM: string;
+  MAIL_PROVIDER?: 'gmail_smtp' | 'cloudflare';
+  GMAIL_SMTP_USER?: string;
+  GMAIL_SMTP_APP_PASSWORD?: string;
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
   ADMIN_EMAIL_ALLOWLIST?: string;

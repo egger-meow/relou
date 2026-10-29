@@ -1,3 +1,5 @@
+> **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.
+
 # Relou | 公開統計與管理後台 Spec v1.0
 2026-10-29 | 開發必讀 | 技術主軸 Cloudflare Workers + D1 + Access
 

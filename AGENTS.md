@@ -1,5 +1,9 @@
 # Relou | Implementation instructions
 
+## Latest owner correction: result email transport (2026-10-29)
+
+The owner explicitly replaced Cloudflare Email Service with **Gmail SMTP** during review/deployment. Use `smtp.gmail.com:465` with implicit TLS from the Worker, server-only Gmail app-password secrets, and the existing paused/dry-run outbox. Do not require Workers Paid or Email Service onboarding. This overrides older Cloudflare-only email/SMTP prohibitions below and in the original specifications. Hosting and data remain Cloudflare Workers + Static Assets + D1. Never send signup/verification email. Public support contact: `jjmow.cs15@nycu.edu.tw`. Do not send live mail without sender credentials and explicit operator approval.
+
 ## Immutable UX rule (owner explicit correction, 2026-10-29)
 
 **THE USER FILLS THE ONE-PAGE FORM, CLICKS SUBMIT ONCE, AND IS DONE.** NO account registration, NO login, NO verification link, NO OTP, NO magic link, NO confirmation email click, NO follow-up verification before or after submission. Do not add any extra step even if it seems more secure. Success means a validated entry has been committed to D1 and a confirmation screen appears immediately.

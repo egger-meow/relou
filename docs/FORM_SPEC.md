@@ -1,3 +1,5 @@
+> **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.
+
 # Relou | 90 秒單頁表單 v0.2（無信箱驗證）
 
 > **一頁完成、一次送出。沒有 email OTP、magic link、帳號註冊、登入、收信確認。** 不問科系、不問年級、不要求照片或長自介。Email 直接放在表單最後（或開頭），僅供期末寄配對結果，任何可收信地址都可以。姓名/學校是自述，**沒有做身分或在校驗證**。

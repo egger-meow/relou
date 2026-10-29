@@ -13,6 +13,25 @@ function person(id:string, overrides:Partial<Candidate>={}):Candidate {
   return {...base,...overrides,answers:{...base.answers,...overrides.answers}};
 }
 describe('reciprocal matching',()=>{
+  it('maximizes original score after cardinality, checked against exhaustive search',()=>{
+    const people=Array.from({length:10},(_,i)=>person('p'+i,{answers:{...person('base').answers,
+      interests:i%2?['音樂']:['羽球','音樂'],dayOffStyle:i%3?'plan':'both',
+      chatStyle:i%2?'often':'deep',firstMeet:i%3?'walk':'cafe'}}));
+    function best(ids:number[]):[number,number] {
+      if(ids.length<2)return [0,0];
+      const [a,...rest]=ids;let result=best(rest);
+      for(const b of rest){
+        const score=scorePair(people[a],people[b]);if(score<55)continue;
+        const tail=best(rest.filter(i=>i!==b));
+        const candidate:[number,number]=[tail[0]+1,tail[1]+Math.round(score*100)];
+        if(candidate[0]>result[0] || candidate[0]===result[0]&&candidate[1]>result[1])result=candidate;
+      }
+      return result;
+    }
+    const plan=computePlan(people,55);
+    expect([plan.pairs.length,plan.pairs.reduce((sum,p)=>sum+Math.round(p.score*100),0)])
+      .toEqual(best(people.map((_,i)=>i)));
+  });
   it('requires BOTH sides to accept gender',()=>{
     const a=person('a',{answers:{...person('a').answers,desiredGenders:['woman']}});
     const b=person('b',{gender:'woman',answers:{...person('b').answers,gender:'woman',desiredGenders:['woman']}});

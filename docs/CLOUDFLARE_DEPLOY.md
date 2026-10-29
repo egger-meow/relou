@@ -1,3 +1,5 @@
+> **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.
+
 # Relou | Cloudflare-only deployment & single-submit architecture
 
 > **Canonical target domain:** `https://relou.jjmowlab.com`. **User flow MUST be single page -> click submit -> immediate success. NO login / email verification / OTP / magic link / email confirmation.** This supersedes every older draft. Not yet deployed or confirmed live.

@@ -16,8 +16,12 @@ async function verifyTurnstile(token: string, ip: string, env: Env): Promise<boo
       method: 'POST', body: form, signal: AbortSignal.timeout(8000)
     });
     if (!response.ok) return false;
-    const data = await response.json() as { success?: boolean; hostname?: string };
+    const data = await response.json() as { success?: boolean; hostname?: string; metadata?: {result_with_testing_key?:boolean} };
     if (!data.success) return false;
+    // Official dummy keys report example.com. Permit this only for the explicit local demo.
+    if (env.ENVIRONMENT === 'local' && env.TURNSTILE_SECRET_KEY === '1x0000000000000000000000000000000AA' &&
+        data.metadata?.result_with_testing_key === true) return true;
+    if (env.ENVIRONMENT !== 'local' && !data.hostname) return false;
     if (data.hostname && data.hostname !== env.PUBLIC_HOST &&
       !(env.ENVIRONMENT === 'local' && ['localhost','127.0.0.1'].includes(data.hostname))) return false;
     return true;
@@ -45,11 +49,11 @@ export function registerPublic(app: App) {
     let previousRoundPairCount: number | null = null;
     if ((totalRounds?.n || 0) > 1) {
       const lifetime = await c.env.DB.prepare("SELECT COALESCE(SUM(CASE WHEN r.purged_at IS NOT NULL THEN r.final_submission_count ELSE (SELECT COUNT(*) FROM entries e WHERE e.round_id=r.id AND e.status='eligible') END),0) AS n FROM rounds r").first<{ n: number }>();
-      lifetimeSubmissionCount = lifetime?.n ?? 0;
       const previous = await c.env.DB.prepare(
         "SELECT id,purged_at,final_pair_count FROM rounds WHERE id <> ? AND status IN ('NOTIFIED','ARCHIVED') ORDER BY created_at DESC LIMIT 1"
       ).bind(round.id).first<{ id: string;purged_at:string|null;final_pair_count:number|null }>();
-      if (previous) {
+      if (previous?.id) {
+        lifetimeSubmissionCount = lifetime?.n ?? 0;
         const pairs = previous.purged_at ? { n: previous.final_pair_count ?? 0 } : await c.env.DB.prepare('SELECT COUNT(*) AS n FROM matches WHERE round_id=?')
           .bind(previous.id).first<{ n: number }>();
         previousRoundPairCount = pairs?.n ?? 0;

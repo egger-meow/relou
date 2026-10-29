@@ -5,6 +5,7 @@ import { verifyAdmin, adminMutationAllowed } from './auth';
 import { audit, currentRound, eligibleRows, roundById } from './db';
 import type { Env } from './types';
 import { registerOperations } from './operations';
+import { mailReady } from './smtp';
 
 type App = Hono<{ Bindings: Env; Variables: { adminEmail: string } }>;
 type Confirmation = { confirm?: string };
@@ -34,7 +35,7 @@ export function registerAdmin(app: App) {
     const [counts, today, trend, outbox] = await Promise.all([
       db.prepare("SELECT status,COUNT(*) AS n FROM entries WHERE round_id=? GROUP BY status").bind(round.id).all<{status:string;n:number}>(),
       db.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND date(submitted_at,'+8 hours')=date('now','+8 hours')").bind(round.id).first<{n:number}>(),
-      db.prepare("SELECT date(submitted_at,'+8 hours') AS day, COUNT(*) AS n FROM entries WHERE round_id=? AND submitted_at>=datetime('now','-14 days') GROUP BY day ORDER BY day").bind(round.id).all<{day:string;n:number}>(),
+      db.prepare("SELECT date(submitted_at,'+8 hours') AS day, COUNT(*) AS n FROM entries WHERE round_id=? AND date(submitted_at,'+8 hours')>=date('now','+8 hours','-13 days') GROUP BY day ORDER BY day").bind(round.id).all<{day:string;n:number}>(),
       db.prepare("SELECT state,COUNT(*) AS n FROM email_outbox WHERE round_id=? GROUP BY state").bind(round.id).all<{state:string;n:number}>()
     ]);
     const grouped = Object.fromEntries((counts.results||[]).map(r=>[r.status,r.n]));
@@ -45,9 +46,12 @@ export function registerAdmin(app: App) {
         minPairScore:round.min_pair_score,sendPaused:round.send_paused===1 },
       counts: { eligible:grouped.eligible||0, excluded:grouped.excluded||0,withdrawn:grouped.withdrawn||0,
         today:today?.n||0 },
-      trend:trend.results||[],
+      trend:Array.from({length:14},(_,i)=>{
+        const day=new Date(Date.now()+8*3600000-(13-i)*86400000).toISOString().slice(0,10);
+        return {day,n:(trend.results||[]).find(row=>row.day===day)?.n||0};
+      }),
       outbox:mailGrouped,
-      mailConfigured:c.env.EMAIL_DRY_RUN==='false' && c.env.EMAIL_ENABLED==='true' && !!c.env.EMAIL_FROM && !!c.env.EMAIL,
+      mailConfigured:mailReady(c.env),
       emailDryRun:c.env.EMAIL_DRY_RUN!=='false',
       asOf:new Date().toISOString()
     });
@@ -96,10 +100,10 @@ export function registerAdmin(app: App) {
   app.post('/api/admin/rounds/:id/open', async c => {
     const b = await jsonBody(c) as Confirmation;
     if (b.confirm!=='OPEN') return c.json({error:'需要 OPEN 確認'},400);
-    if (!c.env.SUPPORT_EMAIL || !c.env.TURNSTILE_SITE_KEY || !c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER || !c.env.EMAIL_FROM || !c.env.EMAIL)
-      return c.json({error:'開池前必須設定主辦者聯絡窗口、Turnstile、限速與 Email Service sender'},503);
-    if (c.env.ENVIRONMENT !== 'local' && (c.env.EMAIL_ENABLED !== 'true' || c.env.EMAIL_DRY_RUN !== 'false'))
-      return c.json({error:'正式開池前必須確認 Email Service 已可寄送結果，並解除全域 dry-run'},503);
+    if (!c.env.SUPPORT_EMAIL || !c.env.TURNSTILE_SITE_KEY || !c.env.TURNSTILE_SECRET_KEY || !c.env.RATE_HASH_PEPPER || !c.env.SUBMIT_LIMITER || !c.env.EMAIL_LIMITER)
+      return c.json({error:'開池前必須設定主辦者聯絡窗口、Turnstile 與限速'},503);
+    if (c.env.ENVIRONMENT !== 'local' && !mailReady(c.env))
+      return c.json({error:'正式開池前必須確認寄件設定可用，並解除全域 dry-run'},503);
     const now = new Date().toISOString();
     try {
       const r = await c.env.DB.prepare(

@@ -17,7 +17,8 @@ export default {
     const isPublic = url.hostname === env.PUBLIC_HOST ||
       (env.ENVIRONMENT === 'local' && ['localhost','127.0.0.1'].includes(url.hostname));
     if (!isAdmin && !isPublic) return new Response('Not found', {status:404});
-    if (isPublic && (url.pathname.startsWith('/api/admin/') || url.pathname.startsWith('/admin'))) {
+    if (isPublic && (url.pathname.startsWith('/api/admin/') || url.pathname.startsWith('/admin') ||
+        url.pathname.startsWith('/assets/admin-'))) {
       return new Response('Not found', {status:404});
     }
     if (isAdmin) {

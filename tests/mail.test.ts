@@ -7,6 +7,17 @@ function person(id:string,email:string,kind:'instagram'|'submitted_email',contac
     share_contact_consent:1,privacy_version:'v1',status:'eligible',submitted_at:'2026-10-29T00:00:00Z'};
 }
 describe('result mail privacy',()=>{
+  it('uses only shared allowlisted interests for icebreakers and builds a safe IG link',()=>{
+    const a=person('a','a@example.invalid','instagram','@a');
+    const b=person('b','b@example.invalid','instagram','@b');
+    a.answers_json=JSON.stringify({interests:['音樂','閱讀'],openAnswer:'private answer'});
+    b.answers_json=JSON.stringify({interests:['音樂','遊戲'],openAnswer:'another private answer'});
+    const text=resultEmail(a,b,'support@example.invalid').text;
+    expect(text).toContain('共同興趣：音樂');
+    expect(text).toContain('https://www.instagram.com/b/');
+    expect(text).not.toContain('private answer');
+    expect(text).not.toContain('閱讀');
+  });
   it('only shares counterpart opt-in IG, not private notification email',()=>{
     const a=person('a','recipient@example.invalid','instagram','@myprivate');
     const b=person('b','other-private@example.invalid','instagram','@public_b');

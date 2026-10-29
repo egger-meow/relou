@@ -3,18 +3,21 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build && npm run build:worker",
+    "build": "vite build && pnpm run build:worker",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "dev:worker": "wrangler dev",
+    "demo": "pnpm build && pnpm demo:db && wrangler dev --config wrangler.local.jsonc --local --port 8787",
+    "demo:db": "wrangler d1 migrations apply relou-local --local --config wrangler.local.jsonc && wrangler d1 execute relou-local --local --config wrangler.local.jsonc --file scripts/demo.sql",
     "db:local": "wrangler d1 migrations apply relou --local",
     "db:remote": "wrangler d1 migrations apply relou --remote",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "pnpm run build && wrangler deploy",
     "configure": "node scripts/configure.mjs",
-    "build:worker": "esbuild src/worker/index.ts --bundle --platform=browser --format=esm --target=es2022 --outfile=.wrangler/worker-check.mjs"
+    "build:worker": "esbuild src/worker/index.ts --bundle --platform=browser --format=esm --target=es2022 --external:cloudflare:* --outfile=.wrangler/worker-check.mjs"
   },
   "dependencies": {
     "edmonds-blossom": "^1.0.0",

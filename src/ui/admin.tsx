@@ -20,8 +20,8 @@ async function api<T>(path:string, options?:RequestInit):Promise<T> {
 }
 function post<T>(path:string,body:object){return api<T>(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
 function time(t:string|null|undefined){return t?new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'short',timeStyle:'short'}).format(new Date(t)):'未設定';}
-function isoFromLocal(s:string){return new Date(s).toISOString();}
-function localInput(d:Date){const n=new Date(d.getTime()-d.getTimezoneOffset()*60000);return n.toISOString().slice(0,16);}
+function isoFromLocal(s:string){return new Date(s+':00+08:00').toISOString();}
+function localInput(d:Date){return new Date(d.getTime()+8*3600000).toISOString().slice(0,16);}
 const tabs:{key:Tab;name:string;icon:string}[]=[
   {key:'overview',name:'總覽',icon:'◈'},{key:'entries',name:'報名',icon:'☷'},
   {key:'matching',name:'配對',icon:'♡'},{key:'mail',name:'寄信',icon:'✉'},
@@ -29,6 +29,7 @@ const tabs:{key:Tab;name:string;icon:string}[]=[
 ];
 
 export function AdminApp(){
+  const [trendDays,setTrendDays]=useState(14);
   const [tab,setTab]=useState<Tab>('overview'),[dash,setDash]=useState<Dashboard|null>(null);
   const [rounds,setRounds]=useState<Round[]>([]),[entries,setEntries]=useState<Entry[]>([]);
   const [audit,setAudit]=useState<Audit[]>([]),[preview,setPreview]=useState<Preview|null>(null);
@@ -55,6 +56,8 @@ export function AdminApp(){
   useEffect(()=>{void load();},[load]);
   async function action(path:string,body:object,confirmation:string,success:string){
     if(!window.confirm('確定要執行「'+confirmation+'」？這是正式管理操作。'))return;
+    if (['COMMIT','SEND'].includes((body as {confirm?:string}).confirm||'') &&
+        !window.confirm('再次確認：'+confirmation+'。請確認已審核本期期次與預覽結果。'))return;
     setBusy(true);setError('');setNotice('');
     try{await post(path,body);setNotice(success);await load();}catch(e){setError(e instanceof Error?e.message:'操作失敗');}
     finally{setBusy(false);}
@@ -79,7 +82,8 @@ export function AdminApp(){
     }catch{setError('請檢查日期格式');}
   }
   const counts=dash?.counts;
-  const maxTrend=Math.max(1,...(dash?.trend||[]).map(x=>x.n));
+  const visibleTrend=(dash?.trend||[]).slice(-trendDays);
+  const maxTrend=Math.max(1,...visibleTrend.map(x=>x.n));
   return <div className="admin-shell">
     <aside className="admin-sidebar"><div className="admin-logo">relou<span>.</span><small>OPERATOR CONSOLE</small></div>
       <div className="admin-menu">{tabs.map(t=><button key={t.key} className={tab===t.key?'active':''} onClick={()=>setTab(t.key)}><span>{t.icon}</span>{t.name}</button>)}</div>
@@ -94,8 +98,11 @@ export function AdminApp(){
         <div className="admin-intro"><h2>{round?.title||'尚無活動期次'}</h2><p>{round?'截止 '+time(round.closesAt):'請先建立第一期，正式報名前需設定 Cloudflare 防護、寄件與聯絡窗口。'}</p></div>
         <div className="admin-kpis"><div><span>本期有效報名</span><strong>{counts?.eligible??'—'}</strong><small>份，非驗證人數</small></div><div><span>今日新增</span><strong>{counts?.today??'—'}</strong><small>台灣時間</small></div>
           <div><span>已排除</span><strong>{counts?.excluded??'—'}</strong><small>人工審核</small></div><div><span>通知寄出</span><strong>{dash?.outbox.sent??0}</strong><small>實際發送成功</small></div></div>
-        <div className="admin-panel"><h3>最近 14 天 · 每日報名</h3>{dash?.trend.length?<div className="trend-chart">{dash.trend.map(x=><div key={x.day} className="trend-column" title={x.day+'：'+x.n+' 份'}><div className="trend-bar" style={{height:Math.max(3,x.n/maxTrend*170)+'px'}}/><small>{x.day.slice(5)}</small><b>{x.n}</b></div>)}</div>:<p className="muted">尚無報名資料，圖表不會使用假數字。</p>}</div>
+        <div className="admin-panel"><h3>最近 {trendDays} 天 · 每日報名</h3><div className="admin-action-row">{[7,14].map(days=><button className="small-btn" key={days} aria-pressed={trendDays===days} onClick={()=>setTrendDays(days)}>{days} 天</button>)}</div>{visibleTrend.length?<div className="trend-chart">{visibleTrend.map(x=><div key={x.day} className="trend-column" title={x.day+'：'+x.n+' 份'}><div className="trend-bar" style={{height:Math.max(0,x.n/maxTrend*170)+'px'}}/><small>{x.day.slice(5)}</small><b>{x.n}</b></div>)}</div>:<p className="muted">尚無報名資料，圖表不會使用假數字。</p>}</div>
         <div className="admin-panel"><h3>營運提醒</h3><p>報名網站不要求 Email 驗證。性別分布、性向與聯絡方式絕不出現在公開統計 API。</p>
+          {round?.status==='OPEN'&&Date.now()>=Date.parse(round.closesAt)&&<p role="alert">報名已截止，尚未鎖池；請審核後鎖定本期。</p>}
+          <p>可疑流量與重複攔阻事件：尚未建立計數紀錄。已排除數量僅代表人工操作。</p>
+          <p>資料更新：{time(dash?.asOf)}。公開統計最多延遲約 60 秒。</p>
           <p>寄件狀態：<b>{dash?.mailConfigured?'已配置正式寄件（仍需人工解除暫停）':'尚未啟用正式寄件'}</b>。預設 dry-run：{dash?.emailDryRun?'是':'否'}。</p></div>
       </div>}
       {tab==='entries'&&<div className="admin-panel"><h3>本期報名審核 <span className="muted">最多顯示最近 100 筆</span></h3>
@@ -123,7 +130,7 @@ export function AdminApp(){
           <button className="small-btn" disabled={busy||round?.status!=='MATCHED'} onClick={()=>round&&void action('/api/admin/mail/pause',{roundId:round.id,confirm:'PAUSE'},'暫停寄送','已暫停寄送')}>暫停</button>
           <button className="danger-btn" disabled={busy||round?.status!=='MATCHED'||!mail?.mailConfigured||mail.paused} onClick={()=>round&&void action('/api/admin/mail/send',{roundId:round.id,confirm:'SEND'},'正式寄出最多 10 封信','寄送批次已執行，請查看最新狀態')}>正式寄送（最多 10 封）</button>
           <button className="small-btn" disabled={busy||round?.status!=='MATCHED'} onClick={()=>round&&void action('/api/admin/mail/retry',{roundId:round.id,confirm:'RETRY'},'重新排入確定失敗的信件','已將可重試失敗信件重新排隊')}>重試失敗</button></div>
-        <p className="muted">uncertain/sending 狀態可能已被寄送，不能盲目重寄；請先核對 Cloudflare Email Service 紀錄。</p>
+        <p className="muted">sent 代表寄件伺服器已接受，不代表收件匣送達。uncertain/sending 可能已寄出，不能盲目重寄；請先核對 Gmail 寄件紀錄。</p>
         <h3 className="space-top">收件清單（遮罩）</h3><div className="admin-table-wrap"><table><thead><tr><th>收件者</th><th>狀態</th><th>次數</th><th>錯誤</th><th>管理</th></tr></thead><tbody>{mailItems.map(item=><tr key={item.id}><td>{item.maskedEmail}</td><td>{item.state}</td><td>{item.attempts}</td><td>{item.errorCode||'—'}</td><td><button disabled={busy||!['queued','failed'].includes(item.state)} onClick={()=>{
           const reason=window.prompt('停止寄送這封信的原因（至少 3 字）');
           if(reason&&round)void action('/api/admin/mail/suppress',{roundId:round.id,outboxId:item.id,confirm:'SUPPRESS',reason},'抑制此封結果信','已停止此封尚未寄出的信件');
@@ -132,7 +139,7 @@ export function AdminApp(){
       {tab==='rounds'&&<div className="admin-panel"><h3>建立下一期</h3><form className="round-form" onSubmit={createRound}>
         <label>活動名稱<input required value={form.title} onChange={e=>setForm(v=>({...v,title:e.target.value}))}/></label>
         <label>期次 slug<input required value={form.slug} onChange={e=>setForm(v=>({...v,slug:e.target.value}))}/></label>
-        <label>開始（瀏覽器本地時間）<input type="datetime-local" required value={form.opensAt} onChange={e=>setForm(v=>({...v,opensAt:e.target.value}))}/></label>
+        <label>開始（台灣時間 UTC+8）<input type="datetime-local" required value={form.opensAt} onChange={e=>setForm(v=>({...v,opensAt:e.target.value}))}/></label>
         <label>截止<input type="datetime-local" required value={form.closesAt} onChange={e=>setForm(v=>({...v,closesAt:e.target.value}))}/></label>
         <label>預計通知日（可留空）<input type="datetime-local" value={form.notificationTargetAt} onChange={e=>setForm(v=>({...v,notificationTargetAt:e.target.value}))}/></label>
         <label>最低配對分<input type="number" min="0" max="100" value={form.minPairScore} onChange={e=>setForm(v=>({...v,minPairScore:Number(e.target.value)}))}/></label>

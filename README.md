@@ -1,3 +1,5 @@
+> **2026-10-29 更新：** 期末寄信依主辦者最新要求改用 Gmail SMTP；網站與 D1 仍在 Cloudflare。請先閱讀 [本次規格審查與目前限制](docs/REVIEW_2026-10-29.md)，舊文件的 Email Service 段落已由此決策取代。
+
 # Relou | 清交月老 💌
 
 **90 秒填完，按下送出就成功報名。**
@@ -20,7 +22,7 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 
 - Cloudflare Workers + Static Assets：React / Vite / TypeScript UI，Hono API
 - Cloudflare D1 SQLite：一頁表單報名、分期資料、配對與 Email outbox
-- Cloudflare Email Service：**只寄期末配對通知／必要營運通知，不寄 OTP 或驗證信**
+- Gmail SMTP over TLS：**只寄期末配對通知／必要營運通知，不寄報名確認或驗證信**
 - Cloudflare Turnstile + Worker rate limits：機器人防護
 - 不用 Supabase、Vercel、登入系統或外部資料庫
 
@@ -40,21 +42,23 @@ Relou 是清大／陽明交大校園的成人單期 1:1 配對實驗。以幾道
 - [Cloudflare-only 部署](docs/CLOUDFLARE_DEPLOY.md)
 - [Agent 工作指令](AGENTS.md)
 
-**狀態（2026-10-29）：** MVP 程式碼、D1 migration、前後端、配對演算法、管理後台、測試與 CI 已提交。**尚未部署、尚未開放報名、尚未配置 Cloudflare Access／D1／Turnstile／Email Service，也沒有寄出真信。** 正式上線前仍須確認人工資料清除排程、誤收信處理與完整隱私告知。詳見 [實作與部署手冊](docs/IMPLEMENTATION.md)。
+**狀態（2026-10-29）：** 已發布 Worker 並配置遠端 D1、Turnstile 與 Cloudflare Access。**尚未開放報名、尚未設定 Gmail SMTP 應用程式密碼，也沒有寄出真信。** HTTPS／功能驗收與規格剩餘差異記錄於 [本次審查](docs/REVIEW_2026-10-29.md)。
 
 本 repo 禁止提交真實參與者資料與 API secrets。
 
 ## 開發指令
 
 ```bash
-npm install
-npm run typecheck
-npm test
-npm run build
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build
+# 不需 Cloudflare 帳戶的本機合成示範：
+pnpm demo
 # Cloudflare D1 建立後：
-npm run configure -- <REAL_D1_UUID>
-npm run db:local
-npm run dev:worker
+pnpm configure <REAL_D1_UUID>
+pnpm db:local
+pnpm dev:worker
 ```
 
 `wrangler.example.jsonc` 是可複製模板，沒有虛構 D1 ID。`wrangler.jsonc` 與 `.dev.vars` 不會提交至 Git。**公開網站不會因為 Cloudflare Access 管理員登入而要求參與者驗證 Email。**

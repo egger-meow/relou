@@ -1,6 +1,8 @@
+> **Owner update 2026-10-29 (latest):** Result emails now use Gmail SMTP over TLS from the Worker, replacing Cloudflare Email Service. No Workers Paid upgrade is required for this transport. Hosting and D1 remain Cloudflare. See [current review and Gmail runbook](REVIEW_2026-10-29.md). No signup or verification emails.
+
 # Relou MVP | Deployment and operator runbook
 
-**Status: source code committed, NOT deployed.** No Cloudflare account, real D1 UUID, Access application, sender, DNS or production email has been provisioned. The checked-in Wrangler template contains a placeholder, not an invented ID.
+**Current status:** Worker deployment, dedicated remote D1 migrations, Turnstile and operator-only Access app were provisioned on 2026-10-29. Gmail SMTP is the approved result transport; app-password setup and controlled delivery validation are pending. No real round is open and no live mail has been sent. See [current review/evidence](REVIEW_2026-10-29.md) for HTTPS verification and remaining specification differences.
 
 ## Delivered implementation
 
@@ -15,16 +17,16 @@
 ## Required Cloudflare setup
 
 1. Obtain authorization for Cloudflare DNS zone jjmowlab.com. Check relou and admin.relou hostname conflicts.
-2. Create the D1 database using: npx wrangler d1 create relou. Copy the **actual** UUID.
-3. Run npm install, then npm run configure -- <REAL_D1_UUID>. This creates gitignored wrangler.jsonc from wrangler.example.jsonc. Review it. No fake UUID is accepted.
-4. Apply migration: npm run db:local for local, then npm run db:remote for production **only after reviewing SQL**. Keep test and real data separate.
-5. Create Turnstile for relou.jjmowlab.com. Put the public TURNSTILE_SITE_KEY in Wrangler vars, and store the secret using npx wrangler secret put TURNSTILE_SECRET_KEY.
-6. Generate a random server-only pepper and store via npx wrangler secret put RATE_HASH_PEPPER. Check Workers rate limiting bindings and anti-abuse behavior.
+2. Create the D1 database using: pnpm exec wrangler d1 create relou. Copy the **actual** UUID.
+3. Run pnpm install --frozen-lockfile, then pnpm configure <REAL_D1_UUID>. This creates gitignored wrangler.jsonc from wrangler.example.jsonc. Review it. No fake UUID is accepted.
+4. Apply migration: pnpm db:local for local, then pnpm db:remote for production **only after reviewing SQL**. Keep test and real data separate.
+5. Create Turnstile for relou.jjmowlab.com. Put the public TURNSTILE_SITE_KEY in Wrangler vars, and store the secret using pnpm exec wrangler secret put TURNSTILE_SECRET_KEY.
+6. Generate a random server-only pepper and store via pnpm exec wrangler secret put RATE_HASH_PEPPER. Check Workers rate limiting bindings and anti-abuse behavior.
 7. Configure SUPPORT_EMAIL to a reachable operator contact. Do not open a round without a real support/privacy channel.
 8. In Cloudflare Zero Trust > Access > Applications create a Self-hosted application covering **only** the entire admin.relou.jjmowlab.com hostname. Allow only exact administrator Email address(es), using Cloudflare Access One-time PIN or existing IdP. Do not protect the public relou.jjmowlab.com hostname.
 9. Store CF_ACCESS_TEAM_DOMAIN, CF_ACCESS_AUD and ADMIN_EMAIL_ALLOWLIST as server-only Wrangler secrets. Worker verifies Access RS256/JWKS signature, issuer, audience, expiry and exact Email allowlist; never trust a forged header or merely hidden UI.
 10. Onboard jjmowlab.com to Cloudflare Email Service. Verify SPF/DKIM/DMARC, sending quotas, sender approval and **actual external-recipient sending availability**. Set EMAIL_FROM to an authorized sender address. Test only with controlled inboxes.
-11. Run npm run typecheck && npm test && npm run build. Deploy only after all account setup: npm run deploy. Verify HTTPS, both hostnames and Access isolation.
+11. Run pnpm typecheck && pnpm test && pnpm build. Deploy only after all account setup: pnpm deploy. Verify HTTPS, both hostnames and Access isolation.
 12. Leave EMAIL_DRY_RUN=true and EMAIL_ENABLED=false during development. After sender approval, deliberately set EMAIL_DRY_RUN=false and EMAIL_ENABLED=true, redeploy, then use admin RESUME and SEND. Never send live results before a committed match run and human approval.
 
 **Do not commit** wrangler.jsonc, .dev.vars, Access tokens, D1 secrets or real participant data.
@@ -49,9 +51,9 @@ Every user supplies a private notification Email and explicitly chooses one cont
 
 ## Local development
 
-npm install -> npm run typecheck -> npm test -> npm run build.
+pnpm install --frozen-lockfile -> pnpm typecheck -> pnpm test -> pnpm build.
 
-Vite dev serves the frontend only. Full-stack local needs real D1 UUID config: npm run configure -- <UUID>, npm run db:local, npm run build, npm run dev:worker. Set ENVIRONMENT=local to permit public localhost:8787; admin still requires real Access and is **never** bypassed locally.
+Vite dev serves the frontend only. Full-stack local needs real D1 UUID config: pnpm configure <UUID>, pnpm db:local, pnpm build, pnpm dev:worker. Set ENVIRONMENT=local to permit public localhost:8787; admin still requires real Access and is **never** bypassed locally.
 
 Official documentation:
 - https://developers.cloudflare.com/workers/static-assets/

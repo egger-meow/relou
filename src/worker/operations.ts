@@ -4,6 +4,7 @@ import type { EntryRow } from '../shared/schema';
 import { audit, eligibleRows, roundById } from './db';
 import { resultEmail, maskedPreview } from './mail';
 import type { Env } from './types';
+import { mailReady, sendResult } from './smtp';
 
 type App = Hono<{ Bindings: Env; Variables: { adminEmail: string } }>;
 type Outbox = {id:string;recipient_email:string;subject:string;text_body:string;state:string;attempts:number};
@@ -22,9 +23,6 @@ async function preparePlan(env: Env, id: string) {
   const plan = computePlan(rows.map(fromRow),round.min_pair_score);
   const digest = await planDigest(id,hash,plan);
   return {round,rows,hash,plan,digest};
-}
-function mailReady(env: Env) {
-  return env.EMAIL_DRY_RUN==='false' && env.EMAIL_ENABLED==='true' && !!env.EMAIL_FROM && !!env.EMAIL;
 }
 // Keep each SQLite statement under D1's 100-bound-parameter limit and reduce
 // queries per Worker invocation (especially important on Workers Free).
@@ -211,11 +209,12 @@ export function registerOperations(app: App) {
     for (const item of pending.results||[]) {
       // Each message is claimed by exactly one Worker; crashes leave 'sending' for manual reconciliation.
       const claimed = await c.env.DB.prepare(
-        "UPDATE email_outbox SET state='sending',attempts=attempts+1,claimed_at=? WHERE id=? AND state='queued' RETURNING id"
+        "UPDATE email_outbox SET state='sending',attempts=attempts+1,claimed_at=? WHERE id=? AND state='queued' " +
+        "AND attempts<3 AND EXISTS (SELECT 1 FROM rounds WHERE id=email_outbox.round_id AND status='MATCHED' AND send_paused=0) RETURNING id"
       ).bind(new Date().toISOString(),item.id).first<{id:string}>();
       if (!claimed) continue;
       try {
-        const result = await c.env.EMAIL!.send({
+        const result = await sendResult(c.env,{
           to:item.recipient_email,from:c.env.EMAIL_FROM,subject:item.subject,text:item.text_body
         });
         const providerId = result && typeof result==='object' && 'messageId' in result
@@ -226,7 +225,10 @@ export function registerOperations(app: App) {
         sent++;
       } catch (e) {
         const code = e && typeof e==='object' && 'code' in e ? String((e as {code:unknown}).code) : 'UNKNOWN';
-        const knownRejected = ['INVALID_RECIPIENT','INVALID_SENDER','VALIDATION_ERROR'].includes(code);
+        const knownRejected = /^SMTP_REJECTED_/.test(code) || ['E_VALIDATION_ERROR','E_FIELD_MISSING','E_SENDER_NOT_VERIFIED',
+          'E_RECIPIENT_NOT_ALLOWED','E_RECIPIENT_SUPPRESSED','E_ACCOUNT_SUSPENDED',
+          'E_SENDER_DOMAIN_NOT_AVAILABLE','E_CONTENT_TOO_LARGE','E_RATE_LIMIT_EXCEEDED',
+          'E_DAILY_LIMIT_EXCEEDED','INVALID_RECIPIENT','INVALID_SENDER','VALIDATION_ERROR'].includes(code);
         await c.env.DB.prepare(
           "UPDATE email_outbox SET state=?,error_code=? WHERE id=? AND state='sending'"
         ).bind(knownRejected?'failed':'uncertain',code.slice(0,60),item.id).run();

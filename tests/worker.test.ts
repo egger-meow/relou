@@ -18,6 +18,10 @@ function env():Env{
 }
 const ctx={} as ExecutionContext;
 describe('host isolation and public privacy',()=>{
+  it('denies the separate admin JavaScript asset on the public hostname',async()=>{
+    const res=await worker.fetch(new Request('https://relou.jjmowlab.com/assets/admin-example.js'),env(),ctx);
+    expect(res.status).toBe(404);
+  });
   it('denies admin paths on public hostname even with forged Access header',async()=>{
     const res=await worker.fetch(new Request('https://relou.jjmowlab.com/api/admin/dashboard',{headers:{'Cf-Access-Jwt-Assertion':'fake'}}),env(),ctx);
     expect(res.status).toBe(404);

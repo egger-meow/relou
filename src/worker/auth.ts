@@ -22,6 +22,7 @@ export async function verifyAdmin(request: Request, env: Env): Promise<string | 
       issuer,
       audience: env.CF_ACCESS_AUD,
       algorithms: ['RS256'],
+      requiredClaims: ['exp', 'email'],
       clockTolerance: 30
     });
     if (typeof payload.email !== 'string') return null;

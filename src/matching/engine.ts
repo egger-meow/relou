@@ -1,7 +1,7 @@
 import blossom from 'edmonds-blossom';
 import type { EntryRow, MatchAnswers } from '../shared/schema';
 
-export const ALGORITHM_VERSION = 'blossom-reciprocal-v1';
+export const ALGORITHM_VERSION = 'blossom-reciprocal-v2';
 
 export interface Candidate {
   id: string;
@@ -117,7 +117,9 @@ export function computePlan(candidates: Candidate[], minScore = 55): MatchPlan {
     const score = scorePair(eligible[i],eligible[j]);
     if (score < minScore) continue;
     scores.set(i + ':' + j, score);
-    edges.push([i,j,Math.round(score*100)*1000 + tieBreak(eligible[i].id,eligible[j].id)]);
+    // The sum of all tie breakers must never outweigh one hundredth of score.
+    const scoreScale = Math.floor(eligible.length / 2) * 999 + 1;
+    edges.push([i,j,Math.round(score*100)*scoreScale + tieBreak(eligible[i].id,eligible[j].id)]);
   }
   const pairs = solveEdges(eligible.length,edges).map(([i,j]) => ({
     a: eligible[i].id,
@@ -145,7 +147,9 @@ export async function sha256(data: string): Promise<string> {
 }
 export async function snapshotHash(rows: EntryRow[]): Promise<string> {
   const sorted = [...rows].sort((a,b)=>a.id.localeCompare(b.id));
-  return sha256(JSON.stringify(sorted.map(r => [r.id,r.status,r.answers_json,r.contact_kind,r.contact_value,r.normalized_email,r.privacy_version])));
+  return sha256(JSON.stringify(sorted.map(r => [r.id,r.round_id,r.status,r.school_claimed,r.gender,
+    r.adult_attested,r.share_contact_consent,r.nickname,r.answers_json,r.contact_kind,
+    r.contact_value,r.normalized_email,r.privacy_version])));
 }
 export async function planDigest(roundId: string, snapshot: string, plan: MatchPlan): Promise<string> {
   return sha256(JSON.stringify([ALGORITHM_VERSION,roundId,snapshot,plan.pairs]));
