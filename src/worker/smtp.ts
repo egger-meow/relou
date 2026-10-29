@@ -19,7 +19,7 @@ const encodedBody=(value:string)=>utf8Base64(value).match(/.{1,76}/g)?.join('\r\
 export function buildMime(message:MailMessage,messageId:string){
  if(!address(message.from)||!address(message.to)||/[\r\n]/.test(message.subject)||(message.replyTo&&!address(message.replyTo)))
   throw Object.assign(new Error('Invalid mail envelope'),{code:'SMTP_REJECTED_INPUT'});
- const headers=['From: Relou <'+message.from+'>','To: <'+message.to+'>','Subject: '+encodedSubject(message.subject),
+ const headers=['From: '+encodedSubject('青椒配對')+' <'+message.from+'>','To: <'+message.to+'>','Subject: '+encodedSubject(message.subject),
   'Date: '+new Date().toUTCString(),'Message-ID: '+messageId,'MIME-Version: 1.0',
   ...(message.replyTo?['Reply-To: <'+message.replyTo+'>']:[])];
  if(!message.html)return [...headers,'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',encodedBody(message.text)].join('\r\n');

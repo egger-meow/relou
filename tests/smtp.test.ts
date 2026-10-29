@@ -48,10 +48,10 @@ it('builds UTF-8 multipart alternatives with folded long subject and a safe repl
  const subject='Relou｜2026 年 11 月期 · 第 1 期｜提前配對成功，這是一個很長的中文主旨';
  const html='<html lang="zh-Hant"><body>共同興趣：音樂</body></html>';
  const mime=buildMime({...message,subject,html,replyTo:'support@example.invalid'},'<synthetic@relou.jjmowlab.com>');
- expect(mime).toContain('From: Relou <sender@example.invalid>');expect(mime).toContain('Reply-To: <support@example.invalid>');
+ expect(mime).toContain('From: =?UTF-8?B?6Z2S5qSS6YWN5bCN?= <sender@example.invalid>');expect(mime).toContain('Reply-To: <support@example.invalid>');
  expect(mime).toContain('multipart/alternative');expect(mime.indexOf('text/plain')).toBeLessThan(mime.indexOf('text/html'));
  const decode=(v:string)=>new TextDecoder().decode(Uint8Array.from(atob(v),c=>c.charCodeAt(0)));
- const words=[...mime.matchAll(/=\?UTF-8\?B\?([^?]+)\?=/g)];
+ const words=[...(mime.match(/Subject: ([\s\S]*?)\r\nDate:/)?.[1]||'').matchAll(/=\?UTF-8\?B\?([^?]+)\?=/g)];
  expect(words.length).toBeGreaterThan(1);expect(words.every(w=>w[0].length<=75)).toBe(true);
  expect(words.map(w=>decode(w[1])).join('')).toBe(subject);
  const bodies=[...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+?)\r\n--relou-/g)];
