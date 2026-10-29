@@ -109,7 +109,7 @@ export function registerPublic(app: App) {
       intent: v.intent, campusPreference: v.campusPreference, interests: v.interests, customInterests: v.customInterests || [],
       dayOffStyle: v.dayOffStyle, conflictStyle: v.conflictStyle, chatStyle: v.chatStyle,
       firstMeet: v.firstMeet, topValue: v.topValue,
-      openAnswer: v.openAnswer || '', mbti: v.mbti || null
+      openAnswer: v.openAnswer || '', mbti: v.mbti || null, mbtiPreference: v.mbtiPreference || 'either'
     };
     const contact = contactForMatch(v);
     const id = crypto.randomUUID();

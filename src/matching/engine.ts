@@ -2,7 +2,7 @@ import { programById } from '../shared/programs';
 import blossom from 'edmonds-blossom';
 import type { EntryRow, MatchAnswers } from '../shared/schema';
 
-export const ALGORITHM_VERSION = 'blossom-reciprocal-v3-department';
+export const ALGORITHM_VERSION = 'blossom-reciprocal-v4-mbti';
 
 export interface Candidate {
   id: string;
@@ -92,7 +92,18 @@ export function scorePair(a: Candidate, b: Candidate): number {
     (x.topValue === y.topValue ? 1 : 0.35)
   ) / 3;
   const weighted = 20 * interests + 30 * values + 20 * chatScore(x.chatStyle,y.chatStyle) + 15 * firstMeetScore(x.firstMeet,y.firstMeet);
-  return Math.round(10000 * weighted / 85) / 100;
+  const base=100 * weighted / 85;
+  const validMbti=(value:unknown):value is string=>typeof value==='string'&&/^[EI][NS][TF][JP]$/.test(value);
+  let bonus=0;
+  if(validMbti(x.mbti)&&validMbti(y.mbti)) {
+    const same=[...x.mbti].filter((letter,i)=>letter===y.mbti![i]).length/4;
+    // Each participant contributes up to 2 points; no preference and unknown types are neutral.
+    for(const preference of [x.mbtiPreference,y.mbtiPreference]) {
+      if(preference==='similar')bonus+=2*same;
+      if(preference==='different')bonus+=2*(1-same);
+    }
+  }
+  return Math.round(Math.min(100,base+bonus)*100)/100;
 }
 
 function tieBreak(a: string, b: string): number {

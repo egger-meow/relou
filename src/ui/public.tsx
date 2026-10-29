@@ -35,7 +35,7 @@ const choices = {
 const initial:Draft = {
   schoolClaimed:'NYCU',degreeLevel:'bachelor',programId:'',departmentPreference:'either_department',nickname:'',gender:'undisclosed',desiredGenders:[],intent:'either',
   campusPreference:'either_school',interests:[],dayOffStyle:'both',conflictStyle:'depends',
-  chatStyle:'deep',firstMeet:'chat_first',topValue:'ease',openAnswer:'',mbti:null,
+  chatStyle:'deep',firstMeet:'chat_first',topValue:'ease',openAnswer:'',mbti:null,mbtiPreference:'either',
   notificationEmail:'',contactKind:'instagram',contactValue:'',adultAttested:false,
   shareContactConsent:false,privacyConsentVersion:''
 };
@@ -188,8 +188,9 @@ export function PublicApp(){
               <PillGroup title="第一次互動想…" options={choices.firstMeet} value={draft.firstMeet} onChange={v=>set('firstMeet',v as Draft['firstMeet'])}/>
               <PillGroup title="一段關係最重要的是…" options={choices.topValue} value={draft.topValue} onChange={v=>set('topValue',v as Draft['topValue'])}/>
               <label className="question"><span className="question-title">最近讓你著迷的是？ <small>選填</small></span><textarea className="text-input" placeholder="一句話就好，例如：最近開始練吉他！" value={draft.openAnswer||''} maxLength={100} rows={2} onChange={e=>set('openAnswer',e.target.value)}/></label>
-              <label className="question"><span className="question-title">MBTI <small>選填，不影響配對分數</small></span><select className="text-input" value={draft.mbti||''} onChange={e=>set('mbti',e.target.value||null)}>
+              <label className="question"><span className="question-title">MBTI <small>選填</small></span><select className="text-input" value={draft.mbti||''} onChange={e=>{set('mbti',e.target.value||null);if(!e.target.value)set('mbtiPreference','either');}}>
                 <option value="">跳過／不知道</option>{['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'].map(x=><option key={x}>{x}</option>)}</select></label>
+              {draft.mbti&&draft.mbti!=='unknown'&&<PillGroup title="MBTI 方面，你比較想認識…" desc="相近＝四個字母較多相同；相異＝較多不同。僅作小幅配對偏好，不是人格相容性的判定，也不保證一定符合。對方沒填時不計算，不限定一定要有 E 人。" options={[{value:'similar',label:'相近的類型'},{value:'different',label:'相異的類型'},{value:'either',label:'都可以'}]} value={draft.mbtiPreference||'either'} onChange={v=>set('mbtiPreference',v as Draft['mbtiPreference'])}/>}
             </div>
             <div className="form-block"><div className="block-label">04 / 結果寄送與聯絡</div>
               <label className="question"><span className="question-title">配對結果要寄去哪裡？</span><input className="text-input" type="email" autoComplete="email" placeholder="學校信箱（含系所子網域）" value={draft.notificationEmail} maxLength={254} onChange={e=>set('notificationEmail',e.target.value)}/><span className="question-desc">限用陽明交大 nycu.edu.tw 或清大 nthu.edu.tw 學校信箱（含系所子網域），作為學生參加資格限制。只用來寄結果，不會自動提供給對方；未驗證信箱持有權或在學身分，請檢查拼寫。</span></label>

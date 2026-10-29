@@ -25,6 +25,7 @@ export const entrySchema = z.object({
   openAnswer: z.string().trim().max(100).optional(),
   mbti: z.string().trim().regex(/^(?:[EI][NS][TF][JP]|unknown)$/).nullable().optional(),
   notificationEmail: z.email().max(254).refine(value => /@(?:[a-z0-9-]+\.)*(?:nycu|nthu)\.edu\.tw$/i.test(value), {message:'請使用陽明交大或清大學校信箱（nycu.edu.tw／nthu.edu.tw，含子網域）'}),
+  mbtiPreference: z.enum(['similar','different','either']).optional(),
   contactKind: z.enum(['instagram', 'submitted_email']),
   contactValue: z.string().trim().max(31).optional(),
   adultAttested: z.literal(true),
@@ -58,7 +59,7 @@ export type EntryInput = z.infer<typeof entrySchema>;
 export type MatchAnswers = Pick<EntryInput,
   'schoolClaimed' | 'gender' | 'desiredGenders' | 'intent' | 'campusPreference' |
   'interests' | 'dayOffStyle' | 'conflictStyle' | 'chatStyle' | 'firstMeet' | 'topValue'> &
-  Partial<Pick<EntryInput,'degreeLevel'|'programId'|'departmentPreference'>> & {departmentGroup?:string;programCatalogVersion?:string};
+  Partial<Pick<EntryInput,'degreeLevel'|'programId'|'departmentPreference'|'mbti'|'mbtiPreference'>> & {departmentGroup?:string;programCatalogVersion?:string};
 
 export interface EntryRow {
   id: string;

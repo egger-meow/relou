@@ -85,3 +85,12 @@ it('enforces reciprocal same/different department rules across degrees and schoo
  a.answers.departmentPreference='different_department';expect(compatible(a,b)).toBe(true);
  const unknown=person('legacy');expect(compatible(a,unknown)).toBe(false);
 });
+it('applies reciprocal optional MBTI preference without excluding unknown or I/I pairs',()=>{
+ const a=person('a'),b=person('b');b.answers.chatStyle='meet';
+ a.answers.mbti='INTJ';b.answers.mbti='INTJ';
+ const base=scorePair(a,b);a.answers.mbtiPreference='similar';b.answers.mbtiPreference='similar';
+ expect(scorePair(a,b)).toBeCloseTo(base+4,2);expect(compatible(a,b)).toBe(true);
+ b.answers.mbti='ESFP';expect(scorePair(a,b)).toBe(base);
+ a.answers.mbtiPreference='different';b.answers.mbtiPreference='different';expect(scorePair(a,b)).toBeCloseTo(base+4,2);
+ b.answers.mbti=null;expect(scorePair(a,b)).toBe(base);expect(compatible(a,b)).toBe(true);
+});
