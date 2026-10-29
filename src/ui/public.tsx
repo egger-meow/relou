@@ -66,6 +66,16 @@ function PillGroup({title,desc,options,value,onChange,multiple=false}:{
         onChange(clean.includes(o.value)?clean.filter(x=>x!==o.value):[...clean,o.value]);
       }}>{o.label}</button>)}</div></fieldset>;
 }
+function InterestPicker({value,onChange}:{value:Draft['interests'];onChange:(value:Draft['interests'])=>void}) {
+  const [category,setCategory]=useState(0);
+  const toggle=(tag:Draft['interests'][number])=>onChange(value.includes(tag)?value.filter(t=>t!==tag):value.length<8?[...value,tag]:value);
+  return <div className="interest-picker">
+    <div className="interest-toolbar"><span>挑幾個能聊起來的話題</span><strong aria-live="polite">{value.length}<span> / 8</span></strong></div>
+    <div className="interest-categories" aria-label="興趣分類">{INTEREST_GROUPS.map((group,i)=><button type="button" key={group.label} aria-pressed={category===i} className={category===i?'active':''} onClick={()=>setCategory(i)}>{group.label}{group.tags.some(t=>value.includes(t))&&<span className="interest-dot" aria-label="有已選興趣"/>}</button>)}</div>
+    <div className="interest-options" aria-label={INTEREST_GROUPS[category].label}>{INTEREST_GROUPS[category].tags.map(tag=><button type="button" key={tag} aria-pressed={value.includes(tag)} className={value.includes(tag)?'chosen':''} disabled={!value.includes(tag)&&value.length>=8} onClick={()=>toggle(tag)}><span aria-hidden="true">{value.includes(tag)?'✓':'+'}</span>{tag}</button>)}</div>
+    <div className="interest-selection"><span className="interest-selection-label">已選興趣</span>{value.length?<div>{value.map(tag=><button type="button" key={tag} onClick={()=>toggle(tag)} aria-label={'移除'+tag}>{tag}<span aria-hidden="true">×</span></button>)}</div>:<span className="interest-empty">從上方選 1–8 個，隨時可以更換。</span>}</div>
+  </div>;
+}
 function Turnstile({siteKey,onToken}: {siteKey:string;onToken:(token:string)=>void}) {
   const holder=useRef<HTMLDivElement>(null);
   const widget=useRef<string|null>(null);
@@ -167,8 +177,7 @@ export function PublicApp(){
               <PillGroup title="來 Relou 想遇見？" options={choices.intent} value={draft.intent} onChange={v=>set('intent',v as Draft['intent'])}/>
               <PillGroup title="跨校 OK 嗎？" options={choices.campusPreference} value={draft.campusPreference} onChange={v=>set('campusPreference',v as Draft['campusPreference'])}/>
               <PillGroup title="對同校系的偏好？" desc="同系指同一所學校、同一系所，跨學位仍算同系；獨立研究所不因名稱相近而合併。這是配對限制，雙方都必須同意。" options={[{value:'same_department',label:'只限同校同系'},{value:'different_department',label:'避開同校同系'},{value:'either_department',label:'都可以'}]} value={draft.departmentPreference} onChange={v=>set('departmentPreference',v as Draft['departmentPreference'])}/>
-              <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><p className="question-desc">選 1–8 個。展開分類挑選具體興趣，配對後就是聊天話題。已選 {draft.interests.length}/8 個。</p>{INTEREST_GROUPS.map(group=><details key={group.label} className="interest-group"><summary>{group.label} <span>（{group.tags.filter(t=>draft.interests.includes(t)).length} 已選）</span></summary><div className="pill-list">{group.tags.map(t=><button key={t} type="button" aria-pressed={draft.interests.includes(t)} className={'pill '+(draft.interests.includes(t)?'selected':'')}
-                onClick={()=>set('interests',draft.interests.includes(t)?draft.interests.filter(x=>x!==t):draft.interests.length<8?[...draft.interests,t]:draft.interests)} disabled={!draft.interests.includes(t)&&draft.interests.length>=8}>{t}</button>)}</div></details>)}
+              <fieldset className="question"><legend className="question-title">最近喜歡什麼？</legend><InterestPicker value={draft.interests} onChange={v=>set('interests',v)}/>
                 {draft.interests.includes('其他')&&<div className="custom-interests"><p className="question-desc">其他興趣（選填，最多 3 項，每項 30 字）。</p>{[0,1,2].map(i=><label key={i}><span className="question-desc">自填興趣 {i+1}</span><input className="text-input" maxLength={30} placeholder={i===0?'例如：烘焙、桌遊或手作':'還有其他喜歡的事嗎？'} value={draft.customInterests?.[i]||''} onChange={e=>{const values=[...(draft.customInterests||[])];values[i]=e.target.value;set('customInterests',values);}}/></label>)}</div>}
               </fieldset>
             </div>
