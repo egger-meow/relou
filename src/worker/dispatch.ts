@@ -1,11 +1,11 @@
 import { audit } from './db';
 import { mailReady, sendResult } from './smtp';
 import type { Env } from './types';
-type Outbox = {id:string;recipient_email:string;subject:string;text_body:string;state:string;attempts:number};
+type Outbox = {id:string;recipient_email:string;subject:string;text_body:string;html_body:string|null;state:string;attempts:number};
 export async function dispatchMail(env:Env,roundId:string,actor:string,earlyOnly=false) {
  if(!mailReady(env))throw new Error('Mail disabled');
     const pending = await env.DB.prepare(
-      "SELECT id,recipient_email,subject,text_body,state,attempts FROM email_outbox WHERE round_id=? AND state='queued' AND (?=0 OR phase='early') ORDER BY created_at,id LIMIT ?"
+      "SELECT id,recipient_email,subject,text_body,html_body,state,attempts FROM email_outbox WHERE round_id=? AND state='queued' AND (?=0 OR phase='early') ORDER BY created_at,id LIMIT ?"
     ).bind(roundId,earlyOnly?1:0,earlyOnly?4:10).all<Outbox>();
     let sent=0,uncertain=0,failed=0;
     for (const item of pending.results||[]) {
@@ -17,7 +17,7 @@ export async function dispatchMail(env:Env,roundId:string,actor:string,earlyOnly
       if (!claimed) continue;
       try {
         const result = await sendResult(env,{
-          to:item.recipient_email,from:env.EMAIL_FROM,subject:item.subject,text:item.text_body
+          to:item.recipient_email,from:env.EMAIL_FROM,subject:item.subject,text:item.text_body,html:item.html_body||undefined,replyTo:env.SUPPORT_EMAIL||undefined
         });
         const providerId = result && typeof result==='object' && 'messageId' in result
           ? String((result as {messageId:unknown}).messageId) : null;

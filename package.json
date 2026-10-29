@@ -17,7 +17,8 @@
     "db:remote": "wrangler d1 migrations apply relou --remote",
     "deploy": "pnpm run build && wrangler deploy",
     "configure": "node scripts/configure.mjs",
-    "build:worker": "esbuild src/worker/index.ts --bundle --platform=browser --format=esm --target=es2022 --external:cloudflare:* --outfile=.wrangler/worker-check.mjs"
+    "build:worker": "esbuild src/worker/index.ts --bundle --platform=browser --format=esm --target=es2022 --external:cloudflare:* --outfile=.wrangler/worker-check.mjs",
+    "preview:emails": "esbuild scripts/preview-emails.ts --bundle --platform=node --format=esm --external:cloudflare:* --outfile=private/generate-email-previews.mjs && node private/generate-email-previews.mjs"
   },
   "dependencies": {
     "edmonds-blossom": "^1.0.0",

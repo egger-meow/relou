@@ -181,6 +181,7 @@ describe('high compatibility early allocation (synthetic only)',()=>{
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_runs').get().n).toBe(1);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM allocation_batches').get().n).toBe(2);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(3);
+  expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE template_version='result-v2' AND html_body IS NOT NULL").get().n).toBe(3);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(2);
  });
  it('leaves below-threshold, incompatible and only-Other submissions waiting',async()=>{

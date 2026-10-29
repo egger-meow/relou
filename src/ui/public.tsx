@@ -190,7 +190,7 @@ export function PublicApp(){
               <p className="question-desc">只會分享你主動選擇的聯絡方式給唯一配對對象，不需要 IG 登入。</p></fieldset>
               <div className="consents">
                 <label><input type="checkbox" checked={draft.adultAttested} onChange={e=>set('adultAttested',e.target.checked)}/><span>我已滿 18 歲。</span></label>
-                <label><input type="checkbox" checked={draft.shareContactConsent} onChange={e=>set('shareContactConsent',e.target.checked)}/><span>如果成功配對，我同意將上方選定的聯絡方式提供給唯一配對對象。</span></label>
+                <label><input type="checkbox" checked={draft.shareContactConsent} onChange={e=>set('shareContactConsent',e.target.checked)}/><span>如果成功配對，我同意將上方選定的聯絡方式，以及共同興趣與相處偏好的簡短摘要，提供給唯一配對對象。</span></label>
                 <label><input type="checkbox" checked={draft.privacyConsentVersion===PRIVACY_VERSION} onChange={e=>set('privacyConsentVersion',e.target.checked?PRIVACY_VERSION:'')}/><span>我已閱讀下方的資料使用與隱私說明。</span></label>
               </div>
               <div className="honeypot" aria-hidden="true"><label>網站網址<input name="website" tabIndex={-1} autoComplete="off" value={draft.website||''} onChange={e=>set('website',e.target.value)}/></label></div>
@@ -220,7 +220,7 @@ export function PublicApp(){
       </section>
       <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
         <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的學校、學位、系所、答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
-          <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你明確同意的資訊，並不保證一定配到對象。</p>
+          <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你選定的聯絡方式，以及雙方共同選擇的興趣與相處偏好摘要；不附完整自由回答、校系或配對分數，並不保證一定配到對象。</p>
           <p>資料用於本期配對及通知；期次封存滿 30 天後，主辦者可從後台清除個人資料（目前為人工執行）。需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
         <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></details></section>
     </main>

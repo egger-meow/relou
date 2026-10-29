@@ -1,5 +1,5 @@
 import { describe,expect,it } from 'vitest';
-import { mailReady,smtpSession } from '../src/worker/smtp';
+import { buildMime,mailReady,smtpSession } from '../src/worker/smtp';
 import type { Env } from '../src/worker/types';
 
 const message={to:'synthetic@example.invalid',from:'sender@example.invalid',subject:'Relou｜結果通知',text:'合成測試\n.不是真信'};
@@ -42,4 +42,19 @@ describe('Gmail SMTP over TLS protocol (synthetic socket)',()=>{
     expect(mailReady({...configured,GMAIL_SMTP_APP_PASSWORD:''})).toBe(false);
     expect(mailReady({...configured,EMAIL_FROM:'spoof@example.invalid'})).toBe(false);
   });
+});
+
+it('builds UTF-8 multipart alternatives with folded long subject and a safe reply address',()=>{
+ const subject='Relou｜2026 年 11 月期 · 第 1 期｜提前配對成功，這是一個很長的中文主旨';
+ const html='<html lang="zh-Hant"><body>共同興趣：音樂</body></html>';
+ const mime=buildMime({...message,subject,html,replyTo:'support@example.invalid'},'<synthetic@relou.jjmowlab.com>');
+ expect(mime).toContain('From: Relou <sender@example.invalid>');expect(mime).toContain('Reply-To: <support@example.invalid>');
+ expect(mime).toContain('multipart/alternative');expect(mime.indexOf('text/plain')).toBeLessThan(mime.indexOf('text/html'));
+ const decode=(v:string)=>new TextDecoder().decode(Uint8Array.from(atob(v),c=>c.charCodeAt(0)));
+ const words=[...mime.matchAll(/=\?UTF-8\?B\?([^?]+)\?=/g)];
+ expect(words.length).toBeGreaterThan(1);expect(words.every(w=>w[0].length<=75)).toBe(true);
+ expect(words.map(w=>decode(w[1])).join('')).toBe(subject);
+ const bodies=[...mime.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+?)\r\n--relou-/g)];
+ expect(bodies.map(m=>decode(m[1].replace(/\r\n/g,'')))).toEqual([message.text,html]);
+ expect(()=>buildMime({...message,replyTo:'bad\r\nBcc: leak'},'<id>')).toThrow();
 });

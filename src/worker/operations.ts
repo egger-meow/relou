@@ -93,14 +93,14 @@ export function registerOperations(app: App) {
     }
     for (const row of rows) {
       const other = partners.get(row.id);
-      const message = resultEmail(row,other?byId.get(other)!:null,c.env.SUPPORT_EMAIL||'');
+      const message = resultEmail(row,other?byId.get(other)!:null,c.env.SUPPORT_EMAIL||'',{roundTitle:round.title,phase:'final'});
       outboxRows.push([crypto.randomUUID(),round.id,runId,row.id,round.id+':'+row.id+':v1',
-        row.normalized_email,message.subject,message.text,batchId]);
+        row.normalized_email,message.subject,message.text,batchId,message.html,message.version]);
     }
     statements.push(...bulkInsert(c.env.DB,'matches',['id','round_id','run_id','a_id','b_id','score','batch_id'],matchRows));
     statements.push(...bulkInsert(c.env.DB,'match_members',['round_id','entry_id','match_id'],memberRows));
     statements.push(...bulkInsert(c.env.DB,'email_outbox',
-      ['id','round_id','run_id','entry_id','dedupe_key','recipient_email','subject','text_body','batch_id'],outboxRows));
+      ['id','round_id','run_id','entry_id','dedupe_key','recipient_email','subject','text_body','batch_id','html_body','template_version'],outboxRows));
     statements.push(c.env.DB.prepare(
       'INSERT INTO admin_audit_events(id,actor,action,round_id,meta_json) SELECT ?,?,?,?,? FROM match_runs WHERE id=?'
     ).bind(crypto.randomUUID(),c.get('adminEmail'),'matching.commit',round.id,

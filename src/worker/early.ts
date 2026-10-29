@@ -42,10 +42,10 @@ export async function commitEarly(env:Env,id:string) {
   statements.push(env.DB.prepare('INSERT INTO matches(id,round_id,run_id,a_id,b_id,score,batch_id) VALUES(?,?,?,?,?,?,?)')
    .bind(matchId,id,runId,a.id,b.id,pair.score,batchId));
   for(const [person,other] of [[a,b],[b,a]]) {
-   const message=resultEmail(person,other,env.SUPPORT_EMAIL);
+   const message=resultEmail(person,other,env.SUPPORT_EMAIL,{roundTitle:round.title,phase:'early'});
    statements.push(env.DB.prepare('INSERT INTO match_members(round_id,entry_id,match_id) VALUES(?,?,?)').bind(id,person.id,matchId));
-   statements.push(env.DB.prepare("INSERT INTO email_outbox(id,round_id,run_id,entry_id,dedupe_key,recipient_email,subject,text_body,phase,batch_id) VALUES(?,?,?,?,?,?,?,?,'early',?)")
-    .bind(crypto.randomUUID(),id,runId,person.id,id+':'+person.id+':v1',person.normalized_email,message.subject,message.text,batchId));
+   statements.push(env.DB.prepare("INSERT INTO email_outbox(id,round_id,run_id,entry_id,dedupe_key,recipient_email,subject,text_body,phase,batch_id,html_body,template_version) VALUES(?,?,?,?,?,?,?,?,'early',?,?,?)")
+    .bind(crypto.randomUUID(),id,runId,person.id,id+':'+person.id+':v1',person.normalized_email,message.subject,message.text,batchId,message.html,message.version));
   }
  }
  statements.push(env.DB.prepare("INSERT INTO admin_audit_events(id,actor,action,round_id,meta_json) VALUES(?,'system:early','matching.early-commit',?,?)")

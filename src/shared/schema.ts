@@ -1,7 +1,7 @@
 import { programById } from './programs';
 import { z } from 'zod';
 
-export const PRIVACY_VERSION = '2026-10-29-v2';
+export const PRIVACY_VERSION = '2026-10-29-v3';
 export const INTERESTS = ['運動健身','籃球','羽球','音樂','電影影集','遊戲','咖啡探店','美食','戶外旅行','攝影','閱讀','科技 AI','其他'] as const;
 
 export const entrySchema = z.object({

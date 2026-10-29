@@ -1,6 +1,6 @@
 import type { Env } from './types';
 
-export type MailMessage = {to:string;from:string;subject:string;text:string};
+export type MailMessage = {to:string;from:string;subject:string;text:string;html?:string;replyTo?:string};
 export type SmtpSocket = {
   readable:ReadableStream<Uint8Array>; writable:WritableStream<Uint8Array>;
   close():Promise<void>;
@@ -8,9 +8,31 @@ export type SmtpSocket = {
 const utf8Base64=(text:string)=>btoa(Array.from(new TextEncoder().encode(text),b=>String.fromCharCode(b)).join(''));
 const address=(value:string)=>/^[^\s<>@\r\n]+@[^\s<>@\r\n]+$/.test(value);
 
+// RFC 2047 encoded-words stay below 75 characters without splitting UTF-8 characters.
+function encodedSubject(value:string){
+ const words:string[]=[];let chunk='';
+ for(const char of value){if(new TextEncoder().encode(chunk+char).length>42){words.push('=?UTF-8?B?'+utf8Base64(chunk)+'?=');chunk='';}chunk+=char;}
+ if(chunk)words.push('=?UTF-8?B?'+utf8Base64(chunk)+'?=');
+ return words.join('\r\n ');
+}
+const encodedBody=(value:string)=>utf8Base64(value).match(/.{1,76}/g)?.join('\r\n')||'';
+export function buildMime(message:MailMessage,messageId:string){
+ if(!address(message.from)||!address(message.to)||/[\r\n]/.test(message.subject)||(message.replyTo&&!address(message.replyTo)))
+  throw Object.assign(new Error('Invalid mail envelope'),{code:'SMTP_REJECTED_INPUT'});
+ const headers=['From: Relou <'+message.from+'>','To: <'+message.to+'>','Subject: '+encodedSubject(message.subject),
+  'Date: '+new Date().toUTCString(),'Message-ID: '+messageId,'MIME-Version: 1.0',
+  ...(message.replyTo?['Reply-To: <'+message.replyTo+'>']:[])];
+ if(!message.html)return [...headers,'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',encodedBody(message.text)].join('\r\n');
+ const boundary='relou-'+crypto.randomUUID();
+ return [...headers,'Content-Type: multipart/alternative; boundary="'+boundary+'"','',
+  '--'+boundary,'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',encodedBody(message.text),
+  '--'+boundary,'Content-Type: text/html; charset=UTF-8','Content-Transfer-Encoding: base64','',encodedBody(message.html),
+  '--'+boundary+'--',''].join('\r\n');
+}
+
 // Implicit TLS only, fixed Gmail endpoint. No plaintext fallback or arbitrary SMTP host.
 export async function smtpSession(socket:SmtpSocket, user:string, password:string, message:MailMessage) {
-  if(!address(user)||!address(message.to)||message.from!==user||/[\r\n]/.test(message.subject))
+  if(!address(user)||!address(message.to)||message.from!==user||/[\r\n]/.test(message.subject)||(message.replyTo&&!address(message.replyTo)))
     throw Object.assign(new Error('Invalid mail envelope'),{code:'SMTP_REJECTED_INPUT'});
   const reader=socket.readable.getReader(),writer=socket.writable.getWriter();
   const encoder=new TextEncoder(),decoder=new TextDecoder();let buffer='';
@@ -41,11 +63,7 @@ export async function smtpSession(socket:SmtpSocket, user:string, password:strin
     await command('MAIL FROM:<'+message.from+'>',250);
     await command('RCPT TO:<'+message.to+'>',250);
     await command('DATA',354);
-    const encoded=utf8Base64(message.text).match(/.{1,76}/g)?.join('\r\n')||'';
-    const mime=['From: <'+message.from+'>','To: <'+message.to+'>',
-      'Subject: =?UTF-8?B?'+utf8Base64(message.subject)+'?=',
-      'Date: '+new Date().toUTCString(),'Message-ID: '+messageId,'MIME-Version: 1.0',
-      'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',encoded].join('\r\n');
+    const mime=buildMime(message,messageId);
     await writer.write(encoder.encode(mime+'\r\n.\r\n'));
     await reply(250); // Accepted by Gmail, not proof of inbox delivery.
     return {messageId};
