@@ -93,7 +93,9 @@ export function PublicApp(){
   const [stats,setStats]=useState<Stats|null>(null),[config,setConfig]=useState<Config|null>(null);
   const [draft,setDraft]=useState<Draft>(initial),[token,setToken]=useState('');
   const [sending,setSending]=useState(false),[done,setDone]=useState(false),[error,setError]=useState('');
+  const [page,setPage]=useState<'form'|'stats'>(()=>window.location.hash==='#stats'?'stats':'form');
   const [nowTick,setNowTick]=useState(0);
+  useEffect(()=>{const change=()=>setPage(window.location.hash==='#stats'?'stats':'form');window.addEventListener('hashchange',change);window.addEventListener('popstate',change);return()=>{window.removeEventListener('hashchange',change);window.removeEventListener('popstate',change);};},[]);
   useEffect(()=>{
     const load=()=>fetch('/api/public/stats').then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
     load();fetch('/api/public/config').then(r=>r.json() as Promise<Config>).then(setConfig).catch(()=>setConfig(null));
@@ -123,20 +125,10 @@ export function PublicApp(){
     }finally{setSending(false);}
   }
   return <div className="site">
-    <header className="nav"><a className="brand" href="#top"><span className="brand-mark">R<span>♥</span></span> relou<span className="brand-dot">.</span></a>
-      <nav><a href="#how">怎麼玩</a><a href="#privacy">隱私說明</a><a className="nav-cta" href="#apply">我要參加 ↗</a></nav></header>
+    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面"><a href="#form" onClick={e=>{e.preventDefault();history.pushState(null,'','#form');setPage('form');window.scrollTo(0,0);}} aria-current={page==='form'?'page':undefined}>填寫表單</a><a href="#stats" onClick={e=>{e.preventDefault();history.pushState(null,'','#stats');setPage('stats');window.scrollTo(0,0);}} aria-current={page==='stats'?'page':undefined}>統計</a></nav></header>
     <main id="top">
-      <section className="hero wrap">
-        <div className="hero-copy"><span className="eyebrow"><span className="live-dot"/> NYCU × NTHU · 校園配對實驗</span>
-          <h1>下一個聊得來的人，<br/><span>可能就在隔壁校。</span></h1>
-          <p className="hero-sub">沒有滑不完的照片，沒有尷尬的長自介。<br/>只要 90 秒，讓 Relou 幫你牽起一條新的線。</p>
-          <div className="hero-actions"><a className="primary-btn" href="#apply">填表參加這一期 <span>↗</span></a><a className="quiet-link" href="#how">先看看怎麼玩 ↓</a></div>
-          <p className="tiny-note">不用註冊、不用驗證 Email。一期最多配對一位，也可能沒有合適對象。</p>
-        </div>
-        <div className="hero-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><span className="floating-card card-a">hey, stranger 👋</span><span className="floating-card card-b">你們都喜歡音樂 ♫</span><div className="heart-core">♥</div><span className="spark spark-one">✳</span><span className="spark spark-two">✧</span></div>
-      </section>
-      <section className="stats-band"><div className="wrap">
-        <div className="section-kicker">THIS ROUND · 即時活動資訊</div>
+      <section hidden={page!=='stats'} className="stats-band"><div className="wrap">
+        <h1>報名統計</h1>
         <div className="stats-grid">
           <div className="stat"><span>本期已收到</span><strong>{stats?stats.activeSubmissionCount.toLocaleString():'…'} <small>份報名</small></strong><em>只統計有效報名，不代表已驗證身分</em></div>
           <div className="stat"><span>目前活動</span><strong className="stat-title">{round?.title||'尚未開放'}</strong><em>{round?.status==='OPEN'?'● 報名進行中':round?.status==='LOCKED'?'配對處理中':round?'敬請期待下一期':'等待主辦者開放'}</em></div>
@@ -148,16 +140,10 @@ export function PublicApp(){
           {stats.previousRoundPairCount!==null&&<span>上一期完成 <b>{stats.previousRoundPairCount}</b> 組配對</span>}
         </div>}
       </div></section>
-      <section id="how" className="how wrap"><div className="section-kicker">HOW IT WORKS</div><h2>認識一個人，不需要那麼複雜。</h2>
-        <div className="steps"><article><span className="step-no">01</span><div className="step-icon">✍️</div><h3>回答幾個問題</h3><p>選擇興趣、相處節奏與期待認識的人。沒有科系、沒有照片。</p></article>
-          <article><span className="step-no">02</span><div className="step-icon">🪄</div><h3>月老開始牽線</h3><p>截止後依雙方意願與共同話題配對，不強迫湊成一對。</p></article>
-          <article><span className="step-no">03</span><div className="step-icon">💌</div><h3>收到一封結果信</h3><p>成功配對就會看到對方自願分享的 IG 或 Email。剩下交給你們。</p></article></div>
-      </section>
-      <section id="apply" className="form-section"><div className="wrap form-layout">
-        <aside className="form-aside"><div className="section-kicker">YOUR TURN</div><h2>把故事的第一頁，<br/>交給我們。</h2><p>不需要很會自我介紹。回答你真正喜歡的，就夠了。</p><div className="aside-note">✦ 你的答案只用於本期配對。<br/>✦ 不公開參與者清單或性別比例。<br/>✦ 只有成功配對者會收到你同意分享的聯絡方式。</div></aside>
+      <section hidden={page!=='form'} id="form" className="form-section"><div className="wrap form-layout">
         <div className="form-card">
-          {done?<div className="success-panel"><div className="success-emoji">💌</div><h2>已收到你的報名！</h2><p>你已加入 {round?.title||'本期'}。截止後會統一配對，結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
-          :<><div className="form-head"><span className="form-tag">ONE FORM. ONE CHANCE.</span><h3>這一期，換你來認識新朋友。</h3><p>填寫一次，送出就完成。大約 90 秒。</p></div>
+          {done?<div className="success-panel"><h2>已收到你的報名！</h2><p>你已加入 {round?.title||'本期'}。截止後會統一配對，結果寄到你填寫的 Email。</p><p>每期最多配到一位，也可能因雙向條件而沒有合適對象。</p><strong>不必再做任何事，也不用開信箱驗證。</strong></div>
+          :<><div className="form-head"><h1>清交配對報名表</h1><p>填寫後送出即可。每期最多配對一位，也可能沒有合適對象。</p><p>{round?round.title+' · 截止：'+localDate(round.closesAt):'本期時間尚未公告'} · 結果通知：{localDate(round?.notificationTargetAt||null)}</p></div>
           {!open&&<div className="notice">目前尚未開放報名，表單會在本期開放時啟用。你可以先看看題目。</div>}
           {open&&!ready&&<div className="notice">主辦者尚未完成收件防護或聯絡窗口設定，目前暫停收件。</div>}
           <form onSubmit={submit} noValidate>
@@ -186,29 +172,28 @@ export function PublicApp(){
             <div className="form-block"><div className="block-label">04 / 結果寄送與聯絡</div>
               <label className="question"><span className="question-title">配對結果要寄去哪裡？</span><input className="text-input" type="email" autoComplete="email" placeholder="you@example.com" value={draft.notificationEmail} maxLength={254} onChange={e=>set('notificationEmail',e.target.value)}/><span className="question-desc">只用來寄結果，不需驗證，也不會自動提供給對方。請檢查拼寫。</span></label>
               <fieldset className="question"><legend className="question-title">配對成功後，對方怎麼找到你？</legend><div className="contact-choices">
-                <label className={'contact-choice '+(draft.contactKind==='instagram'?'active':'')}><input type="radio" name="contact" checked={draft.contactKind==='instagram'} onChange={()=>set('contactKind','instagram')}/> 📸 Instagram（推薦）</label>
-                <label className={'contact-choice '+(draft.contactKind==='submitted_email'?'active':'')}><input type="radio" name="contact" checked={draft.contactKind==='submitted_email'} onChange={()=>{set('contactKind','submitted_email');set('contactValue','');}}/> ✉️ 使用上方 Email</label>
+                <label className={'contact-choice '+(draft.contactKind==='instagram'?'active':'')}><input type="radio" name="contact" checked={draft.contactKind==='instagram'} onChange={()=>set('contactKind','instagram')}/> Instagram（推薦）</label>
+                <label className={'contact-choice '+(draft.contactKind==='submitted_email'?'active':'')}><input type="radio" name="contact" checked={draft.contactKind==='submitted_email'} onChange={()=>{set('contactKind','submitted_email');set('contactValue','');}}/> 使用上方 Email</label>
               </div>{draft.contactKind==='instagram'&&<input className="text-input" placeholder="@yourusername" value={draft.contactValue||''} maxLength={31} onChange={e=>set('contactValue',e.target.value)}/>}
               <p className="question-desc">只會分享你主動選擇的聯絡方式給唯一配對對象，不需要 IG 登入。</p></fieldset>
               <div className="consents">
                 <label><input type="checkbox" checked={draft.adultAttested} onChange={e=>set('adultAttested',e.target.checked)}/><span>我已滿 18 歲。</span></label>
                 <label><input type="checkbox" checked={draft.shareContactConsent} onChange={e=>set('shareContactConsent',e.target.checked)}/><span>如果成功配對，我同意將上方選定的聯絡方式提供給唯一配對對象。</span></label>
-                <label><input type="checkbox" checked={draft.privacyConsentVersion===PRIVACY_VERSION} onChange={e=>set('privacyConsentVersion',e.target.checked?PRIVACY_VERSION:'')}/><span>我已閱讀下方的<a href="#privacy">資料使用與隱私說明</a>。</span></label>
+                <label><input type="checkbox" checked={draft.privacyConsentVersion===PRIVACY_VERSION} onChange={e=>set('privacyConsentVersion',e.target.checked?PRIVACY_VERSION:'')}/><span>我已閱讀下方的資料使用與隱私說明。</span></label>
               </div>
               <div className="honeypot" aria-hidden="true"><label>網站網址<input name="website" tabIndex={-1} autoComplete="off" value={draft.website||''} onChange={e=>set('website',e.target.value)}/></label></div>
               {config?.turnstileSiteKey&&<Turnstile siteKey={config.turnstileSiteKey} onToken={setToken}/>}
             </div>
             {error&&<div role="alert" className="form-error">{error}</div>}
-            <button className="submit-btn" type="submit" disabled={!canSubmit}>{sending?'送出中…':open?'送出報名 💌':'尚未開放報名'}</button>
+            <button className="submit-btn" type="submit" disabled={!canSubmit}>{sending?'送出中…':open?'送出報名':'尚未開放報名'}</button>
             <p className="submit-note">按一次送出就完成。沒有驗證信、登入或第二步。</p>
           </form></>}
         </div></div></section>
-      <section id="privacy" className="privacy wrap"><div className="section-kicker">THE SMALL PRINT</div><h2>認識人可以勇敢，資料要小心。</h2>
+      <section hidden={page!=='form'} id="privacy" className="privacy wrap"><details><summary>資料使用、隱私與聯絡窗口</summary>
         <div className="privacy-grid"><p>Relou 只蒐集本期配對需要的答案、暱稱、通知 Email 和你選擇分享的 IG／Email。資料不會公開成參與者名單，也不會公開性別或偏好比例。</p>
           <p>本活動不驗證 Email 持有權、學生身分或年齡證件。請勿填別人的聯絡方式。成功配對只分享你明確同意的資訊，並不保證一定配到對象。</p>
           <p>資料用於本期配對及通知；期次封存滿 30 天後，主辦者可從後台清除個人資料（目前為人工執行）。需要更正、撤回、反映誤收信或請求刪除，請透過活動聯絡窗口提出，主辦者會人工核對。</p></div>
-        <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></section>
+        <p className="support">聯絡窗口：{config?.supportEmail?<a href={'mailto:'+config.supportEmail}>{config.supportEmail}</a>:'主辦者尚未設定，正式報名暫停'}</p></details></section>
     </main>
-    <footer><div className="wrap footer-inner"><span className="brand">relou<span className="brand-dot">.</span></span><span>Made for the almost-strangers between NYCU & NTHU. ♥</span><a href="#top">回到頂端 ↑</a></div></footer>
   </div>;
 }
