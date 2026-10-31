@@ -80,7 +80,9 @@ describe('single-submit and settlement with real SQLite',()=>{
     expect(preview.metrics.unmatchedCount).toBe(1);
     expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_runs').get().n).toBe(0);
     expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(0);
+    expect((await (await request('/api/public/stats',null,false)).json()).currentRoundPairCount).toBe(0);
     expect((await commit(preview)).status).toBe(200);
+    expect((await (await request('/api/public/stats',null,false)).json()).currentRoundPairCount).toBe(2);
     expect((await commit(preview)).status).toBe(409);
     expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(4);
     expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(5);

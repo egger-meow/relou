@@ -10,7 +10,7 @@ type Draft = Omit<EntryInput,'adultAttested'|'shareContactConsent'|'privacyConse
   adultAttested: boolean; shareContactConsent: boolean; privacyConsentVersion: string;
 };
 type Stats = {round:{slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null}|null;
-  activeSubmissionCount:number;lifetimeSubmissionCount:number|null;previousRoundPairCount:number|null;asOf:string};
+  activeSubmissionCount:number;currentRoundPairCount:number;lifetimeSubmissionCount:number|null;previousRoundPairCount:number|null;asOf:string};
 type Config = {turnstileSiteKey:string|null;supportEmail:string|null};
 type Choice = {value:string;label:string};
 declare global {
@@ -157,6 +157,7 @@ export function PublicApp(){
         <h1>報名統計</h1>
         <div className="stats-grid">
           <div className="stat"><span>本期已收到</span><strong>{stats?stats.activeSubmissionCount.toLocaleString():'…'} <small>份報名</small></strong><em>只統計有效報名，不代表已驗證身分</em></div>
+          <div className="stat"><span>本期已配對</span><strong>{stats?stats.currentRoundPairCount.toLocaleString():'…'} <small>組</small></strong><em>包含提前與期末正式配對，不代表結果信已寄達</em></div>
           <div className="stat"><span>目前活動</span><strong className="stat-title">{periodTitle}</strong><em>{open?'報名進行中':Date.now()<Date.parse(round?.opensAt||calendar.opensAt)?'尚未開始':round?.status==='DRAFT'?'準備中':'報名已截止'}</em></div>
           <div className="stat"><span>距離報名截止</span><strong className="stat-title">{remaining(round?.closesAt||calendar.closesAt)}</strong><em>{'截止：'+localDate(round?.closesAt||calendar.closesAt)+'（台灣時間）'}</em></div>
           <div className="stat"><span>配對結果通知</span><strong className="stat-title">{deliveryWindow}</strong><em>配對與通知期間，結果寄到填寫的 Email</em></div>

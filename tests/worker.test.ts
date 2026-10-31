@@ -38,7 +38,7 @@ describe('host isolation and public privacy',()=>{
     const res=await worker.fetch(new Request('https://relou.jjmowlab.com/api/public/stats'),env(),ctx);
     expect(res.status).toBe(200);
     const data=await res.json() as Record<string,unknown>;
-    expect(Object.keys(data).sort()).toEqual(['activeSubmissionCount','asOf','lifetimeSubmissionCount','previousRoundPairCount','round'].sort());
+    expect(Object.keys(data).sort()).toEqual(['activeSubmissionCount','currentRoundPairCount','asOf','lifetimeSubmissionCount','previousRoundPairCount','round'].sort());
     expect(JSON.stringify(data)).not.toMatch(/gender|email|desiredGenders|contact|intent|schoolClaimed|MBTI/i);
   });
   it('registration fails closed when anti-abuse bindings are not configured',async()=>{
