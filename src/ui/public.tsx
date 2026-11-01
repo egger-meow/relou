@@ -69,13 +69,22 @@ function PillGroup({title,desc,options,value,onChange,multiple=false}:{
 function ProgramPicker({school,degree,value,onChange}:{school:Draft['schoolClaimed'];degree:Draft['degreeLevel'];value:string;onChange:(value:string)=>void}) {
   const programs=PROGRAMS.filter(p=>p.school===school&&p.degree===degree).sort((a,b)=>a.name.localeCompare(b.name,'zh-TW'));
   const [query,setQuery]=useState(()=>programs.find(p=>p.id===value)?.name??'');
-  return <label className="question"><span className="question-title">系所／學位學程</span>
-    <input className="text-input" type="text" list="program-options" required autoComplete="off" value={query}
+  const input=useRef<HTMLInputElement>(null);
+  const [open,setOpen]=useState(false);
+  const matches=programs.filter(p=>p.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  return <div className="question"><label className="question-title" htmlFor="program-search">系所／學位學程</label>
+    <input ref={input} id="program-search" className="text-input" type="text" required autoComplete="off" value={query}
       placeholder="輸入系所關鍵字，從建議名單選取" aria-describedby="program-help"
-      onChange={e=>{const text=e.target.value;setQuery(text);const program=programs.find(p=>p.name===text.trim());onChange(program?.id??'');e.target.setCustomValidity(program?'':'請從建議名單選取符合學校與學位的系所');}}/>
-    <datalist id="program-options">{programs.map(p=><option key={p.id} value={p.name}/>)}</datalist>
+      aria-expanded={open} aria-controls="program-options" onFocus={()=>setOpen(true)}
+      onKeyDown={e=>{if(e.key==='Escape')setOpen(false);}}
+      onChange={e=>{const text=e.target.value;setQuery(text);setOpen(true);const program=programs.find(p=>p.name===text.trim());onChange(program?.id??'');e.target.setCustomValidity(program?'':'請從下方名單選取符合學校與學位的系所');}}/>
+    {open&&<div className="program-results" id="program-options">
+      <p className="program-result-count" role="status">{matches.length?`符合 ${matches.length} 個系所，點選下方名稱`:'找不到符合的系所，請換個關鍵字，或確認學校與學位。'}</p>
+      <div className="program-result-list">{matches.map(p=><button key={p.id} type="button" aria-pressed={value===p.id}
+        onClick={()=>{setQuery(p.name);onChange(p.id);input.current?.setCustomValidity('');setOpen(false);}}>{p.name}{value===p.id&&<span aria-hidden="true"> ✓</span>}</button>)}</div>
+    </div>}
     <span className="question-desc" id="program-help">可直接打字搜尋，再選取完整系所名稱。名單依教育部資料及 115 學年異動核對。找不到系所請聯絡主辦者；校系只用於配對，不公開或放進結果信。</span>
-  </label>;
+  </div>;
 }
 function InterestPicker({value,onChange}:{value:Draft['interests'];onChange:(value:Draft['interests'])=>void}) {
   const [category,setCategory]=useState(0);
