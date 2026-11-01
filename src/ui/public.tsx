@@ -136,6 +136,22 @@ export function PublicApp(){
   const [sending,setSending]=useState(false),[done,setDone]=useState(false),[error,setError]=useState('');
   const [page,setPage]=useState<'form'|'stats'|'about'>(()=>window.location.hash==='#about'?'about':window.location.hash==='#stats'?'stats':'form');
   const [nowTick,setNowTick]=useState(0);
+  const [navHidden,setNavHidden]=useState(false);
+  const navRef=useRef<HTMLElement>(null);
+  useEffect(()=>{
+    let previousY=window.scrollY,distance=0;
+    const scroll=()=>{
+      // Clamp rubber-band overscroll so returning from the bottom does not hide the nav.
+      const y=Math.max(0,Math.min(window.scrollY,document.documentElement.scrollHeight-window.innerHeight));
+      const delta=y-previousY;
+      previousY=y;
+      if(y<=(navRef.current?.offsetHeight??80)){distance=0;setNavHidden(false);return;}
+      distance=Math.sign(delta)===Math.sign(distance)?distance+delta:delta;
+      if(Math.abs(distance)>=8){setNavHidden(distance>0);distance=0;}
+    };
+    window.addEventListener('scroll',scroll,{passive:true});
+    return()=>window.removeEventListener('scroll',scroll);
+  },[]);
   useEffect(()=>{const change=()=>setPage(window.location.hash==='#about'?'about':window.location.hash==='#stats'?'stats':'form');window.addEventListener('hashchange',change);window.addEventListener('popstate',change);return()=>{window.removeEventListener('hashchange',change);window.removeEventListener('popstate',change);};},[]);
   useEffect(()=>{
     const load=()=>fetch('/api/public/stats',{cache:'no-store'}).then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
@@ -171,7 +187,7 @@ export function PublicApp(){
     }finally{setSending(false);}
   }
   return <div className="site">
-    <header className="nav"><span className="brand">relou</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
+    <header ref={navRef} className={'nav'+(navHidden?' nav-hidden':'')}><span className="brand">relou</span><nav aria-label="頁面">{([{id:'form',label:'表單'},{id:'stats',label:'統計'},{id:'about',label:'說明'}] as const).map(item=><a key={item.id} href={'#'+item.id} onClick={e=>{e.preventDefault();history.pushState(null,'','#'+item.id);setPage(item.id);setNavHidden(false);window.scrollTo(0,0);}} aria-current={page===item.id?'page':undefined}>{item.label}</a>)}</nav></header>
     <main id="top">
       <section hidden={page!=='stats'} className="stats-band"><div className="wrap">
         <h1>報名統計</h1>
