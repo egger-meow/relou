@@ -66,6 +66,17 @@ function PillGroup({title,desc,options,value,onChange,multiple=false}:{
         onChange(clean.includes(o.value)?clean.filter(x=>x!==o.value):[...clean,o.value]);
       }}>{o.label}</button>)}</div></fieldset>;
 }
+function ProgramPicker({school,degree,value,onChange}:{school:Draft['schoolClaimed'];degree:Draft['degreeLevel'];value:string;onChange:(value:string)=>void}) {
+  const programs=PROGRAMS.filter(p=>p.school===school&&p.degree===degree).sort((a,b)=>a.name.localeCompare(b.name,'zh-TW'));
+  const [query,setQuery]=useState(()=>programs.find(p=>p.id===value)?.name??'');
+  return <label className="question"><span className="question-title">系所／學位學程</span>
+    <input className="text-input" type="text" list="program-options" required autoComplete="off" value={query}
+      placeholder="輸入系所關鍵字，從建議名單選取" aria-describedby="program-help"
+      onChange={e=>{const text=e.target.value;setQuery(text);const program=programs.find(p=>p.name===text.trim());onChange(program?.id??'');e.target.setCustomValidity(program?'':'請從建議名單選取符合學校與學位的系所');}}/>
+    <datalist id="program-options">{programs.map(p=><option key={p.id} value={p.name}/>)}</datalist>
+    <span className="question-desc" id="program-help">可直接打字搜尋，再選取完整系所名稱。名單依教育部資料及 115 學年異動核對。找不到系所請聯絡主辦者；校系只用於配對，不公開或放進結果信。</span>
+  </label>;
+}
 function InterestPicker({value,onChange}:{value:Draft['interests'];onChange:(value:Draft['interests'])=>void}) {
   const [category,setCategory]=useState(0);
   const toggle=(tag:Draft['interests'][number])=>onChange(value.includes(tag)?value.filter(t=>t!==tag):value.length<8?[...value,tag]:value);
@@ -177,7 +188,7 @@ export function PublicApp(){
             <div className="form-block"><div className="block-label">01 / 關於你</div>
               <label className="question"><span className="question-title">學校</span><select className="text-input" value={draft.schoolClaimed} onChange={e=>setDraft(v=>({...v,schoolClaimed:e.target.value as Draft['schoolClaimed'],programId:''}))}>{choices.schoolClaimed.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}</select><span className="question-desc">學校與系所由你自行填寫，不驗證學生身分。</span></label>
               <label className="question"><span className="question-title">學位</span><select className="text-input" value={draft.degreeLevel} onChange={e=>setDraft(v=>({...v,degreeLevel:e.target.value as Draft['degreeLevel'],programId:''}))}><option value="bachelor">學士（含學士後）</option><option value="master">碩士（含在職專班）</option><option value="doctor">博士</option></select></label>
-              <label className="question"><span className="question-title">系所／學位學程</span><select className="text-input" value={draft.programId} onChange={e=>set('programId',e.target.value)}><option value="">請選擇系所或學位學程</option>{PROGRAMS.filter(p=>p.school===draft.schoolClaimed&&p.degree===draft.degreeLevel).sort((a,b)=>a.name.localeCompare(b.name,'zh-TW')).map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select><span className="question-desc">名單依教育部資料及 115 學年異動核對。找不到系所請聯絡主辦者；校系只用於配對，不公開或放進結果信。</span></label>
+              <ProgramPicker key={draft.schoolClaimed+draft.degreeLevel} school={draft.schoolClaimed} degree={draft.degreeLevel} value={draft.programId} onChange={value=>set('programId',value)}/>
               <label className="question"><span className="question-title">想怎麼稱呼你？</span><input className="text-input" placeholder="你的暱稱（2–16 字）" value={draft.nickname} maxLength={16} onChange={e=>set('nickname',e.target.value)}/></label>
               <PillGroup title="你的性別？" options={choices.gender} value={draft.gender} onChange={v=>set('gender',v as Draft['gender'])}/>
               <PillGroup title="你願意認識誰？" desc="可以複選，選「都可以」則不用選其他" options={choices.desiredGenders} value={draft.desiredGenders} multiple onChange={v=>set('desiredGenders',v as Draft['desiredGenders'])}/>
