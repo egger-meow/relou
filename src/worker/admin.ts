@@ -221,11 +221,11 @@ export function registerAdmin(app: App) {
     const round = await currentRound(c.env.DB);
     if (!round) return c.json({entries:[]});
     const rows = await c.env.DB.prepare(
-      'SELECT id,normalized_email,status,submitted_at FROM entries WHERE round_id=? ORDER BY submitted_at DESC LIMIT 100'
-    ).bind(round.id).all<{id:string;normalized_email:string;status:string;submitted_at:string}>();
+      'SELECT id,normalized_email,gender,status,submitted_at FROM entries WHERE round_id=? ORDER BY submitted_at DESC LIMIT 100'
+    ).bind(round.id).all<{id:string;normalized_email:string;gender:string;status:string;submitted_at:string}>();
     return c.json({entries:(rows.results||[]).map(e=>{
       const [local,domain] = e.normalized_email.split('@');
-      return {id:e.id,maskedEmail:local.slice(0,2)+'***@'+domain,status:e.status,submittedAt:e.submitted_at};
+      return {id:e.id,maskedEmail:local.slice(0,2)+'***@'+domain,gender:e.gender,status:e.status,submittedAt:e.submitted_at};
     })});
   });
 

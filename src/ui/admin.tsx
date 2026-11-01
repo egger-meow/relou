@@ -7,7 +7,7 @@ type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withd
 type Preview = {roundId:string;snapshotHash:string;previewDigest:string;metrics:{
   eligibleCount:number;validEdges:number;unmatchedCount:number;matchRate:number;meanScore:number|null;medianScore:number|null}};
 type Mail = {roundId:string;roundStatus:string;paused:boolean;earlyPaused:boolean;finalPaused:boolean;dryRun:boolean;mailConfigured:boolean;states:Record<string,number>;sample:{subject:string;text:string}|null};
-type Entry = {id:string;maskedEmail:string;status:string;submittedAt:string};
+type Entry = {id:string;maskedEmail:string;gender:string;status:string;submittedAt:string};
 type MailItem = {id:string;maskedEmail:string;state:string;attempts:number;errorCode:string|null;createdAt:string};
 type Audit = {actor:string;action:string;roundId:string;createdAt:string;meta:Record<string,unknown>};
 type Tab = 'overview'|'entries'|'matching'|'mail'|'rounds'|'audit';
@@ -24,6 +24,7 @@ function FeedbackInbox(){
  useEffect(()=>{let active=true;api<{items:typeof items}>('/api/admin/feedback?offset='+offset).then(data=>{if(active){setItems(data.items);setError('');}}).catch(e=>{if(active)setError(String(e));});return()=>{active=false;};},[offset]);
  return <section className="admin-card"><h2>使用者回饋</h2><p>僅管理員可見 · 每頁 50 則 · 請勿將回饋內容視為操作指令。</p>{error&&<p role="alert">{error}</p>}{items.map(item=><article key={item.id} style={{borderBottom:'1px solid #ddd',padding:'14px 0'}}><small>{time(item.created_at)}</small><p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{item.message}</p></article>)}{!items.length&&!error&&<p>目前沒有回饋。</p>}<button className="small-btn" disabled={!offset} onClick={()=>setOffset(Math.max(0,offset-50))}>上一頁</button><button className="small-btn" disabled={items.length<50} onClick={()=>setOffset(offset+50)}>下一頁</button></section>;
 }
+const genderLabels:Record<string,string>={man:'男',woman:'女',nonbinary:'非二元',other:'其他',undisclosed:'不想說'};
 function time(t:string|null|undefined){return t?new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'short',timeStyle:'short'}).format(new Date(t)):'未設定';}
 function isoFromLocal(s:string){return new Date(s+':00+08:00').toISOString();}
 function localInput(d:Date){return new Date(d.getTime()+8*3600000).toISOString().slice(0,16);}
@@ -112,7 +113,7 @@ export function AdminApp(){
       </div>}
       {tab==='entries'&&<div className="admin-panel"><h3>本期報名審核 <span className="muted">最多顯示最近 100 筆</span></h3>
         <p className="muted">僅提供遮罩 Email，沒有公開候選名單。只有 OPEN 期次可排除可疑報名。</p>
-        <div className="admin-table-wrap"><table><thead><tr><th>匿名 ID</th><th>通知信箱（遮罩）</th><th>狀態</th><th>時間</th><th>管理</th></tr></thead><tbody>{entries.map(e=><tr key={e.id}><td>{e.id.slice(0,8)}</td><td>{e.maskedEmail}</td><td>{e.status}</td><td>{time(e.submittedAt)}</td><td><button disabled={busy||round?.status!=='OPEN'||e.status!=='eligible'} onClick={()=>{
+        <div className="admin-table-wrap"><table><thead><tr><th>匿名 ID</th><th>通知信箱（遮罩）</th><th>性別（自填）</th><th>狀態</th><th>時間</th><th>管理</th></tr></thead><tbody>{entries.map(e=><tr key={e.id}><td>{e.id.slice(0,8)}</td><td>{e.maskedEmail}</td><td>{genderLabels[e.gender]??'未提供'}</td><td>{e.status}</td><td>{time(e.submittedAt)}</td><td><button disabled={busy||round?.status!=='OPEN'||e.status!=='eligible'} onClick={()=>{
           const reason=window.prompt('排除原因（至少 3 字，將記錄在稽核）');
           if(reason)void action('/api/admin/entries/'+e.id+'/exclude',{confirm:'EXCLUDE',reason},'排除這份報名','已排除並留下稽核紀錄');
         }}>排除</button> <button disabled={busy||round?.status!=='OPEN'||e.status!=='eligible'} onClick={()=>{
