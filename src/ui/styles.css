@@ -32,5 +32,5 @@ h1{font-size:25px;line-height:1.4;margin:0 0 12px;font-weight:700}.form-head{pad
 /* Keep the header's space in flow while revealing navigation on upward scroll. */
 .nav{position:sticky;top:0;z-index:20;background:#fff;transition:transform 180ms ease}
 .nav.nav-hidden{transform:translateY(-100%)}
-.nav:focus-within{transform:translateY(0)}
+.nav:has(:focus-visible){transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){.nav{transition:none}}
