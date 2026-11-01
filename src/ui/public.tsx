@@ -138,11 +138,11 @@ export function PublicApp(){
   const [nowTick,setNowTick]=useState(0);
   useEffect(()=>{const change=()=>setPage(window.location.hash==='#about'?'about':window.location.hash==='#stats'?'stats':'form');window.addEventListener('hashchange',change);window.addEventListener('popstate',change);return()=>{window.removeEventListener('hashchange',change);window.removeEventListener('popstate',change);};},[]);
   useEffect(()=>{
-    const load=()=>fetch('/api/public/stats').then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
+    const load=()=>fetch('/api/public/stats',{cache:'no-store'}).then(r=>r.ok?r.json() as Promise<Stats>:Promise.reject()).then(setStats).catch(()=>setStats(null));
     load();fetch('/api/public/config').then(r=>r.json() as Promise<Config>).then(setConfig).catch(()=>setConfig(null));
-    const t=setInterval(load,90000),clock=setInterval(()=>setNowTick(n=>n+1),30000);
+    const t=setInterval(load,30000),clock=setInterval(()=>setNowTick(n=>n+1),30000);
     return ()=>{clearInterval(t);clearInterval(clock);};
-  },[]);
+  },[page,done]);
   void nowTick;
   function set<K extends keyof Draft>(key:K,value:Draft[K]) {setDraft(v=>({...v,[key]:value}));}
   const round=stats?.round;

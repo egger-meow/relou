@@ -42,7 +42,7 @@ export function registerPublic(app: App) {
     if (!round) return c.json({
       round: null, activeSubmissionCount: 0, currentRoundPairCount: 0, lifetimeSubmissionCount: null,
       previousRoundPairCount: null, asOf: new Date().toISOString()
-    }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
+    }, 200, headers);
     const count = round.purged_at ? { n: round.final_submission_count ?? 0 } : await c.env.DB.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND status='eligible'")
       .bind(round.id).first<{ n: number }>();
     // Count committed pairs across every early/final allocation batch, never dry-run metrics.
@@ -71,7 +71,7 @@ export function registerPublic(app: App) {
       lifetimeSubmissionCount,
       previousRoundPairCount,
       asOf: new Date().toISOString()
-    }, 200, { 'Cache-Control': 'public, max-age=60, s-maxage=60' });
+    }, 200, headers);
   });
 
   app.post('/api/feedback', async c => {
