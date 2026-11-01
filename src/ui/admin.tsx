@@ -3,7 +3,7 @@ import type { FormEvent } from 'react';
 
 type Round = {id:string;slug:string;title:string;status:string;opensAt:string;closesAt:string;notificationTargetAt:string|null;minPairScore:number;sendPaused:boolean;earlyPaused?:boolean;archived_at?:string|null;purged_at?:string|null;opens_at?:string;closes_at?:string;notification_target_at?:string|null;min_pair_score?:number};
 type Dashboard = {round:Round|null;counts:{eligible:number;excluded:number;withdrawn:number;today:number}|null;
-  trend:{day:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;earlyMatchingEnabled?:boolean;earlyMinScore?:number;asOf:string};
+  trend:{day:string;n:number}[];demographics?:{category:string;value:string;n:number}[];outbox:Record<string,number>;mailConfigured:boolean;emailDryRun:boolean;earlyMatchingEnabled?:boolean;earlyMinScore?:number;asOf:string};
 type Preview = {roundId:string;snapshotHash:string;previewDigest:string;metrics:{
   eligibleCount:number;validEdges:number;unmatchedCount:number;matchRate:number;meanScore:number|null;medianScore:number|null}};
 type Mail = {roundId:string;roundStatus:string;paused:boolean;earlyPaused:boolean;finalPaused:boolean;dryRun:boolean;mailConfigured:boolean;states:Record<string,number>;sample:{subject:string;text:string}|null};
@@ -105,6 +105,12 @@ export function AdminApp(){
         <div className="admin-kpis"><div><span>本期有效報名</span><strong>{counts?.eligible??'—'}</strong><small>份，非驗證人數</small></div><div><span>今日新增</span><strong>{counts?.today??'—'}</strong><small>台灣時間</small></div>
           <div><span>已排除</span><strong>{counts?.excluded??'—'}</strong><small>人工審核</small></div><div><span>通知寄出</span><strong>{dash?.outbox.sent??0}</strong><small>實際發送成功</small></div></div>
         <div className="admin-panel"><h3>最近 {trendDays} 天 · 每日報名</h3><div className="admin-action-row">{[7,14].map(days=><button className="small-btn" key={days} aria-pressed={trendDays===days} onClick={()=>setTrendDays(days)}>{days} 天</button>)}</div>{visibleTrend.length?<div className="trend-chart">{visibleTrend.map(x=><div key={x.day} className="trend-column" title={x.day+'：'+x.n+' 份'}><div className="trend-bar" style={{height:Math.max(0,x.n/maxTrend*170)+'px'}}/><small>{x.day.slice(5)}</small><b>{x.n}</b></div>)}</div>:<p className="muted">尚無報名資料，圖表不會使用假數字。</p>}</div>
+        <div className="admin-panel"><h3>本期有效報名分布 · 僅管理員可見</h3><p className="muted">以全部有效報名計算，不受列表最近 100 筆限制；資料皆為自行填寫。</p><div className="admin-kpis">{[
+          {key:'gender',title:'性別',labels:genderLabels},
+          {key:'school',title:'學校',labels:{NYCU:'陽明交大',NTHU:'清大'}},
+          {key:'degree',title:'學位',labels:{bachelor:'學士',master:'碩士',doctor:'博士'}},
+          {key:'intent',title:'配對意向',labels:{friends:'交新朋友',dating:'約會看看',either:'都可以'}}
+        ].map(group=><div key={group.key}><h4>{group.title}</h4>{(dash?.demographics||[]).filter(row=>row.category===group.key).map(row=><p key={row.value}>{(group.labels as Record<string,string>)[row.value]??'未提供'}：<b>{row.n}</b> 份 <small>（{counts?.eligible?Math.round(row.n/counts.eligible*100):0}%）</small></p>)}{!(dash?.demographics||[]).some(row=>row.category===group.key)&&<p className="muted">尚無有效報名</p>}</div>)}</div></div>
         <div className="admin-panel"><h3>營運提醒</h3><p>報名網站不要求 Email 驗證。性別分布、性向與聯絡方式絕不出現在公開統計 API。</p>
           {round?.status==='OPEN'&&Date.now()>=Date.parse(round.closesAt)&&<p role="alert">報名已截止，尚未鎖池；請審核後鎖定本期。</p>}
           <p>可疑流量與重複攔阻事件：尚未建立計數紀錄。已排除數量僅代表人工操作。</p>

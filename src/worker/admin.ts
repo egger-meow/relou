@@ -37,11 +37,16 @@ export function registerAdmin(app: App) {
     const db = c.env.DB;
     const round = await currentRound(db);
     if (!round) return c.json({ round:null, counts:null, trend:[], outbox:{}, mailConfigured:false });
-    const [counts, today, trend, outbox] = await Promise.all([
+    const [counts, today, trend, outbox, demographics] = await Promise.all([
       db.prepare("SELECT status,COUNT(*) AS n FROM entries WHERE round_id=? GROUP BY status").bind(round.id).all<{status:string;n:number}>(),
       db.prepare("SELECT COUNT(*) AS n FROM entries WHERE round_id=? AND date(submitted_at,'+8 hours')=date('now','+8 hours')").bind(round.id).first<{n:number}>(),
       db.prepare("SELECT date(submitted_at,'+8 hours') AS day, COUNT(*) AS n FROM entries WHERE round_id=? AND date(submitted_at,'+8 hours')>=date('now','+8 hours','-13 days') GROUP BY day ORDER BY day").bind(round.id).all<{day:string;n:number}>(),
-      db.prepare("SELECT state,COUNT(*) AS n FROM email_outbox WHERE round_id=? GROUP BY state").bind(round.id).all<{state:string;n:number}>()
+      db.prepare("SELECT state,COUNT(*) AS n FROM email_outbox WHERE round_id=? GROUP BY state").bind(round.id).all<{state:string;n:number}>(),
+      db.prepare(`WITH valid AS (SELECT gender,school_claimed,json_extract(answers_json,'$.degreeLevel') AS degree,json_extract(answers_json,'$.intent') AS intent FROM entries WHERE round_id=? AND status='eligible')
+        SELECT 'gender' AS category,gender AS value,COUNT(*) AS n FROM valid GROUP BY gender
+        UNION ALL SELECT 'school',school_claimed,COUNT(*) FROM valid GROUP BY school_claimed
+        UNION ALL SELECT 'degree',COALESCE(degree,'unknown'),COUNT(*) FROM valid GROUP BY degree
+        UNION ALL SELECT 'intent',COALESCE(intent,'unknown'),COUNT(*) FROM valid GROUP BY intent`).bind(round.id).all<{category:string;value:string;n:number}>()
     ]);
     const grouped = Object.fromEntries((counts.results||[]).map(r=>[r.status,r.n]));
     const mailGrouped = Object.fromEntries((outbox.results||[]).map(r=>[r.state,r.n]));
@@ -56,6 +61,7 @@ export function registerAdmin(app: App) {
         return {day,n:(trend.results||[]).find(row=>row.day===day)?.n||0};
       }),
       outbox:mailGrouped,
+      demographics:demographics.results||[],
       mailConfigured:mailReady(c.env),
       earlyMatchingEnabled:c.env.EARLY_MATCHING_ENABLED==='true',
       earlyMinScore:90,
