@@ -1,0 +1,26 @@
+diff --git a/app/blossom.js b/app/blossom.js
+--- a/app/blossom.js
++++ b/app/blossom.js
+@@ -266,12 +266,12 @@
+   var bb = this.inBlossom[base];
+   var bv = this.inBlossom[v];
+   var bw = this.inBlossom[w];
+-  b = this.unusedBlossoms.pop();
++  var b = this.unusedBlossoms.pop();
+   //console.log('DEBUG: addBlossom(' + base + ',' + k + ')' + ' (v=' + v + ' w=' + w + ')' + ' -> ' + b);
+   this.blossomBase[b] = base;
+   this.blossomParent[b] = -1;
+   this.blossomParent[bb] = b;
+-  path = this.blossomChilds[b] = [];
++  var path = this.blossomChilds[b] = [];
+   var endPs = this.blossomEndPs[b] = [];
+   while (bv !== bb) {
+     this.blossomParent[bv] = b;
+@@ -366,6 +366,7 @@
+ };
+ 
+ Edmonds.prototype.expandBlossom = function (b, endStage) {
++  var v;
+   //console.log('DEBUG: expandBlossom(' + b + ',' + endStage + ') ' + this.blossomChilds[b].toString());
+   for (var ii = 0; ii < this.blossomChilds[b].length; ii++) {
+     var s = this.blossomChilds[b][ii];

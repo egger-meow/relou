@@ -4,13 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  edmonds-blossom@1.0.0: b7562a5989280bb4c40bf93c1fb2b909cf3411a1fdb65aa4773df4b7d54ae1e3
+
 importers:
 
   .:
     dependencies:
       edmonds-blossom:
         specifier: ^1.0.0
-        version: 1.0.0
+        version: 1.0.0(patch_hash=b7562a5989280bb4c40bf93c1fb2b909cf3411a1fdb65aa4773df4b7d54ae1e3)
       hono:
         specifier: ^4.10.0
         version: 4.13.14
@@ -2242,7 +2245,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  edmonds-blossom@1.0.0: {}
+  edmonds-blossom@1.0.0(patch_hash=b7562a5989280bb4c40bf93c1fb2b909cf3411a1fdb65aa4773df4b7d54ae1e3): {}
 
   electron-to-chromium@1.5.467: {}
 

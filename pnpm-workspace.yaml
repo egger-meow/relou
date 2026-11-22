@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
   workerd: true
+patchedDependencies:
+  edmonds-blossom@1.0.0: patches/edmonds-blossom@1.0.0.patch

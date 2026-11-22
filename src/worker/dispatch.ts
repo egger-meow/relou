@@ -4,6 +4,14 @@ import type { Env } from './types';
 type Outbox = {id:string;recipient_email:string;subject:string;text_body:string;html_body:string|null;state:string;attempts:number};
 export async function dispatchMail(env:Env,roundId:string,actor:string,earlyOnly=false) {
  if(!mailReady(env))throw new Error('Mail disabled');
+    if (!earlyOnly) {
+      // Older settlements could queue a final notification for an unmatched entry.
+      await env.DB.prepare(
+        "UPDATE email_outbox SET state='suppressed',error_code='UNMATCHED' WHERE round_id=? AND phase='final' " +
+        "AND state IN ('queued','failed') AND NOT EXISTS (SELECT 1 FROM match_members m " +
+        "WHERE m.round_id=email_outbox.round_id AND m.entry_id=email_outbox.entry_id)"
+      ).bind(roundId).run();
+    }
     const pending = await env.DB.prepare(
       "SELECT id,recipient_email,subject,text_body,html_body,state,attempts FROM email_outbox WHERE round_id=? AND state='queued' AND (?=0 OR phase='early') ORDER BY created_at,id LIMIT ?"
     ).bind(roundId,earlyOnly?1:0,earlyOnly?4:10).all<Outbox>();
@@ -12,6 +20,7 @@ export async function dispatchMail(env:Env,roundId:string,actor:string,earlyOnly
       // Each message is claimed by exactly one Worker; crashes leave 'sending' for manual reconciliation.
       const claimed = await env.DB.prepare(
         "UPDATE email_outbox SET state='sending',attempts=attempts+1,claimed_at=? WHERE id=? AND state='queued' " +
+        "AND EXISTS (SELECT 1 FROM match_members m WHERE m.round_id=email_outbox.round_id AND m.entry_id=email_outbox.entry_id) " +
         "AND attempts<3 AND EXISTS (SELECT 1 FROM rounds WHERE id=email_outbox.round_id AND ((status='MATCHED' AND send_paused=0) OR (email_outbox.phase='early' AND early_paused=0 AND status IN ('OPEN','LOCKED','MATCHED')))) RETURNING id"
       ).bind(new Date().toISOString(),item.id).first<{id:string}>();
       if (!claimed) continue;

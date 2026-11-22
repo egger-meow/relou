@@ -93,7 +93,8 @@ export function registerOperations(app: App) {
     }
     for (const row of rows) {
       const other = partners.get(row.id);
-      const message = resultEmail(row,other?byId.get(other)!:null,c.env.SUPPORT_EMAIL||'',{roundTitle:round.title,phase:'final'});
+      if (!other) continue;
+      const message = resultEmail(row,byId.get(other)!,c.env.SUPPORT_EMAIL||'',{roundTitle:round.title,phase:'final'});
       outboxRows.push([crypto.randomUUID(),round.id,runId,row.id,round.id+':'+row.id+':v1',
         row.normalized_email,message.subject,message.text,batchId,message.html,message.version]);
     }
@@ -101,6 +102,12 @@ export function registerOperations(app: App) {
     statements.push(...bulkInsert(c.env.DB,'match_members',['round_id','entry_id','match_id'],memberRows));
     statements.push(...bulkInsert(c.env.DB,'email_outbox',
       ['id','round_id','run_id','entry_id','dedupe_key','recipient_email','subject','text_body','batch_id','html_body','template_version'],outboxRows));
+    if (!outboxRows.length) {
+      statements.push(c.env.DB.prepare(
+        "UPDATE rounds SET status='NOTIFIED' WHERE id=? AND status='MATCHED' AND NOT EXISTS " +
+        "(SELECT 1 FROM email_outbox WHERE round_id=? AND state IN ('queued','sending','failed','uncertain'))"
+      ).bind(round.id,round.id));
+    }
     statements.push(c.env.DB.prepare(
       'INSERT INTO admin_audit_events(id,actor,action,round_id,meta_json) SELECT ?,?,?,?,? FROM match_runs WHERE id=?'
     ).bind(crypto.randomUUID(),c.get('adminEmail'),'matching.commit',round.id,

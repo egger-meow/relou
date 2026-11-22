@@ -85,7 +85,8 @@ describe('single-submit and settlement with real SQLite',()=>{
     expect((await (await request('/api/public/stats',null,false)).json()).currentRoundPairCount).toBe(2);
     expect((await commit(preview)).status).toBe(409);
     expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(4);
-    expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(5);
+    expect(sqlite.prepare('SELECT entry_id FROM email_outbox ORDER BY entry_id').all())
+      .toEqual(sqlite.prepare('SELECT entry_id FROM match_members ORDER BY entry_id').all());
     expect((await submit('late@synthetic.nycu.edu.tw')).status).toBe(409);
     expect((await request('/api/admin/mail/send',{confirm:'SEND',roundId:'r'})).status).toBe(503);
   });
@@ -118,7 +119,7 @@ describe('single-submit and settlement with real SQLite',()=>{
     expect(response.status).toBe(200);expect(env.EMAIL.send).toHaveBeenCalledTimes(1);
     expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='uncertain'").get().n).toBe(1);
     await request('/api/admin/mail/retry',{confirm:'RETRY',roundId:'r'});
-    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='queued'").get().n).toBe(2);
+    expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE state='queued'").get().n).toBe(1);
   });
 });
 
@@ -182,8 +183,8 @@ describe('high compatibility early allocation (synthetic only)',()=>{
   expect((await commit(preview)).status).toBe(200);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_runs').get().n).toBe(1);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM allocation_batches').get().n).toBe(2);
-  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(3);
-  expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE template_version='result-v2' AND html_body IS NOT NULL").get().n).toBe(3);
+  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(2);
+  expect(sqlite.prepare("SELECT COUNT(*) AS n FROM email_outbox WHERE template_version='result-v2' AND html_body IS NOT NULL").get().n).toBe(2);
   expect(sqlite.prepare('SELECT COUNT(*) AS n FROM match_members').get().n).toBe(2);
  });
  it('leaves below-threshold, incompatible and only-Other submissions waiting',async()=>{
@@ -230,7 +231,8 @@ it('applies department exclusions to early and final matching, and stores canoni
  const preview=await lockAndPreview();expect(preview.metrics.validEdges).toBe(0);
  expect((await commit(preview)).status).toBe(200);
  expect(sqlite.prepare('SELECT COUNT(*) AS n FROM matches').get().n).toBe(0);
- expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(2);
+ expect(sqlite.prepare('SELECT COUNT(*) AS n FROM email_outbox').get().n).toBe(0);
+ expect(sqlite.prepare("SELECT status FROM rounds WHERE id='r'").get().status).toBe('NOTIFIED');
 });
 
 it('rechecks early pause between messages and does not requeue uncertain SMTP outcomes',async()=>{
